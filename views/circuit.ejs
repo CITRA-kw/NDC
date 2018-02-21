@@ -1,0 +1,134 @@
+<% include partials/template/head.ejs %> 
+        
+      <div class="row">
+        <div class="col-md-4 order-md-2 mb-4">
+          <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-muted">Circuit List</span>
+            <span class="badge badge-secondary badge-pill">3</span>
+          </h4>
+          <ul class="list-group mb-3">
+            <li class="list-group-item d-flex justify-content-between lh-condensed">
+              <div>
+                <h6 class="my-0">Circuit 1</h6>
+                <small class="text-muted">Brief description</small>
+              </div>
+              <small class="text-muted"><strong>update</strong> | <strong>delete</strong></small>
+            </li>
+            <li class="list-group-item d-flex justify-content-between lh-condensed">
+              <div>
+                <h6 class="my-0">Circuit 2</h6>
+                <small class="text-muted">Brief description</small>
+              </div>
+              <small class="text-muted"><strong>update</strong> | <strong>delete</strong></small>
+            </li>
+            <li class="list-group-item d-flex justify-content-between lh-condensed">
+              <div>
+                <h6 class="my-0">Circuit 3</h6>
+                <small class="text-muted">Brief description</small>
+              </div>
+              <small class="text-muted"><strong>update</strong> | <strong>delete</strong></small>
+            </li>
+          </ul>
+
+            
+        </div>
+        <div class="col-md-8 order-md-1">
+          <h4 class="mb-3">Add New Data Circuit</h4>
+          <form class="needs-validation" novalidate>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="circuitName">Circuit Name</label>
+                <input type="text" class="form-control" id="circuitName" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  Valid circuit name is required.
+                </div>
+              </div>              
+            </div>
+              
+              
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="moc_id">MoC ID</label>
+                <input type="text" class="form-control" id="moc_id" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  Valid contact name is required.
+                </div>
+              </div> 
+              <div class="col-md-6 mb-3">
+                <label for="serviceType">Service Type</label>
+                <select class="custom-select d-block w-100" id="serviceType" required>
+                  <option value="">Choose...</option>
+                  <option>IPLC</option>
+                  <option>INternet</option>
+                </select>
+                <div class="invalid-feedback">
+                  Valid service type is required.
+                </div>
+              </div>                  
+            </div> 
+
+              
+            
+              
+              
+              
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="interface_type">Interface Type</label>
+                <select class="custom-select d-block w-100" id="interfaceType" required>
+                  <option value="">Choose...</option>
+                  <option>10 Gbps</option>
+                  <option>STM 64</option>
+                </select>
+                <div class="invalid-feedback">
+                  Valid interface type is required.
+                </div>
+              </div>              
+              <div class="col-md-6 mb-3">
+                <label for="provisionSpeed">Provision Speed</label>
+                <input type="text" class="form-control" id="provisionSpeed" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  Valid provision speed is required.
+                </div>
+              </div>                              
+            </div> 
+              
+              
+            <div class="row"> 
+              <div class="col-md-6 mb-3">
+                <label for="provider">Data Provider</label>
+                <select class="custom-select d-block w-100" id="provider" required>
+                  <option value="">Choose...</option>
+                  <option>provider 1</option>
+                  <option>provider 2</option>
+                </select>
+                <div class="invalid-feedback">
+                  Valid data provider is required.
+                </div>
+              </div>                                               
+              <div class="col-md-6 mb-3">
+                <label for="isp">Internet Service Provider</label>
+                <select class="custom-select d-block w-100" id="isp" required>
+                  <option value="">Choose...</option>
+                  <option>ISP 1</option>
+                  <option>ISP 2</option>
+                </select>
+                <div class="invalid-feedback">
+                  Valid ISP is required.
+                </div>
+              </div>                  
+            </div>               
+
+            
+
+            
+            <hr class="mb-4">
+
+
+            <button class="btn btn-primary btn-lg btn-block" type="submit">Save &amp; Add</button>
+          </form>
+        </div>
+      </div>
+
+
+<% include partials/template/foot.ejs %> 
