@@ -53,16 +53,30 @@ $(document).ready(function () {
                 data: formData,
                 type: "put",
                 success: function(data) {
-                    data = jQuery.parseJSON(data);
-                    console.log("** Received after PUT: " + data.result); 
-                    // Update ISP list 
-                    $.getJSON('/api/isp-service/', printISPs);
-                    $('form').parent().empty();
+                        data = jQuery.parseJSON(data);
+                        console.log("** Received after PUT: " + data.result); 
+                        // Update ISP list 
+                        $.getJSON('/api/isp-service/', printISPs);
+
+                        // Remove the form
+                        $('form').parent().empty();
+                        //$('form')[0].reset();
+
+                        // Compose the feedback message
+                        var messageText = data.result;
+                        var alertBox = '<div class="alert alert-warning alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + messageText + '</div>';
+
+                        // If we have messageAlert and messageText
+                        if (messageText) {
+                            // inject the alert to the div
+                            $('#pageContent').html(alertBox);
+                            console.log("Success message should appear on page");
+                        }                    
                     },
                 beforeSend : function() {
                           //$(".post_submitting").show().html("<center><img src='images/loading.gif'/></center>");
                     },
-                error: function() {}
+                error: function() {}  
             }); // end ajax
 
 
