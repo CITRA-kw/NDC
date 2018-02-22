@@ -123,7 +123,14 @@ function printISPs(isp) {
         $('<small>').addClass('text-muted').appendTo('#isp_list>li:last-child');
         $('<a href="/isp/updateform/'+ this.id +'">').text('update').appendTo('#isp_list>li:last-child>small');
         $('#isp_list>li:last-child>small').append(' | ');
-        $('<a href="#">').text('delete').appendTo('#isp_list>li:last-child>small');
+        $('<a href="#" class="btn" data-toggle="confirmation" data-title="Are you sure?">').text('delete').appendTo('#isp_list>li:last-child>small');
+        
+        $('#isp_list>li:last-child>small>a').popover({
+            html: true,
+            title: "Double Checking",
+            content: "Are you sure?",
+            trigger: "focus"
+        });
     });
 }
     

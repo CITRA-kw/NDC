@@ -67,12 +67,16 @@ router.put('/api/isp-service', function (req, res) {
 
     var query = connection.query('UPDATE isp SET name=?, contact_name=?, contact_phone=?, contact_email=? where id=?', 
                      [update_isp.name, update_isp.contact_name, update_isp.contact_phone, update_isp.contact_email, update_isp.id], function (error, results, fields) {
-        if (error) throw error;
+        if (error) {
+            res.send(JSON.stringify({result: "Epic Fail!"}));    
+
+            throw error;
+        }
         
         //console.log("** PUT ISP - query text: " + query.sql);        
         console.log("** PUT ISP - query result: " + JSON.stringify(results));    
         res.set('Content-Type', 'application/json');
-        res.send(JSON.stringify({result: "Update Successful"}));    
+        res.send(JSON.stringify({result: "Update Successful for " + update_isp.name}));    
     });
 });
 
