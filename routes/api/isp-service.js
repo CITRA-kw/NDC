@@ -31,15 +31,23 @@ router.get('/api/isp-service', function(req, res) {
 // ***************************************************************
 // Add an ISP
 // ***************************************************************
+
+// TODO check if ISP name already exists
 router.post('/api/isp-service', function (req, res) {
     var newISP = req.body;
-    console.log('** POST Single ISP: ');
+    console.log('** POST Single ISP: ' + newISP.name);
     
-    connection.query('insert into isp SET ?', req.params.id, function (err, result) {
-    if (err) throw err;
-    console.log('** ' + result);
+    connection.query('INSERT INTO isp SET name=?, contact_name=?, contact_phone=?, contact_email=?', 
+                     [newISP.name, newISP.contact_name, newISP.contact_phone, newISP.contact_email], function (error, results) {
+        if (error) {
+                res.send(JSON.stringify({result: "Epic Fail!"}));    
 
-    res.end("1 record inserted: " + result);
+                throw error;
+        }
+
+        console.log("** POST ISP - query result: " + JSON.stringify(results));    
+        res.set('Content-Type', 'application/json');
+        res.send(JSON.stringify({result: "Insert Successful for " + newISP.name}));  
     });
 });
 
@@ -61,6 +69,8 @@ router.get('/api/isp-service/:id', function (req, res) {
 // ***************************************************************
 // Update ISP
 // ***************************************************************
+
+// TODO check if ISP name already exists
 router.put('/api/isp-service', function (req, res) {
     var update_isp = req.body;
     console.log("** PUT - update single ISP: " + update_isp.name);
@@ -73,7 +83,6 @@ router.put('/api/isp-service', function (req, res) {
             throw error;
         }
         
-        //console.log("** PUT ISP - query text: " + query.sql);        
         console.log("** PUT ISP - query result: " + JSON.stringify(results));    
         res.set('Content-Type', 'application/json');
         res.send(JSON.stringify({result: "Update Successful for " + update_isp.name}));    
@@ -84,10 +93,20 @@ router.put('/api/isp-service', function (req, res) {
 // Delete ISP
 // ***************************************************************
 router.delete('/api/isp-service/:id', function (req, res) {
-   connection.query('DELETE FROM isp WHERE id=?', [req.body.id], function (error, results, fields) {
-       if (error) throw error;
-       res.end('Record has been deleted!');   
-   });
+    var delete_isp = req.body;
+    console.log("** DELETE - delete ISP: " + delete_isp.id);
+    
+    connection.query('DELETE FROM isp WHERE id=?', [delete_isp.id], function (error, results, fields) {
+        if (error) {
+            res.send(JSON.stringify({result: "Epic Fail!"}));    
+
+            throw error;
+        }   
+        
+        console.log("** DELETE ISP - query result: " + JSON.stringify(results));    
+        res.set('Content-Type', 'application/json');
+        res.send(JSON.stringify({result: "Delete success for  " + delete_isp.name}));      
+    });
 });
 
 module.exports = router;

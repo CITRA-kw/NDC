@@ -120,13 +120,14 @@
             
             <hr class="mb-4">
 
-            <button class="btn btn-primary btn-lg btn-block" type="submit">Save &amp; Add</button>
+            <button class="btn btn-primary btn-lg btn-block" type="submit">Submit</button>
           </form>
         </div>
       </div>
 
           
         <!-- Modal -->
+        <!-- Delete confirmation form -->    
         <div class="modal fade" id="deleteISPModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -136,12 +137,12 @@
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>-->
-              <div class="modal-body">
+              <div class="modal-body"> 
                 Are you sure you want to delete <span></span>?
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary btn-sm delete-isp-btn-confirm">Yes please delete!</button>
+                <button type="button" class="btn btn-secondary btn-sm ladda-button" data-dismiss="modal" data-style="expand-right">Close</button>
+                <button type="button" class="btn btn-primary btn-sm delete-isp-btn-confirm"><span class="ladda-label">Yes</span></button>
               </div>
             </div>
           </div>
