@@ -1,15 +1,23 @@
+// FOR ALL POOR SOULS TRYING TO DEBUG MY CODE
+// Good luck and happy debugging!
+
+
+// TODO https://stackoverflow.com/questions/14949210/dynamically-update-a-table-using-javascript 
+
+
+
 $(document).ready(function () {
-// ***************************************************************
-// Dynamically load table data
-// ***************************************************************    
+    // ***************************************************************
+    // Dynamically load table data
+    // ***************************************************************    
     // 
-    if ( document.location.href.indexOf("/isp") > -1 ) {    
+    if (document.location.href.indexOf("/isp") > -1) {
         console.log("** Loaded main-script.js");
-        
+
         // Load JS of ISP pages
-        $.getScript( "/javascripts/isp-pages.js");
+        $.getScript("/javascripts/isp-pages.js");
     }
-        
+
 }); // end jQuery document 
 
 
