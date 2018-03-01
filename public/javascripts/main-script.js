@@ -18,6 +18,36 @@ $(document).ready(function () {
         $.getScript("/javascripts/isp-pages.js");
     }
 
+
+
+    // Do a JSON call and populate the form
+    $.getJSON('/api/circuit-service/', function (json) {
+        console.log("** Received circuit JSON info to populate form for", json);
+
+        //make an array
+        var data = [];
+
+        for (var i in json) {
+            var row = json[i];
+
+            var datum = [row["id"], row["moc_id"], row["isp"], row["provider"], row["provision_speed"]];
+            data.push(datum);
+        }
+        $('#example').DataTable({
+            data: data,
+            columns: [
+                { title: "ID" },
+                { title: "MOC ID" },
+                { title: "ISP" },
+                { title: "Provider" },
+                { title: "Speed" },
+            ]
+        } );  //datatables init
+
+
+    });
+
+
 }); // end jQuery document 
 
 
