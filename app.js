@@ -52,6 +52,7 @@ app.use(provider);
 // API
 app.use(require('./routes/api/isp-service'));
 app.use(require('./routes/api/provider-service'));
+app.use(require('./routes/api/circuit-service'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
