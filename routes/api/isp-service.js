@@ -11,7 +11,7 @@ var connection = mysql.createConnection({
 
 connection.connect();
 
-
+// TODO Handle wrong ID
 
 
 
@@ -73,7 +73,6 @@ router.get('/api/isp-service/:id', function (req, res) {
 // Update ISP
 // ***************************************************************
 
-// TODO check if ISP name already exists
 router.put('/api/isp-service', function (req, res) {
     var update_isp = req.body;
     console.log("** PUT - update single ISP: " + update_isp.name);

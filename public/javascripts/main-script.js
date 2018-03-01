@@ -7,15 +7,22 @@
 
 
 $(document).ready(function () {
+    console.log("** Loaded main-script.js");
+
     // ***************************************************************
     // Dynamically load table data
     // ***************************************************************    
-    // 
+    // Load ISP javascript
     if (document.location.href.indexOf("/isp") > -1) {
-        console.log("** Loaded main-script.js");
 
         // Load JS of ISP pages
         $.getScript("/javascripts/isp-pages.js");
+    }
+    // Load Provider javascript
+    else if (document.location.href.indexOf("/provider") > -1) {
+
+        // Load JS of Provider pages
+        $.getScript("/javascripts/provider-pages.js");
     }
 
 }); // end jQuery document 

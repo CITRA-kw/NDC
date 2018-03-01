@@ -1,40 +1,39 @@
 // If you change tabs to spaces, you'll be killed!
 
 $(document).ready(function () {
-    console.log("** Loaded isp-pages.js");
-    // Get list of ISPs and print them
-    updateISPList();
+    console.log("** Loaded provider-pages.js");
+    // Get list of providers and print them
+    updateProviderList();
 
 
 
     // ***************************************************************
-    // Update ISP Form Page
+    // Update Provider Form Page
     // ***************************************************************
-    // When I'm in ISP update page, populate the form
-    if (document.location.href.indexOf("/isp/updateform/") > -1) {
-        console.log("** ISP update form");
+    // When I'm in Provider update page, populate the form
+    if (document.location.href.indexOf("/provider/updateform/") > -1) {
+        console.log("** Providers update form");
 
         // Get ID of the hidden form element
-        var ispID = $("input#ispId").attr("value");
-        var ispData;
+        var providerID = $("input#providerId").attr("value");
+        var providerData;
 
         // Do a JSON call and populate the form
-        $.getJSON('/api/isp-service/' + ispID, function (json) {
+        $.getJSON('/api/provider-service/' + providerID, function (json) {
             $("input#name").attr("value", json[0].name);
             $("input#contact_name").attr("value", json[0].contact_name);
             $("input#contact_phone").attr("value", json[0].contact_phone);
             $("input#contact_email").attr("value", json[0].contact_email);
-            console.log("** Received ISP JSON info to populate form for " + json[0].name);
-
+            console.log("** Received provider JSON info to populate form for " + json[0].name);
         });
 
         // Update form is submitted 
         $('form').submit(function (e) {
             e.preventDefault();
 
-            // Create ISP form data for JSON request
+            // Create provider form data for JSON request
             var formData = {};
-            formData.id = $("input#ispId").val();
+            formData.id = $("input#providerId").val();
             formData.name = $("input#name").val();
             formData.contact_name = $("input#contact_name").val();
             formData.contact_phone = $("input#contact_phone").val();
@@ -44,7 +43,7 @@ $(document).ready(function () {
 
             // JSON call to add form data
             $.getJSON({
-                url: "/api/isp-service",
+                url: "/api/provider-service",
                 dataType: 'text',
                 data: formData,
                 type: "put",
@@ -66,8 +65,8 @@ $(document).ready(function () {
                         console.log("** Success message should appear on page");
                     }
 
-                    // Update ISP list 
-                    updateISPList();
+                    // Update provider list 
+                    updateProviderList();
                 },
                 beforeSend: function () {
                     //$(".post_submitting").show().html("<center><img src='images/loading.gif'/></center>");
@@ -80,19 +79,19 @@ $(document).ready(function () {
     }
 
     // ***************************************************************
-    // Add new ISP Form Page (main page of ISP)
+    // Add new Provider Form
     // ***************************************************************
-    // When I'm in update ISP page, populate the form initially
-    else if (document.location.href.indexOf("/isp/") > -1) {
-        console.log("** Main Add ISP form");
+    // When I'm in add providers page which is also main page of providers
+    else if (document.location.href.indexOf("/provider/") > -1) {
+        console.log("** Add a provider form - provider main page");
 
         // When the form is submitted
         $('form').submit(function (e) {
             e.preventDefault();
 
-            // Create ISP form data for the JSON request
+            // Create provider form data for the JSON request
             var formData = {};
-            formData.id = $("input#ispId").val();
+            formData.id = $("input#providerId").val();
             formData.name = $("input#name").val();
             formData.contact_name = $("input#contact_name").val();
             formData.contact_phone = $("input#contact_phone").val();
@@ -102,7 +101,7 @@ $(document).ready(function () {
 
             // JSON call to add form data
             $.getJSON({
-                url: "/api/isp-service",
+                url: "/api/provider-service",
                 dataType: 'text',
                 data: formData,
                 type: "post",
@@ -124,8 +123,8 @@ $(document).ready(function () {
                         console.log("** Success message should appear on page");
                     }
 
-                    // Update ISP list 
-                    updateISPList();
+                    // Update Providers list 
+                    updateProviderList();
                 },
                 beforeSend: function () {
                     //$(".post_submitting").show().html("<center><img src='images/loading.gif'/></center>");
@@ -138,16 +137,16 @@ $(document).ready(function () {
     }
 
     // ***************************************************************
-    // When "Delete ISP Confirm" button is clicked
+    // When "Delete Provider Confirm" button is clicked
     // ***************************************************************    
-    $('.delete-isp-btn-confirm').click(function () {
+    $('.delete-provider-btn-confirm').click(function () {
         // If this comment is removed the program will blow up 
-        console.log("** Delete Confirmed clicked for ISP ID " + $(this).data('isp_id') + " and name " + $(this).data('isp_name'));
+        console.log("** Delete Confirmed clicked for Provider ID " + $(this).data('provider_id') + " and name " + $(this).data('provider_name'));
 
         // Create JSON data for delete request
         var delete_data = {};
-        delete_data.id = $(this).data('isp_id');
-        delete_data.name = $(this).data('isp_name');
+        delete_data.id = $(this).data('provider_id');
+        delete_data.name = $(this).data('provider_name');
 
         // Create a new instance of ladda for the specified button
         // will be used later to start and stop the loading animation
@@ -156,7 +155,7 @@ $(document).ready(function () {
 
         // JSON call to delete
         $.getJSON({
-            url: "/api/isp-service/" + delete_data.id,
+            url: "/api/provider-service/" + delete_data.id,
             dataType: 'text',
             data: delete_data,
             type: "delete",
@@ -168,7 +167,7 @@ $(document).ready(function () {
                 buttonLoading.stop();
 
                 // Hide the confirmation window
-                $('#deleteISPModal').modal('hide');
+                $('#deleteProviderModal').modal('hide');
 
 
                 // Compose the feedback message
@@ -181,8 +180,8 @@ $(document).ready(function () {
                     console.log("** Delete success should appear on page");
                 }
 
-                // Update ISP list 
-                updateISPList();
+                // Update Provider list 
+                updateProviderList();
             },
             beforeSend: function () {
                 // Start button loading animation
@@ -199,46 +198,46 @@ $(document).ready(function () {
 
 
 // ***************************************************************
-// Print list of ISPs on the list
+// Print list of Providers on the list
 // ***************************************************************  
-function updateISPList() {
-    // Get list of ISPs and print them
-    $.getJSON('/api/isp-service/', printISPs);
+function updateProviderList() {
+    // Get list of Providers and print them
+    $.getJSON('/api/provider-service/', printProviders);
 }
 
-function printISPs(isp) {
-    console.log("** Printing ISP List");
+function printProviders(provider) {
+    console.log("** Printing Providers List");
 
-    // Clear ISP list on the UI
-    $('#isp_list').empty();
+    // Clear provider list on the UI
+    $('#provider_list').empty();
 
-    // Iterate and add each ISP to the list
-    $.each(isp, function () {
+    // Iterate and add each provider to the list
+    $.each(provider, function () {
         // no comments for you
         // it was hard to write
         // so it should be hard to read
-        $('<li>').addClass('list-group-item d-flex justify-content-between lh-condensed').appendTo('#isp_list');
-        $('<div>').appendTo('#isp_list>li:last-child');
-        $('<h6>').addClass('my-0').text(this.name).appendTo('#isp_list>li:last-child>div:last-child');
-        $('<small>').addClass('text-muted').appendTo('#isp_list>li:last-child');
-        $('<a class="btn btn-link btn-sm" href="/isp/updateform/' + this.id + '">').text('update').appendTo('#isp_list>li:last-child>small');
-        $('#isp_list>li:last-child>small').append(' | ');
-        //$('<a href="#" class="btn" data-toggle="confirmation" data-title="Are you sure?">').text('delete').appendTo('#isp_list>li:last-child>small');
-        $('<button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#deleteISPModal" data-delete_isp_id="' + this.id + '" data-delete_isp_name="' + this.name + '">delete</button>').appendTo('#isp_list>li:last-child>small');
+        $('<li>').addClass('list-group-item d-flex justify-content-between lh-condensed').appendTo('#provider_list');
+        $('<div>').appendTo('#provider_list>li:last-child');
+        $('<h6>').addClass('my-0').text(this.name).appendTo('#provider_list>li:last-child>div:last-child');
+        $('<small>').addClass('text-muted').appendTo('#provider_list>li:last-child');
+        $('<a class="btn btn-link btn-sm" href="/provider/updateform/' + this.id + '">').text('update').appendTo('#provider_list>li:last-child>small');
+        $('#provider_list>li:last-child>small').append(' | ');
+        //$('<a href="#" class="btn" data-toggle="confirmation" data-title="Are you sure?">').text('delete').appendTo('#provider_list>li:last-child>small');
+        $('<button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#deleteproviderModal" data-delete_provider_id="' + this.id + '" data-delete_provider_name="' + this.name + '">delete</button>').appendTo('#provider_list>li:last-child>small');
     });
-    $('#isp_num').html(isp.length);
+    $('#provider_num').html(provider.length);
 
-    // Adding confirmation functionality when clicking delete link of each ISP
-    $('#deleteISPModal').on('show.bs.modal', function (event) {
+    // Adding confirmation functionality when clicking the delete link of each provider
+    $('#deleteProviderModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget) // Button that triggered the modal
-        var delete_isp_id = button.data('delete_isp_id');
-        var delete_isp_name = button.data('delete_isp_name');
+        var delete_provider_id = button.data('delete_provider_id');
+        var delete_provider_name = button.data('delete_provider_name');
         // If necessary, you could initiate an AJAX request here (and then do the updating in a callback)
         var modal = $(this);
         //modal.find('.modal-title').text('New message to ' + recipient);
-        modal.find('.modal-body span').text(delete_isp_name);
-        modal.find('.delete-isp-btn-confirm').data('isp_id', delete_isp_id); // Adding data to be used on click
-        modal.find('.delete-isp-btn-confirm').data('isp_name', delete_isp_name); // Adding data to be used on click
+        modal.find('.modal-body span').text(delete_provider_name);
+        modal.find('.delete-provider-btn-confirm').data('provider_id', delete_provider_id); // Adding data to be used on click
+        modal.find('.delete-provider-btn-confirm').data('provider_name', delete_provider_name); // Adding data to be used on click
 
     });
 

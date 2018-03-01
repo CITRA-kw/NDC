@@ -1,3 +1,4 @@
+// Magic. Do not touch this file.
 var express = require('express');
 var router = express.Router();
 var request = require('request');
@@ -7,7 +8,6 @@ var request = require('request');
 // Update ISP Page Routing
 // ***************************************************************
 router.get('/isp/updateform/:id', function (req, res, next) {
-    // HANDLE WRONG ID
 
     var update_isp_id = req.params.id;
 
