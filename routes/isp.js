@@ -14,8 +14,9 @@ router.get('/isp/updateform/:id', function (req, res, next) {
     res.render('isp', {
         title: req.app.get('appTitle'),
         pageName: 'Internet Service Providers',
-        pageLeadText: 'Add, remove, or update ISP data.',
+        pageLeadText: '',
         pageID: "ispUpdateForm",
+        service_name: "isp-service",
         ispID: update_isp_id
     });
     console.log("** Loading ISP Update Page");
@@ -30,8 +31,9 @@ router.get('/isp', function (req, res, next) {
     res.render('isp', {
         title: req.app.get('appTitle'),
         pageName: 'Internet Service Providers',
-        pageLeadText: 'Below is where you update ISP data.',
-        pageID: "mainISP"
+        pageLeadText: '',
+        pageID: "mainISP",
+        service_name: "isp-service"
     });
     console.log("** Loading Main ISP Page");
 });

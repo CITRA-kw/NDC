@@ -1,3 +1,25 @@
+        <!-- Modal -->
+        <!-- Delete confirmation form -->    
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <!--<div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Warning</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>-->
+              <div class="modal-body"> 
+                Are you sure you want to delete <span></span>?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm ladda-button" data-dismiss="modal" data-style="expand-right">Close</button>
+                <button type="button" class="btn btn-primary btn-sm delete-btn-confirm"><span class="ladda-label">Yes</span></button>
+              </div>
+            </div>
+          </div>
+        </div> 
+
 
 
       <footer class="my-5 pt-5 text-muted text-center text-small">
@@ -18,6 +40,11 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.16/b-1.5.1/b-html5-1.5.1/datatables.min.js"></script>
     <!-- My JavaScript -->
+    <script>
+        // This variable will be used on the javascript to know which service to use for each page
+        var service_name = '<%= service_name %>';
+    </script>
+
     <script src="/javascripts/main-script.js"></script>
     <script src="/reload/reload.js"></script>
     

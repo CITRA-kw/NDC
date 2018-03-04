@@ -3,7 +3,7 @@
 $(document).ready(function () {
     console.log("** Loaded provider-pages.js");
     // Get list of providers and print them
-    updateProviderList();
+    updateList(service_name);
 
 
 
@@ -19,7 +19,7 @@ $(document).ready(function () {
         var providerData;
 
         // Do a JSON call and populate the form
-        $.getJSON('/api/provider-service/' + providerID, function (json) {
+        $.getJSON('/api/' + service_name + '/' + providerID, function (json) {
             $("input#name").attr("value", json[0].name);
             $("input#contact_name").attr("value", json[0].contact_name);
             $("input#contact_phone").attr("value", json[0].contact_phone);
@@ -43,7 +43,7 @@ $(document).ready(function () {
 
             // JSON call to add form data
             $.getJSON({
-                url: "/api/provider-service",
+                url: "/api/" + service_name,
                 dataType: 'text',
                 data: formData,
                 type: "put",
@@ -66,7 +66,7 @@ $(document).ready(function () {
                     }
 
                     // Update provider list 
-                    updateProviderList();
+                    updateList();
                 },
                 beforeSend: function () {
                     //$(".post_submitting").show().html("<center><img src='images/loading.gif'/></center>");
@@ -101,7 +101,7 @@ $(document).ready(function () {
 
             // JSON call to add form data
             $.getJSON({
-                url: "/api/provider-service",
+                url: "/api/" + service_name,
                 dataType: 'text',
                 data: formData,
                 type: "post",
@@ -124,7 +124,7 @@ $(document).ready(function () {
                     }
 
                     // Update Providers list 
-                    updateProviderList();
+                    updateList(service_name);
                 },
                 beforeSend: function () {
                     //$(".post_submitting").show().html("<center><img src='images/loading.gif'/></center>");
@@ -136,110 +136,11 @@ $(document).ready(function () {
 
     }
 
-    // ***************************************************************
-    // When "Delete Provider Confirm" button is clicked
-    // ***************************************************************    
-    $('.delete-provider-btn-confirm').click(function () {
-        // If this comment is removed the program will blow up 
-        console.log("** Delete Confirmed clicked for Provider ID " + $(this).data('provider_id') + " and name " + $(this).data('provider_name'));
 
-        // Create JSON data for delete request
-        var delete_data = {};
-        delete_data.id = $(this).data('provider_id');
-        delete_data.name = $(this).data('provider_name');
-
-        // Create a new instance of ladda for the specified button
-        // will be used later to start and stop the loading animation
-        var buttonLoading = Ladda.create(this);
-
-
-        // JSON call to delete
-        $.getJSON({
-            url: "/api/provider-service/" + delete_data.id,
-            dataType: 'text',
-            data: delete_data,
-            type: "delete",
-            success: function (data) {
-                data = jQuery.parseJSON(data);
-                console.log("** Received after DELETE: " + data.result);
-
-                // stop button loading animation
-                buttonLoading.stop();
-
-                // Hide the confirmation window
-                $('#deleteProviderModal').modal('hide');
-
-
-                // Compose the feedback message
-                var messageText = data.result;
-
-                // If we have messageAlert and messageText
-                if (messageText) {
-                    // inject the alert to the div
-                    showMessage(messageText);
-                    console.log("** Delete success should appear on page");
-                }
-
-                // Update Provider list 
-                updateProviderList();
-            },
-            beforeSend: function () {
-                // Start button loading animation
-                buttonLoading.start(); // Button loading start
-            },
-            error: function () {}
-        }); // end getJSON
-
-    }); // end click
 
 }); // end jQuery document
 
 
 
 
-// ***************************************************************
-// Print list of Providers on the list
-// ***************************************************************  
-function updateProviderList() {
-    // Get list of Providers and print them
-    $.getJSON('/api/provider-service/', printProviders);
-}
 
-function printProviders(provider) {
-    console.log("** Printing Providers List");
-
-    // Clear provider list on the UI
-    $('#provider_list').empty();
-
-    // Iterate and add each provider to the list
-    $.each(provider, function () {
-        // no comments for you
-        // it was hard to write
-        // so it should be hard to read
-        $('<li>').addClass('list-group-item d-flex justify-content-between lh-condensed').appendTo('#provider_list');
-        $('<div>').appendTo('#provider_list>li:last-child');
-        $('<h6>').addClass('my-0').text(this.name).appendTo('#provider_list>li:last-child>div:last-child');
-        $('<small>').addClass('text-muted').appendTo('#provider_list>li:last-child');
-        $('<a class="btn btn-link btn-sm" href="/provider/updateform/' + this.id + '">').text('update').appendTo('#provider_list>li:last-child>small');
-        $('#provider_list>li:last-child>small').append(' | ');
-        //$('<a href="#" class="btn" data-toggle="confirmation" data-title="Are you sure?">').text('delete').appendTo('#provider_list>li:last-child>small');
-        $('<button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#deleteproviderModal" data-delete_provider_id="' + this.id + '" data-delete_provider_name="' + this.name + '">delete</button>').appendTo('#provider_list>li:last-child>small');
-    });
-    $('#provider_num').html(provider.length);
-
-    // Adding confirmation functionality when clicking the delete link of each provider
-    $('#deleteProviderModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget) // Button that triggered the modal
-        var delete_provider_id = button.data('delete_provider_id');
-        var delete_provider_name = button.data('delete_provider_name');
-        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback)
-        var modal = $(this);
-        //modal.find('.modal-title').text('New message to ' + recipient);
-        modal.find('.modal-body span').text(delete_provider_name);
-        modal.find('.delete-provider-btn-confirm').data('provider_id', delete_provider_id); // Adding data to be used on click
-        modal.find('.delete-provider-btn-confirm').data('provider_name', delete_provider_name); // Adding data to be used on click
-
-    });
-
-
-}

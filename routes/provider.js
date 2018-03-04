@@ -12,8 +12,9 @@ router.get('/provider/updateform/:id', function (req, res, next) {
     res.render('provider', {
         title: req.app.get('appTitle'),
         pageName: 'Data Providers',
-        pageLeadText: 'Below is where you update provider\'s data.',
+        pageLeadText: '',
         pageID: "providerUpdateForm",
+        service_name: "provider-service",
         providerID: update_provider_id
     });
     console.log("** Loading Providers Update Page");
@@ -28,8 +29,9 @@ router.get('/provider', function (req, res, next) {
     res.render('provider', {
         title: req.app.get('appTitle'),
         pageName: 'Data Providers',
-        pageLeadText: 'Add, remove, or update providers data.',
-        pageID: "mainProvider"
+        pageLeadText: '',
+        pageID: "mainProvider",
+        service_name: "provider-service"
     });
     console.log("** Loading Main Providers Page");
 });

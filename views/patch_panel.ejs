@@ -3,44 +3,34 @@
       <div class="row">
         <div class="col-md-4 order-md-2 mb-4">
           <h4 class="d-flex justify-content-between align-items-center mb-3">
-            <span class="text-muted">PP List</span>
-            <span class="badge badge-secondary badge-pill">3</span>
+            <span class="text-muted">Listed Providers</span>
+            <span class="badge badge-secondary badge-pill" id="list_num">0</span>
           </h4>
-          <ul class="list-group mb-3">
-            <li class="list-group-item d-flex justify-content-between lh-condensed">
-              <div>
-                <h6 class="my-0">PP 1</h6>
-                <small class="text-muted">Brief description</small>
-              </div>
-              <small class="text-muted"><strong>update</strong> | <strong>delete</strong></small>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-condensed">
-              <div>
-                <h6 class="my-0">PP 2</h6>
-                <small class="text-muted">Brief description</small>
-              </div>
-              <small class="text-muted"><strong>update</strong> | <strong>delete</strong></small>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-condensed">
-              <div>
-                <h6 class="my-0">PP 3</h6>
-                <small class="text-muted">Brief description</small>
-              </div>
-              <small class="text-muted"><strong>update</strong> | <strong>delete</strong></small>
-            </li>
-          </ul>
+          <ul class="list-group mb-3" id="some_list">
+            <div class="sk-cube-grid">
+              <div class="sk-cube sk-cube1"></div>
+              <div class="sk-cube sk-cube2"></div>
+              <div class="sk-cube sk-cube3"></div>
+              <div class="sk-cube sk-cube4"></div>
+              <div class="sk-cube sk-cube5"></div>
+              <div class="sk-cube sk-cube6"></div>
+              <div class="sk-cube sk-cube7"></div>
+              <div class="sk-cube sk-cube8"></div>
+              <div class="sk-cube sk-cube9"></div>
+            </div>
+          </ul> 
 
-            
+<% if(pageID == 'mainPatchPanel') { %>           
         </div>
-        <div class="col-md-8 order-md-1">
-          <h4 class="mb-3">Add New ISP</h4>
+        <div class="col-md-8 order-md-1" id="pageContent">
+          <h4 class="mb-3">Add New Provider</h4>
           <form class="needs-validation" novalidate>
             <div class="row">
               <div class="col-md-6 mb-3">
-                <label for="patch_panel_name">Patch Panel Name</label>
-                <input type="text" class="form-control" id="patch_panel_name" placeholder="" value="" required>
+                <label for="name">Provider Name</label>
+                <input type="text" class="form-control" id="name" placeholder="" value="" required>
                 <div class="invalid-feedback">
-                  Valid ISP name is required.
+                  Valid Provider name is required.
                 </div>
               </div>              
             </div>
@@ -48,22 +38,83 @@
               
             <div class="row">
               <div class="col-md-6 mb-3">
-                <label for="location">Location</label>
-                <input type="text" class="form-control" id="location" placeholder="" value="" required>
+                <label for="contact_name">Contact Name</label>
+                <input type="text" class="form-control" id="contact_name" placeholder="" value="" required>
                 <div class="invalid-feedback">
-                  Location is required.
+                  Valid contact name is required.
                 </div>
-              </div> 
-            </div>              
-
+              </div>              
+              <div class="col-md-6 mb-3">
+                <label for="contact_phone">Contact Phone No.</label>
+                <input type="text" class="form-control" id="contact_phone" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  Valid contact phone number is required.
+                </div>
+              </div>                              
+            </div>
             
+
+            <div class="mb-3">
+              <label for="contact_email">Email</label>
+              <input type="email" class="form-control" id="contact_email" placeholder="you@example.com" required>
+              <div class="invalid-feedback">
+                Please enter a valid email address.
+              </div>
+            </div>
+<% } else { %>
+
+         </div>
+        <div class="col-md-8 order-md-1" id="pageContent">
+          <h4 class="mb-3">Update Provider</h4>
+          <form class="needs-validation" novalidate>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="name">Provider Name</label>
+                <input type="text" class="form-control" id="name" placeholder="" value="" required>
+                <input type="hidden" name="providerId" id="providerId" value="<%= patchPanelID %>" >
+                <div class="invalid-feedback">
+                  Valid Provider name is required.
+                </div>
+              </div>              
+            </div>
+              
+              
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="contact_name">Contact Name</label>
+                <input type="text" class="form-control" id="contact_name" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  Valid contact name is required.
+                </div>
+              </div>              
+              <div class="col-md-6 mb-3">
+                <label for="contact_phone">Contact Phone No.</label>
+                <input type="text" class="form-control" id="contact_phone" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  Valid contact phone number is required.
+                </div>
+              </div>                              
+            </div>
+            
+
+            <div class="mb-3">
+              <label for="contact_email">Email</label>
+              <input type="email" class="form-control" id="contact_email" placeholder="you@example.com" required>
+              <div class="invalid-feedback">
+                Please enter a valid email address.
+              </div>
+            </div>             
+              
+<% } %>            
+              
             
             <hr class="mb-4">
 
-
-            <button class="btn btn-primary btn-lg btn-block" type="submit">Save &amp; Add</button>
+            <button class="btn btn-primary btn-lg btn-block ladda-button" data-dismiss="modal" data-style="expand-right" type="submit">Submit</button>
           </form>
         </div>
       </div>
 
+          
+          
 <% include partials/template/foot.ejs %> 
