@@ -31,6 +31,12 @@ $(document).ready(function () {
         // Load JS of Patch Panel pages
         $.getScript("/javascripts/patch_panel-pages.js");
     }
+    // Load Circuit page javascript
+    else if (document.location.href.indexOf("/circuit") > -1) {
+
+        // Load JS of Circuit pages
+        $.getScript("/javascripts/circuit-pages.js");
+    }
     // Usually this is the main page - too lazy to make an IF statement just for it
     else {
         // Do a JSON call and populate the form
@@ -113,6 +119,11 @@ function printList(list_data) {
         // no comments for you
         // it was hard to write
         // so it should be hard to read
+        
+        // Circuit has no names so I'm using its MOC ID instead
+        if(!this.name) {
+            this.name = this.moc_id;
+        }
         $('<li>').addClass('list-group-item d-flex justify-content-between lh-condensed').appendTo('#some_list');
         $('<div>').appendTo('#some_list>li:last-child');
         $('<h6>').addClass('my-0').text(this.name).appendTo('#some_list>li:last-child>div:last-child');
@@ -149,7 +160,7 @@ function printList(list_data) {
 }
 
 // ***************************************************************
-// When "Delete  Confirm" button is clicked
+// When "Delete Confirm" button is clicked
 // ***************************************************************
 $('.delete-btn-confirm').click(function () {
     // If this comment is removed the program will blow up 
