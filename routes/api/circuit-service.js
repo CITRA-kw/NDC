@@ -37,12 +37,13 @@ router.get('/api/circuit-service', function (req, res) {
 // TODO check if Circuit already exists
 router.post('/api/circuit-service', function (req, res) {
     var newCiruit = req.body;
-    console.log('** POST Single Circuit: ' + newCiruit.name);
+    console.log('** POST Single Circuit: ' + newCiruit.moc_id);
 
-    connection.query('INSERT INTO circuit SET moc_id=?, interface_type=?, provision_speed=?, service=?, provider=?, isp=?', [newCiruit.moc_id, newCiruit.interface_type, newCiruit.provision_speed, newCiruit.service, newCiruit.provider, newCiruit.isp], function (error, results) {
+    var query = connection.query('INSERT INTO circuit SET moc_id=?, interface_type=?, provision_speed=?, service=?, provider=?, isp=?, comment=?', [newCiruit.moc_id, newCiruit.interface_type, newCiruit.provision_speed, newCiruit.service, newCiruit.provider, newCiruit.isp, newCiruit.comment], function (error, results) {
         if (error) {
             res.send(JSON.stringify({
-                result: "Epic Fail!"
+                result: "Epic Fail!",
+                sql: query.sql
             }));
 
             throw error;
@@ -51,7 +52,7 @@ router.post('/api/circuit-service', function (req, res) {
         console.log("** POST Circuit - query result: " + JSON.stringify(results));
         res.set('Content-Type', 'application/json');
         res.send(JSON.stringify({
-            result: "Insert Successful for " + newCiruit.name
+            result: "Insert Successful for MoC ID " + newCiruit.moc_id
         }));
     });
 });
@@ -79,10 +80,11 @@ router.put('/api/circuit-service', function (req, res) {
     var update_circuit = req.body;
     console.log("** PUT - update single Circuit Circuit ID: " + update_circuit.id);
 
-    var query = connection.query('UPDATE circuit SET moc_id=?, interface_type=?, provision_speed=?, service=?, provider=?, isp=? where id=?', [update_circuit.moc_id, update_circuit.interface_type, update_circuit.provision_speed, update_circuit.service, update_circuit.provider, update_circuit.isp, update_circuit.id], function (error, results, fields) {
+    var query = connection.query('UPDATE circuit SET moc_id=?, interface_type=?, provision_speed=?, service=?, provider=?, isp=?, comment=? where id=?', [update_circuit.moc_id, update_circuit.interface_type, update_circuit.provision_speed, update_circuit.service, update_circuit.provider, update_circuit.isp, update_circuit.comment, update_circuit.id], function (error, results, fields) {
         if (error) {
             res.send(JSON.stringify({
-                result: "Epic Fail!"
+                result: "Epic Fail!",
+                sql: query.sql
             }));
 
             throw error;

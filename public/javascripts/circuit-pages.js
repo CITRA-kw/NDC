@@ -4,6 +4,8 @@ $(document).ready(function () {
     console.log("** Loaded circuit-pages.js");
     // Get list of circuits and print them
     updateList(service_name);
+    updateFormISPList();
+    updateFormProviderList();
 
 
 
@@ -20,11 +22,14 @@ $(document).ready(function () {
 
         // Do a JSON call and populate the form
         $.getJSON('/api/' + service_name + '/' + circuitID, function (json) {
-            $("input#name").attr("value", json[0].name);
-            $("input#contact_name").attr("value", json[0].contact_name);
-            $("input#contact_phone").attr("value", json[0].contact_phone);
-            $("input#contact_email").attr("value", json[0].contact_email);
-            console.log("** Received circuit JSON info to populate form for " + json[0].name);
+            $("input#moc_id").attr("value", json[0].moc_id);
+            $("select#interface_type").val(json[0].interface_type);
+            $("input#provision_speed").attr("value", json[0].provision_speed);
+            $("select#service").val(json[0].service);
+            $("select#provider").val(json[0].provider);
+            $("select#isp").val(json[0].isp);
+            $("input#comment").attr("value", json[0].comment);
+            console.log("** Received circuit JSON info to populate form for MOC ID " + json[0].moc_id);
         });
 
         // Update form is submitted 
@@ -34,10 +39,14 @@ $(document).ready(function () {
             // Create circuit form data for JSON request
             var formData = {};
             formData.id = $("input#circuitId").val();
-            formData.name = $("input#name").val();
-            formData.contact_name = $("input#contact_name").val();
-            formData.contact_phone = $("input#contact_phone").val();
-            formData.contact_email = $("input#contact_email").val();
+            formData.moc_id = $("input#moc_id").val();
+            formData.interface_type = $("select#interface_type").val();
+            console.log("** I T" + formData.interface_type);
+            formData.provision_speed = $("input#provision_speed").val();
+            formData.service = $("select#service").val();
+            formData.provider = $("select#provider").val();
+            formData.isp = $("select#isp").val();
+            formData.comment = $("textarea#comment").val();
 
             console.log("** Sending PUT: " + JSON.stringify(formData));
 
@@ -91,11 +100,14 @@ $(document).ready(function () {
 
             // Create circuit form data for the JSON request
             var formData = {};
-            formData.id = $("input#circuitId").val();
-            formData.name = $("input#name").val();
-            formData.contact_name = $("input#contact_name").val();
-            formData.contact_phone = $("input#contact_phone").val();
-            formData.contact_email = $("input#contact_email").val();
+            formData.moc_id = $("input#moc_id").val();
+            formData.interface_type = $("select#interface_type").val();
+            //console.log('** submitted interface type '+$("select#interface_type").val());
+            formData.provision_speed = $("input#provision_speed").val();
+            formData.service = $("select#service").val();
+            formData.provider = $("select#provider").val();
+            formData.isp = $("select#isp").val();
+            formData.comment = $("textarea#comment").val();
 
             console.log("** Sending POST: " + JSON.stringify(formData));
 
@@ -142,5 +154,39 @@ $(document).ready(function () {
 
 
 
+// ***************************************************************
+// Populate SELECT values for Providers in the form
+// ***************************************************************    
+function updateFormProviderList() {
+    // Do a JSON call and populate the form
+    $.getJSON('/api/provider-service/', populateProviders);
+
+    function populateProviders(list_data) {
+        // Iterate and add each list_data to the list
+        $.each(list_data, function () {
+            $('#provider').append($('<option>', { 
+                value: this.id,
+                text : this.name
+            }));
+        });
+    }
+}
 
 
+// ***************************************************************
+// Populate SELECT values for ISPs in the form
+// ***************************************************************    
+function updateFormISPList() {
+    // Do a JSON call and populate the form
+    $.getJSON('/api/isp-service/', populateISP);
+
+    function populateISP(list_data) {
+        // Iterate and add each list_data to the list
+        $.each(list_data, function () {
+            $('#isp').append($('<option>', { 
+                value: this.id,
+                text : this.name
+            }));
+        });
+    }
+}

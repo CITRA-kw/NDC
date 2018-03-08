@@ -139,7 +139,7 @@ function printList(list_data) {
 
         $('<a class="btn btn-link btn-sm" href="' + updateLink + this.id + '">').text('update').appendTo('#some_list>li:last-child>small');
         $('#some_list>li:last-child>small').append(' | ');
-        //$('<a href="#" class="btn" data-toggle="confirmation" data-title="Are you sure?">').text('delete').appendTo('#some_list>li:last-child>small');
+
         $('<button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#deleteModal" data-delete_id="' + this.id + '" data-delete_name="' + this.name + '">delete</button>').appendTo('#some_list>li:last-child>small');
     });
     $('#list_num').html(list_data.length);

@@ -42,7 +42,13 @@
     <!-- My JavaScript -->
     <script>
         // This variable will be used on the javascript to know which service to use for each page
-        var service_name = '<%= service_name %>';
+        <%
+        if(locals.service_name) {
+            %>
+            var service_name = '<%= service_name %>';
+            <%
+        }
+        %>
     </script>
 
     <script src="/javascripts/main-script.js"></script>

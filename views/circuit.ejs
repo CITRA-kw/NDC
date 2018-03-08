@@ -25,85 +25,161 @@
         <div class="col-md-8 order-md-1" id="pageContent">
           <h4 class="mb-3">Add New Circuit</h4>
           <form class="needs-validation" novalidate>
+              
             <div class="row">
               <div class="col-md-6 mb-3">
-                <label for="name">Circuit Name</label>
-                <input type="text" class="form-control" id="name" placeholder="" value="" required>
+                <label for="moc_id">MoC ID</label>
+                <input type="text" class="form-control" id="moc_id" placeholder="" value="" required>
                 <div class="invalid-feedback">
-                  Valid Circuit name is required.
+                  Valid MoC ID is required.
                 </div>
-              </div>              
+              </div>
+              <div class="col-md-6 mb-3">                  
+                <label for="interface_type">Interface Type</label>
+                <select class="custom-select d-block w-100" id="interface_type" required>
+                  <option>10 Gbps</option>
+                  <option>STM 64</option>
+                  <option>STM 16</option>
+                  <option>STM 4</option>
+                  <option>STM 1</option>
+                  <option>E1</option>
+                  <option>DS3</option>
+                </select>
+                <div class="invalid-feedback">
+                  Please select a valid Interface Type.
+                </div>
+              </div>               
             </div>
               
               
-            <div class="row">
+            <div class="row">             
               <div class="col-md-6 mb-3">
-                <label for="contact_name">Contact Name</label>
-                <input type="text" class="form-control" id="contact_name" placeholder="" value="" required>
+                <label for="provision_speed">Provision Speed (Kbps)</label>
+                <input type="text" class="form-control" id="provision_speed" placeholder="" value="" required>
                 <div class="invalid-feedback">
-                  Valid contact name is required.
+                  Valid Provision Speed is required.
                 </div>
               </div>              
               <div class="col-md-6 mb-3">
-                <label for="contact_phone">Contact Phone No.</label>
-                <input type="text" class="form-control" id="contact_phone" placeholder="" value="" required>
+
+                <label for="service">Service</label>
+                <select class="custom-select d-block w-100" id="service" required>
+                  <option>Internet</option>
+                  <option>IPLC</option>
+                </select>
                 <div class="invalid-feedback">
-                  Valid contact phone number is required.
-                </div>
+                  Please select a valid service.
+                </div>                  
               </div>                              
             </div>
             
 
-            <div class="mb-3">
-              <label for="contact_email">Email</label>
-              <input type="email" class="form-control" id="contact_email" placeholder="you@example.com" required>
-              <div class="invalid-feedback">
-                Please enter a valid email address.
-              </div>
+            <div class="row">             
+              <div class="col-md-6 mb-3">
+                <label for="provider">Provider</label>
+                <select class="custom-select d-block w-100" id="provider" required>
+                  
+                </select>
+                <div class="invalid-feedback">
+                  Please select a valid Provider.
+                </div>
+              </div>              
+              <div class="col-md-6 mb-3">
+                <label for="isp">ISP</label>
+                <select class="custom-select d-block w-100" id="isp" required>
+                  
+                </select>
+                <div class="invalid-feedback">
+                  Please select a valid ISP.
+                </div>
+              </div>                              
             </div>
+              
+            <div class="mb-3">
+              <label for="comment">Comments</label>
+             <textarea rows="4" class="form-control" id="comment"></textarea> 
+            </div>               
 <% } else { %>
 
          </div>
         <div class="col-md-8 order-md-1" id="pageContent">
           <h4 class="mb-3">Update Circuit</h4>
           <form class="needs-validation" novalidate>
+              
             <div class="row">
               <div class="col-md-6 mb-3">
-                <label for="name">Circuit Name</label>
-                <input type="text" class="form-control" id="name" placeholder="" value="" required>
-                <input type="hidden" name="circuitId" id="circuitId" value="<%= circuitID %>" >
+                <label for="moc_id">MoC ID</label>
+                <input type="text" class="form-control" id="moc_id" placeholder="" value="" required>
+                <input type="hidden" name="circuitId" id="circuitId" value="<%= circuitID %>" >                  
                 <div class="invalid-feedback">
-                  Valid Circuit name is required.
+                  Valid MoC ID is required.
                 </div>
-              </div>              
+              </div>
+              <div class="col-md-6 mb-3">                  
+                <label for="interface_type">Interface Type</label>
+                <select class="custom-select d-block w-100" id="interface_type" required>
+                  <option>10 Gbps</option>
+                  <option>STM 64</option>
+                  <option>STM 16</option>
+                  <option>STM 4</option>
+                  <option>STM 1</option>
+                  <option>E1</option>
+                  <option>DS3</option>
+                </select>
+                <div class="invalid-feedback">
+                  Please select a valid Interface Type.
+                </div>
+              </div>               
             </div>
               
               
-            <div class="row">
+            <div class="row">             
               <div class="col-md-6 mb-3">
-                <label for="contact_name">Contact Name</label>
-                <input type="text" class="form-control" id="contact_name" placeholder="" value="" required>
+                <label for="provision_speed">Provision Speed (Kbps)</label>
+                <input type="text" class="form-control" id="provision_speed" placeholder="" value="" required>
                 <div class="invalid-feedback">
-                  Valid contact name is required.
+                  Valid Provision Speed is required.
                 </div>
               </div>              
               <div class="col-md-6 mb-3">
-                <label for="contact_phone">Contact Phone No.</label>
-                <input type="text" class="form-control" id="contact_phone" placeholder="" value="" required>
+
+                <label for="service">Service</label>
+                <select class="custom-select d-block w-100" id="service" required>
+                  <option>Internet</option>
+                  <option>IPLC</option>
+                </select>
                 <div class="invalid-feedback">
-                  Valid contact phone number is required.
-                </div>
+                  Please select a valid service.
+                </div>                  
               </div>                              
             </div>
             
 
+            <div class="row">             
+              <div class="col-md-6 mb-3">
+                <label for="provider">Provider</label>
+                <select class="custom-select d-block w-100" id="provider" required>
+                  
+                </select>
+                <div class="invalid-feedback">
+                  Please select a valid Provider.
+                </div>
+              </div>              
+              <div class="col-md-6 mb-3">
+                <label for="isp">ISP</label>
+                <select class="custom-select d-block w-100" id="isp" required>
+                  
+                </select>
+                <div class="invalid-feedback">
+                  Please select a valid ISP.
+                </div>
+              </div>                              
+            </div>    
+              
             <div class="mb-3">
-              <label for="contact_email">Email</label>
-              <input type="email" class="form-control" id="contact_email" placeholder="you@example.com" required>
-              <div class="invalid-feedback">
-                Please enter a valid email address.
-              </div>
-            </div>             
+              <label for="comment">Comments</label>
+             <textarea rows="4" class="form-control" id="comment"></textarea> 
+            </div>              
               
 <% } %>            
               
