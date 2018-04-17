@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -8,41 +9,52 @@
 
     <!-- Bootstrap CSS -->
     <!-- TODO: use local files, not CDN -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">      
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.16/b-1.5.1/b-html5-1.5.1/datatables.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.16/b-1.5.1/b-html5-1.5.1/datatables.min.css" />
 
     <link rel='stylesheet' href='/stylesheets/style.css' />
-      
+
     <!-- Ladda plugin for button loading indicators -->
     <link rel='stylesheet' href='/stylesheets/ladda-themeless.min.css' />
-    
 
 
-    <title><%= title %></title>
-  </head>   
-    
-  <body class="bg-light">
+
+    <title>
+        <%= title %>
+    </title>
+</head>
+
+<body class="bg-light">
     <div class="container">
-      <div class="py-5 text-center">
-        <img class="d-block mx-auto mb-4" src="/images/logo.png" alt="CITRA Logo" >
-         <h2><%= title %></h2>
-          
-          <div class="nav-scroller py-1 mb-2 border-bottom border-top" id="navigation-panel">
-            <nav class="nav d-flex justify-content-between">
-              <a class="p-2 text-muted" href="/">Home</a>
-              <a class="p-2 text-muted" href="/isp/">ISPs</a>
-              <a class="p-2 text-muted" href="/provider/">Providers</a>
-              <a class="p-2 text-muted" href="/patch_panel/">Patch Panels</a>
-              <a class="p-2 text-muted" href=""><strike>Patch Panel Ports</strike></a>
-              <a class="p-2 text-muted" href="/circuit/">Circuit</a>
-            </nav>
-          </div>          
-          
-        
-        <h4><%= pageName %></h4>
-        <p class="lead"><%= pageLeadText %></p>
-      </div>       
+        <div class="py-5 text-center">
+            <img class="d-block mx-auto mb-4" src="/images/logo.png" alt="CITRA Logo">
+            <h2>
+                <%= title %>
+            </h2>
 
-        
+            <div class="nav-scroller py-1 mb-2 border-bottom border-top" id="navigation-panel">
+                <nav class="nav d-flex justify-content-between">
+                    <div class="dropdown show">
+                        <a class="btn dropdown-toggle p-2 text-muted" href="#" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Home</a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item" href="/">Tabular</a>
+                            <a class="dropdown-item" href="#">Network Graph</a>
+                        </div>
+                    </div>
+                    <a class="p-2 text-muted" href="/isp/">ISPs</a>
+                    <a class="p-2 text-muted" href="/provider/">Providers</a>
+                    <a class="p-2 text-muted" href="/patch_panel/">Patch Panels</a>
+                    <a class="p-2 text-muted" href="#"><strike>Patch Panel Ports</strike></a>
+                    <a class="p-2 text-muted" href="/circuit/">Circuit</a>
+                </nav>
+            </div>
 
-        
+
+            <h4>
+                <%= pageName %>
+            </h4>
+            <p class="lead">
+                <%= pageLeadText %>
+            </p>
+        </div>

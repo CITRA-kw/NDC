@@ -6,6 +6,7 @@ $(document).ready(function () {
     updateList(service_name);
     updateFormISPList();
     updateFormProviderList();
+    formDynamicField();
 
 
 
@@ -108,8 +109,18 @@ $(document).ready(function () {
             formData.provider = $("select#provider").val();
             formData.isp = $("select#isp").val();
             formData.comment = $("textarea#comment").val();
+            formData.patch_panels = $("select[name='patch_panel[]']").val();
 
+            // Get circuit selection array from the form
+            formData.patch_panel = new Array();
+            $('select[name="patch_panel[]"]').each(function() {
+               formData.patch_panel.push($(this).val());
+            });
+            // Pop last value which is hidden
+            formData.patch_panel.pop();
+            
             console.log("** Sending POST: " + JSON.stringify(formData));
+    
 
             // JSON call to add form data
             $.getJSON({
@@ -164,9 +175,9 @@ function updateFormProviderList() {
     function populateProviders(list_data) {
         // Iterate and add each list_data to the list
         $.each(list_data, function () {
-            $('#provider').append($('<option>', { 
+            $('#provider').append($('<option>', {
                 value: this.id,
-                text : this.name
+                text: this.name
             }));
         });
     }
@@ -183,10 +194,147 @@ function updateFormISPList() {
     function populateISP(list_data) {
         // Iterate and add each list_data to the list
         $.each(list_data, function () {
-            $('#isp').append($('<option>', { 
+            $('#isp').append($('<option>', {
                 value: this.id,
-                text : this.name
+                text: this.name
             }));
         });
     }
+}
+
+
+// ***************************************************************
+// Program the dynamic field for circuit connections
+// ***************************************************************    
+// Got this code from http://formvalidation.io/examples/adding-dynamic-field/
+// It's using the old Bootstrap hide so I changed it to use "d-none"
+// 
+// For bookmarking and future reference here's other examples
+// https://bootsnipp.com/snippets/XaXB0
+// https://bootsnipp.com/snippets/featured/dynamic-form-fields-add-amp-remove
+function formDynamicField() {
+
+    // The maximum number of options
+    var MAX_OPTIONS = 5;
+
+    
+    $('form')/*
+        .formValidation({
+            framework: 'bootstrap',
+            icon: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                question: {
+                    validators: {
+                        notEmpty: {
+                            message: 'The question required and cannot be empty'
+                        }
+                    }
+                },
+                'option[]': {
+                    validators: {
+                        notEmpty: {
+                            message: 'The option required and cannot be empty'
+                        },
+                        stringLength: {
+                            max: 100,
+                            message: 'The option must be less than 100 characters long'
+                        }
+                    }
+                }
+            }
+        })*/
+
+        // Add button click handler
+        .on('click', '.addButton', function () {
+                console.log("** Add button clicked ");
+                var $template = $('#optionTemplate'),
+                $clone = $template
+                .clone()
+                .removeClass('d-none')
+                .removeAttr('id')
+                .insertBefore($template),
+                $option = $clone.find('[name="option[]"]');
+
+            // Add new field
+            // TODO review this
+            //$('form').formValidation('addField', $option);
+        })
+
+        // Remove button click handler
+        .on('click', '.removeButton', function () {
+            console.log("** Remove button clicked ");
+            var $row = $(this).parents('.form-group'),
+                $option = $row.find('[name="option[]"]');
+
+            // Remove element containing the option
+            $row.remove();
+
+            // Remove field
+            // TODO review this
+            //$('form').formValidation('removeField', $option);
+        })
+
+        // Called after adding new field
+        .on('added.field.fv', function (e, data) {
+            // data.field   --> The field name
+            // data.element --> The new field element
+            // data.options --> The new field options
+
+            if (data.field === 'option[]') {
+                if ($('form').find(':visible[name="option[]"]').length >= MAX_OPTIONS) {
+                    $('form').find('.addButton').attr('disabled', 'disabled');
+                }
+            }
+        })
+
+        // Called after removing the field
+        .on('removed.field.fv', function (e, data) {
+            if (data.field === 'option[]') {
+                if ($('form').find(':visible[name="option[]"]').length < MAX_OPTIONS) {
+                    $('form').find('.addButton').removeAttr('disabled');
+                }
+            }
+        });
+
+    populatePatchPanelDropDown();
+}
+
+// ***************************************************************
+// Populate the patch_panel dynamic fields
+// **************************************************************
+function populatePatchPanelDropDown() {
+    // How to get array of fields https://stackoverflow.com/questions/7880619/multiple-inputs-with-same-name-through-post-in-php
+    // http://www.dreamincode.net/forums/topic/245179-how-to-insert-data-using-multiple-input-with-same-name/
+    
+    // Obviously selector for the patch_panel dropdown!
+    var dropdown = $("form select[name='patch_panel[]']");    
+    // Do a JSON call and populate the dropdown
+    $.getJSON('/api/patch_panel-service/', function (list_data) {
+        
+        console.log("** Received Patch Panel JSON info to populate the dynamic patch_panel dropdown menu");
+        
+        $.each(list_data, function () { 
+            dropdown.append($("<option />").val(this.id).text(this.name));
+        });
+    }); 
+    dropdown.change(function() {
+        populatePortsDropDown($(this).parent().next().find("select"));
+    });
+}
+// ***************************************************************
+// Populate the ports dynamic fields
+// **************************************************************
+function populatePortsDropDown(portField) {
+// Do a JSON call and populate the dropdown
+    $.getJSON('/api/patch_panel-service/ports/', function (list_data) {
+        $.each(list_data, function () { 
+            portField.append($("<option />").val(this.id).text(this.id + " " + this.label));
+        });
+        
+        console.log("** Received Patch Panel JSON info to populate the dynamic ports dropdown for a patch panel");
+    }); 
 }
