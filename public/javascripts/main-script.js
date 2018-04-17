@@ -89,7 +89,7 @@ $(document).ready(function () {
 // ***************************************************************  
 function updateList(service_name) {
     // Get list of ISPs and print them
-    $.getJSON('/xapi/' + service_name + '/', printList);
+    $.getJSON('/api/' + service_name + '/', printList);
     
 }
 
