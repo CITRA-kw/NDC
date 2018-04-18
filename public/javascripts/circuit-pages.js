@@ -331,7 +331,7 @@ function populatePatchPanelDropDown() {
 // Populate the ports dynamic fields
 // **************************************************************
 function populatePortsDropDown(portField) {
-// Do a JSON call and populate the dropdown
+// Do a JSON call and populate the dropdown select field
     $.getJSON('/api/patch_panel-service/ports/' + $(portField).val(), function (list_data) {
         portField = $(portField).parent().parent().next().find("select");
         $.each(list_data, function () { 
