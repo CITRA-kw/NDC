@@ -313,7 +313,7 @@ function populatePatchPanelDropDown() {
     // Obviously selector for the patch_panel dropdown!
     var dropdown = $("form select[name='patch_panel[]']");    
     // Do a JSON call and populate the dropdown
-    $.getJSON('/api/patch_panel-service/', function (list_data) {
+    $.getJSON('/api/patch_panel-service/patch_panel', function (list_data) {
         
         console.log("** Received Patch Panel JSON info to populate the dynamic patch_panel dropdown menu");
         
@@ -321,18 +321,22 @@ function populatePatchPanelDropDown() {
             dropdown.append($("<option />").val(this.id).text(this.name));
         });
     }); 
-    dropdown.change(function() {
-        populatePortsDropDown($(this).parent().next().find("select"));
+    $(dropdown).change(function() {
+        console.log("** Dropdown Change called!");
+        populatePortsDropDown(this);
     });
 }
+
 // ***************************************************************
 // Populate the ports dynamic fields
 // **************************************************************
 function populatePortsDropDown(portField) {
 // Do a JSON call and populate the dropdown
-    $.getJSON('/api/patch_panel-service/ports/', function (list_data) {
+    $.getJSON('/api/patch_panel-service/ports/' + $(portField).val(), function (list_data) {
+        portField = $(portField).parent().parent().next().find("select");
         $.each(list_data, function () { 
-            portField.append($("<option />").val(this.id).text(this.id + " " + this.label));
+            $(portField).append($("<option />").val(this.id).text(this.label));
+            //console.log("** Adding [Label "+this.label+"] [ID "+this.id+"]");
         });
         
         console.log("** Received Patch Panel JSON info to populate the dynamic ports dropdown for a patch panel");

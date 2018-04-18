@@ -14,7 +14,7 @@ router.get('/patch_panel/updateform/:id', function (req, res, next) {
         pageName: 'Patch Panel',
         pageLeadText: '',
         pageID: "patchPanelUpdateForm",
-        service_name: "patch_panel-service",
+        service_name: "patch_panel-service/patch_panel",
         patchPanelID: update_patch_panel_id
     });
     console.log("** Loading Patch Panel Update Page");
@@ -31,7 +31,7 @@ router.get('/patch_panel', function (req, res, next) {
         pageName: 'Patch Panel',
         pageLeadText: '',
         pageID: "mainPatchPanel",
-        service_name: "patch_panel-service"
+        service_name: "patch_panel-service/patch_panel"
     });
     console.log("** Loading Main Patch Panel Page");
 });

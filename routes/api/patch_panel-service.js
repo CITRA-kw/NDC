@@ -18,13 +18,14 @@ connection.connect();
 // ***************************************************************
 // Get the whole list
 // ***************************************************************
-router.get('/api/patch_panel-service', function (req, res) {
+router.get('/api/patch_panel-service/patch_panel', function (req, res) {
+    console.log('** Getting Patch Panel list. ');
+
     connection.query('select * from patch_panel', function (err, results, fields) {
         if (err) throw err;
 
         res.json(results);
     });
-    console.log('** Getting Patch Panel list. ');
 
 });
 
@@ -34,7 +35,7 @@ router.get('/api/patch_panel-service', function (req, res) {
 // ***************************************************************
 
 // TODO check if Patch Panel name already exists
-router.post('/api/patch_panel-service', function (req, res) {
+router.post('/api/patch_panel-service/patch_panel', function (req, res) {
     var newPatchPanel = req.body;
     console.log('** POST Single Patch Panel: ' + newPatchPanel.name);
 
@@ -62,11 +63,12 @@ router.post('/api/patch_panel-service', function (req, res) {
             if(i != 0) {
                 valuesString += ', ';
             }        
-            valuesString += '(' + (parseInt(i)+1) + ', ' + forID + ')';
+            var portId = parseInt(i)+1;
+            valuesString += '(' + portId + ', ' + forID + ', "Label ' + portId + '")';
         }
         console.log("** Ports to insert " + valuesString);
         // Now insert the ports for this patch panel
-        connection.query('INSERT INTO patch_panel_port (id, patch_panel_id) VALUES ' + valuesString, function (error, results) {
+        connection.query('INSERT INTO patch_panel_port (id, patch_panel_id, label) VALUES ' + valuesString, function (error, results) {
             if (error) {
                 throw error;
             }
@@ -80,9 +82,32 @@ router.post('/api/patch_panel-service', function (req, res) {
 });
 
 // ***************************************************************
+// Get ports of a Patch Panel
+// ***************************************************************
+router.get('/api/patch_panel-service/ports/:id', function (req, res) {
+    var patch_panel_id = req.params.id;
+    console.log('** GET ports of Patch Panel ID ' + patch_panel_id);
+
+  connection.query('SELECT * FROM patch_panel_port WHERE patch_panel_id=?', [patch_panel_id], function (error, results, fields) {
+        if (error) {
+            res.send(JSON.stringify({
+                result: "Epic Fail!"
+            }));
+
+            throw error;
+        }
+      
+        res.json(results);
+
+        //console.log("** Get Patch Panel Ports - query result: " + JSON.stringify(results));
+
+    });   
+});
+
+// ***************************************************************
 // Get a single Patch Panel detail
 // ***************************************************************
-router.get('/api/patch_panel-service/:id', function (req, res) {
+router.get('/api/patch_panel-service/patch_panel/:id', function (req, res) {
     console.log('** GET Single Patch Panel for ID ' + req.params.id);
 
     connection.query('select * from patch_panel where id = ' + req.params.id, function (err, results, fields) {
@@ -98,7 +123,7 @@ router.get('/api/patch_panel-service/:id', function (req, res) {
 // Update Patch Panel
 // ***************************************************************
 
-router.put('/api/patch_panel-service', function (req, res) {
+router.put('/api/patch_panel-service/patch_panel', function (req, res) {
     var update_patch_panel = req.body;
     console.log("** PUT - update single Patch Panel: " + update_patch_panel.name);
 
@@ -123,7 +148,7 @@ router.put('/api/patch_panel-service', function (req, res) {
 // ***************************************************************
 // Delete Patch Panel
 // ***************************************************************
-router.delete('/api/patch_panel-service/:id', function (req, res) {
+router.delete('/api/patch_panel-service/patch_panel/:id', function (req, res) {
     var delete_patch_panel = req.body;
     console.log("** DELETE - delete Patch Panel: " + delete_patch_panel.id);
 
@@ -157,27 +182,10 @@ router.delete('/api/patch_panel-service/:id', function (req, res) {
     });    
 });
 
+
+
+
+
+
+
 module.exports = router;
-
-// ***************************************************************
-// Get ports of a Patch Panel
-// ***************************************************************
-router.get('/api/patch_panel-service/ports/:id', function (req, res) {
-    var patch_panel_id = req.body.id;
-    console.log('** GET ports of Patch Panel ID ' + patch_panel_id);
-
-  connection.query('SELECT FROM patch_panel_port WHERE patch_panel_id=?', [patch_panel_id], function (error, results, fields) {
-        if (error) {
-            res.send(JSON.stringify({
-                result: "Epic Fail!"
-            }));
-
-            throw error;
-        }
-      
-        res.json(results);
-
-        console.log("** Get Patch Panel Ports - query result: " + JSON.stringify(results));
-
-    });   
-});
