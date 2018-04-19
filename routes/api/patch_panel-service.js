@@ -52,9 +52,12 @@ router.post('/api/patch_panel-service/patch_panel', function (req, res) {
         res.send(JSON.stringify({
             result: "Insert Successful for " + newPatchPanel.name + " with ID: " + newPatchPanelID
         }));
+        
+        // Now insert ports
         insertPorts(newPatchPanelID);
     });
     
+    // Insert 24 ports for each patch panel we have added to the DB
     function insertPorts(forID) {
         // Create value string of the patch_panel_port
         var num = 24;
@@ -64,7 +67,7 @@ router.post('/api/patch_panel-service/patch_panel', function (req, res) {
                 valuesString += ', ';
             }        
             var portId = parseInt(i)+1;
-            valuesString += '(' + portId + ', ' + forID + ', "Label ' + portId + '")';
+            valuesString += '(' + portId + ', ' + forID + ', "# ' + portId + '")';
         }
         console.log("** Ports to insert " + valuesString);
         // Now insert the ports for this patch panel

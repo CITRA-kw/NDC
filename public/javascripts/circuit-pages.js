@@ -321,7 +321,9 @@ function populatePatchPanelDropDown() {
             dropdown.append($("<option />").val(this.id).text(this.name));
         });
     }); 
-    $(dropdown).change(function() {
+
+    // Populate the Ports dropdown when in this dropdown we have selected another value
+    $('form').on('change', 'select[name="patch_panel[]"]', function() {
         console.log("** Dropdown Change called!");
         populatePortsDropDown(this);
     });
