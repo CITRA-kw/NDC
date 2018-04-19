@@ -124,6 +124,7 @@ function printList(list_data) {
         if(!this.name) {
             this.name = this.moc_id;
         }
+
         $('<li>').addClass('list-group-item d-flex justify-content-between lh-condensed').appendTo('#some_list');
         $('<div>').appendTo('#some_list>li:last-child');
         $('<h6>').addClass('my-0').text(this.name).appendTo('#some_list>li:last-child>div:last-child');

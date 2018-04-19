@@ -109,15 +109,19 @@ $(document).ready(function () {
             formData.provider = $("select#provider").val();
             formData.isp = $("select#isp").val();
             formData.comment = $("textarea#comment").val();
-            formData.patch_panels = $("select[name='patch_panel[]']").val();
 
             // Get circuit selection array from the form
             formData.patch_panel = new Array();
             $('select[name="patch_panel[]"]').each(function() {
                formData.patch_panel.push($(this).val());
             });
+            formData.port = new Array();
+            $('select[name="port[]"]').each(function() {
+               formData.port.push($(this).val());
+            });
             // Pop last value which is hidden
             formData.patch_panel.pop();
+            formData.port.pop();
             
             console.log("** Sending POST: " + JSON.stringify(formData));
     
@@ -336,6 +340,7 @@ function populatePortsDropDown(portField) {
 // Do a JSON call and populate the dropdown select field
     $.getJSON('/api/patch_panel-service/ports/' + $(portField).val(), function (list_data) {
         portField = $(portField).parent().parent().next().find("select");
+        $(portField).empty();
         $.each(list_data, function () { 
             $(portField).append($("<option />").val(this.id).text(this.label));
             //console.log("** Adding [Label "+this.label+"] [ID "+this.id+"]");

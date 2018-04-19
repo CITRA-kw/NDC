@@ -21,7 +21,7 @@ connection.connect();
 router.get('/api/circuit-service', function (req, res) {
     console.log('** GET Circuits');
     
-    connection.query('select * from circuit', function (err, results, fields) {
+    connection.query('SELECT * from circuit WHERE active = TRUE', function (err, results, fields) {
         if (err) throw err;
 
         res.json(results);
@@ -36,10 +36,19 @@ router.get('/api/circuit-service', function (req, res) {
 
 // TODO check if Circuit already exists
 router.post('/api/circuit-service', function (req, res) {
-    var newCiruit = req.body;
-    console.log('** POST Single Circuit: ' + newCiruit.moc_id);
+    var newCircuit = req.body;
+    console.log('** POST Single Circuit: ' + newCircuit.moc_id);
 
-    var query = connection.query('INSERT INTO circuit SET moc_id=?, interface_type=?, provision_speed=?, service=?, provider=?, isp=?, comment=?', [newCiruit.moc_id, newCiruit.interface_type, newCiruit.provision_speed, newCiruit.service, newCiruit.provider, newCiruit.isp, newCiruit.comment], function (error, results) {
+    console.log(newCircuit);
+    
+    for(var i = 0; i < newCircuit.patch_panel.length; i ++) {
+        console.log('iteration');
+        console.log(newCircuit.patch_panel[i]);
+    } 
+    
+    var id = newCircuit.isp + "_" + newCircuit.provider + "_" + num;
+    
+    var query = connection.query('INSERT INTO circuit SET moc_id=?, interface_type=?, provision_speed=?, service=?, provider=?, isp=?, comment=?', [newCircuit.moc_id, newCircuit.interface_type, newCircuit.provision_speed, newCircuit.service, newCircuit.provider, newCircuit.isp, newCircuit.comment], function (error, results) {
         if (error) {
             res.send(JSON.stringify({
                 result: "Epic Fail!",
@@ -47,12 +56,12 @@ router.post('/api/circuit-service', function (req, res) {
             }));
 
             throw error;
-        }
+        } 
 
         console.log("** POST Circuit - query result: " + JSON.stringify(results));
         res.set('Content-Type', 'application/json');
         res.send(JSON.stringify({
-            result: "Insert Successful for MoC ID " + newCiruit.moc_id
+            result: "Insert Successful for MoC ID " + newCircuit.moc_id
         }));
     });
 });
@@ -63,7 +72,7 @@ router.post('/api/circuit-service', function (req, res) {
 router.get('/api/circuit-service/:id', function (req, res) {
     console.log('** GET Single Circuit: select * from circuit where id = ' + req.params.id);
 
-    connection.query('select * from circuit where id = "' + req.params.id + '"', function (err, results, fields) {
+    connection.query('SELECT * FROM circuit WHERE id = "' + req.params.id + '"', function (err, results, fields) {
         if (err) throw err;
 
         console.log(results);
@@ -105,7 +114,7 @@ router.delete('/api/circuit-service/:id', function (req, res) {
     var delete_circuit = req.body;
     console.log("** DELETE - delete Circuit ID: " + delete_circuit.id);
 
-    connection.query('DELETE FROM circuit WHERE id=?', [delete_circuit.id], function (error, results, fields) {
+    var query = connection.query('UPDATE circuit SET active = "0" where id=?', [update_circuit.id], function (error, results, fields) {
         if (error) {
             res.send(JSON.stringify({
                 result: "Epic Fail!"

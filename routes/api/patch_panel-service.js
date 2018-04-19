@@ -39,6 +39,8 @@ router.post('/api/patch_panel-service/patch_panel', function (req, res) {
     var newPatchPanel = req.body;
     console.log('** POST Single Patch Panel: ' + newPatchPanel.name);
 
+    //console.log('** POST Received: ' + newPatchPanel);
+
     connection.query('INSERT INTO patch_panel SET name=?', [newPatchPanel.name], function (error, results) {
         if (error) {
             res.send(JSON.stringify({
@@ -52,21 +54,21 @@ router.post('/api/patch_panel-service/patch_panel', function (req, res) {
         res.send(JSON.stringify({
             result: "Insert Successful for " + newPatchPanel.name + " with ID: " + newPatchPanelID
         }));
-        
+
         // Now insert ports
         insertPorts(newPatchPanelID);
     });
-    
+
     // Insert 24 ports for each patch panel we have added to the DB
     function insertPorts(forID) {
         // Create value string of the patch_panel_port
         var num = 24;
         var valuesString = '';
-        for(var i = 0; i < num; i ++) {
-            if(i != 0) {
+        for (var i = 0; i < num; i++) {
+            if (i != 0) {
                 valuesString += ', ';
-            }        
-            var portId = parseInt(i)+1;
+            }
+            var portId = parseInt(i) + 1;
             valuesString += '(' + portId + ', ' + forID + ', "# ' + portId + '")';
         }
         console.log("** Ports to insert " + valuesString);
@@ -76,7 +78,7 @@ router.post('/api/patch_panel-service/patch_panel', function (req, res) {
                 throw error;
             }
 
-            console.log("** POST Also added " + num + " ports"); 
+            console.log("** POST Also added " + num + " ports");
             /*res.send(JSON.stringify({
                 result2: "Insert Successful for " + num + " ports"
             }));*/
@@ -91,7 +93,7 @@ router.get('/api/patch_panel-service/ports/:id', function (req, res) {
     var patch_panel_id = req.params.id;
     console.log('** GET ports of Patch Panel ID ' + patch_panel_id);
 
-  connection.query('SELECT * FROM patch_panel_port WHERE patch_panel_id=?', [patch_panel_id], function (error, results, fields) {
+    connection.query('SELECT * FROM patch_panel_port WHERE patch_panel_id=?', [patch_panel_id], function (error, results, fields) {
         if (error) {
             res.send(JSON.stringify({
                 result: "Epic Fail!"
@@ -99,12 +101,12 @@ router.get('/api/patch_panel-service/ports/:id', function (req, res) {
 
             throw error;
         }
-      
+
         res.json(results);
 
         //console.log("** Get Patch Panel Ports - query result: " + JSON.stringify(results));
 
-    });   
+    });
 });
 
 // ***************************************************************
@@ -155,6 +157,7 @@ router.delete('/api/patch_panel-service/patch_panel/:id', function (req, res) {
     var delete_patch_panel = req.body;
     console.log("** DELETE - delete Patch Panel: " + delete_patch_panel.id);
 
+    // Start deleting the patch panel first
     connection.query('DELETE FROM patch_panel WHERE id=?', [delete_patch_panel.id], function (error, results, fields) {
         if (error) {
             res.send(JSON.stringify({
@@ -170,7 +173,8 @@ router.delete('/api/patch_panel-service/patch_panel/:id', function (req, res) {
             result: "Delete success for  " + delete_patch_panel.name
         }));
     });
-    
+
+    // Now delete ports under that patch panel
     connection.query('DELETE FROM patch_panel_port WHERE patch_panel_id=?', [delete_patch_panel.id], function (error, results, fields) {
         if (error) {
             res.send(JSON.stringify({
@@ -182,7 +186,7 @@ router.delete('/api/patch_panel-service/patch_panel/:id', function (req, res) {
 
         console.log("** DELETE Patch Panel Ports - query result: " + JSON.stringify(results));
 
-    });    
+    });
 });
 
 
