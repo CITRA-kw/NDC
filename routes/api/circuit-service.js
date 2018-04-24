@@ -20,7 +20,7 @@ connection.connect();
 // ***************************************************************
 router.get('/api/circuit-service', function (req, res) {
     console.log('** GET Circuits');
-    
+
     connection.query('SELECT * from circuit WHERE active = TRUE', function (err, results, fields) {
         if (err) throw err;
 
@@ -37,17 +37,26 @@ router.get('/api/circuit-service', function (req, res) {
 // TODO check if Circuit already exists
 router.post('/api/circuit-service', function (req, res) {
     var newCircuit = req.body;
-    console.log('** POST Single Circuit: ' + newCircuit.moc_id);
+    console.log('** POST Single Circuit for MOC ID: ' + newCircuit.moc_id);
 
     console.log(newCircuit);
-    
-    for(var i = 0; i < newCircuit.patch_panel.length; i ++) {
+
+    /*for(var i = 0; i < newCircuit.patch_panel.length; i ++) {
         console.log('iteration');
         console.log(newCircuit.patch_panel[i]);
-    } 
+    } */
+    var arr = newCircuit['patch_panel[]'];
+    for(var val in arr) {
+        console.log('iteration');
+        console.log(val);        
+    }
+
+    /*
+    Finding this solution caused me lots of troubles and chain of changes both in the DB and in the codebase. Be thankful that I've done this not you!
     
-    var id = newCircuit.isp + "_" + newCircuit.provider + "_" + num;
-    
+    I've used BEFORE INSERT trigger on the database (table: circuit) to set the ID of each row as a combination of ISP and Provider and Circuit_NUM    
+    */
+
     var query = connection.query('INSERT INTO circuit SET moc_id=?, interface_type=?, provision_speed=?, service=?, provider=?, isp=?, comment=?', [newCircuit.moc_id, newCircuit.interface_type, newCircuit.provision_speed, newCircuit.service, newCircuit.provider, newCircuit.isp, newCircuit.comment], function (error, results) {
         if (error) {
             res.send(JSON.stringify({
@@ -56,7 +65,7 @@ router.post('/api/circuit-service', function (req, res) {
             }));
 
             throw error;
-        } 
+        }
 
         console.log("** POST Circuit - query result: " + JSON.stringify(results));
         res.set('Content-Type', 'application/json');

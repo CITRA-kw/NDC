@@ -98,12 +98,10 @@ router.get('/api/patch_panel-service/ports/:id', function (req, res) {
             res.send(JSON.stringify({
                 result: "Epic Fail!"
             }));
-
             throw error;
         }
 
         res.json(results);
-
         //console.log("** Get Patch Panel Ports - query result: " + JSON.stringify(results));
 
     });

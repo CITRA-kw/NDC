@@ -55,20 +55,30 @@ $(document).ready(function () {
             $('#example').DataTable({
                 data: data,
                 columns: [
-                    { title: "ID" },
-                    { title: "MOC ID" },
-                    { title: "ISP" },
-                    { title: "Provider" },
-                    { title: "Speed" },
+                    {
+                        title: "ID"
+                    },
+                    {
+                        title: "MOC ID"
+                    },
+                    {
+                        title: "ISP"
+                    },
+                    {
+                        title: "Provider"
+                    },
+                    {
+                        title: "Speed"
+                    },
                 ]
-            } );  //datatables init
+            }); //datatables init
 
 
         });
     }
 
 
-    
+
 
 
 }); // end jQuery document 
@@ -90,7 +100,7 @@ $(document).ready(function () {
 function updateList(service_name) {
     // Get list of ISPs and print them
     $.getJSON('/api/' + service_name + '/', printList);
-    
+
 }
 
 
@@ -119,9 +129,9 @@ function printList(list_data) {
         // no comments for you
         // it was hard to write
         // so it should be hard to read
-        
+
         // Circuit has no names so I'm using its MOC ID instead
-        if(!this.name) {
+        if (!this.name) {
             this.name = this.moc_id;
         }
 
@@ -129,7 +139,7 @@ function printList(list_data) {
         $('<div>').appendTo('#some_list>li:last-child');
         $('<h6>').addClass('my-0').text(this.name).appendTo('#some_list>li:last-child>div:last-child');
         $('<small>').addClass('text-muted').appendTo('#some_list>li:last-child');
-        
+
         // Check the link and make sure we don't have /updateform/ already on the page link
         var updateLink;
         if (document.location.href.indexOf("updateform") > -1) {
@@ -150,7 +160,7 @@ function printList(list_data) {
         var button = $(event.relatedTarget) // Button that triggers the modal
         var delete_id = button.data('delete_id');
         var delete_name = button.data('delete_name');
-        
+
         // If necessary, you could initiate an AJAX request here (and then do the updating in a callback)
         var modal = $(this);
         modal.find('.modal-body span').text(delete_name);
@@ -179,7 +189,7 @@ $('.delete-btn-confirm').click(function () {
 
     // JSON call to delete
     $.getJSON({
-        url: '/api/'+service_name+'/' + delete_data.id,
+        url: '/api/' + service_name + '/' + delete_data.id,
         dataType: 'text',
         data: delete_data,
         type: "delete",

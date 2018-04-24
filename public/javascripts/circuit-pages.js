@@ -112,19 +112,19 @@ $(document).ready(function () {
 
             // Get circuit selection array from the form
             formData.patch_panel = new Array();
-            $('select[name="patch_panel[]"]').each(function() {
-               formData.patch_panel.push($(this).val());
+            $('select[name="patch_panel[]"]').each(function () {
+                formData.patch_panel.push($(this).val());
             });
             formData.port = new Array();
-            $('select[name="port[]"]').each(function() {
-               formData.port.push($(this).val());
+            $('select[name="port[]"]').each(function () {
+                formData.port.push($(this).val());
             });
             // Pop last value which is hidden
             formData.patch_panel.pop();
             formData.port.pop();
-            
+
             console.log("** Sending POST: " + JSON.stringify(formData));
-    
+
 
             // JSON call to add form data
             $.getJSON({
@@ -170,7 +170,7 @@ $(document).ready(function () {
 
 
 // ***************************************************************
-// Populate SELECT values for Providers in the form
+// Populate the Providers dropdown
 // ***************************************************************    
 function updateFormProviderList() {
     // Do a JSON call and populate the form
@@ -189,7 +189,7 @@ function updateFormProviderList() {
 
 
 // ***************************************************************
-// Populate SELECT values for ISPs in the form
+// Populate ISPs dropdown
 // ***************************************************************    
 function updateFormISPList() {
     // Do a JSON call and populate the form
@@ -221,41 +221,42 @@ function formDynamicField() {
     // The maximum number of options
     var MAX_OPTIONS = 5;
 
-    
-    $('form')/*
-        .formValidation({
-            framework: 'bootstrap',
-            icon: {
-                valid: 'glyphicon glyphicon-ok',
-                invalid: 'glyphicon glyphicon-remove',
-                validating: 'glyphicon glyphicon-refresh'
-            },
-            fields: {
-                question: {
-                    validators: {
-                        notEmpty: {
-                            message: 'The question required and cannot be empty'
-                        }
-                    }
-                },
-                'option[]': {
-                    validators: {
-                        notEmpty: {
-                            message: 'The option required and cannot be empty'
+
+    $('form')
+        /*
+                .formValidation({
+                    framework: 'bootstrap',
+                    icon: {
+                        valid: 'glyphicon glyphicon-ok',
+                        invalid: 'glyphicon glyphicon-remove',
+                        validating: 'glyphicon glyphicon-refresh'
+                    },
+                    fields: {
+                        question: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'The question required and cannot be empty'
+                                }
+                            }
                         },
-                        stringLength: {
-                            max: 100,
-                            message: 'The option must be less than 100 characters long'
+                        'option[]': {
+                            validators: {
+                                notEmpty: {
+                                    message: 'The option required and cannot be empty'
+                                },
+                                stringLength: {
+                                    max: 100,
+                                    message: 'The option must be less than 100 characters long'
+                                }
+                            }
                         }
                     }
-                }
-            }
-        })*/
+                })*/
 
         // Add button click handler
         .on('click', '.addButton', function () {
-                console.log("** Add button clicked ");
-                var $template = $('#optionTemplate'),
+            console.log("** Add button clicked ");
+            var $template = $('#optionTemplate'),
                 $clone = $template
                 .clone()
                 .removeClass('d-none')
@@ -293,6 +294,8 @@ function formDynamicField() {
                     $('form').find('.addButton').attr('disabled', 'disabled');
                 }
             }
+        
+            
         })
 
         // Called after removing the field
@@ -303,7 +306,7 @@ function formDynamicField() {
                 }
             }
         });
-
+    
     populatePatchPanelDropDown();
 }
 
@@ -313,39 +316,46 @@ function formDynamicField() {
 function populatePatchPanelDropDown() {
     // How to get array of fields https://stackoverflow.com/questions/7880619/multiple-inputs-with-same-name-through-post-in-php
     // http://www.dreamincode.net/forums/topic/245179-how-to-insert-data-using-multiple-input-with-same-name/
-    
+
     // Obviously selector for the patch_panel dropdown!
-    var dropdown = $("form select[name='patch_panel[]']");    
+    var dropdown = $("form select[name='patch_panel[]']");
+    // TODO: Service name/link should be dynamic
     // Do a JSON call and populate the dropdown
     $.getJSON('/api/patch_panel-service/patch_panel', function (list_data) {
-        
+
         console.log("** Received Patch Panel JSON info to populate the dynamic patch_panel dropdown menu");
-        
-        $.each(list_data, function () { 
+        dropdown.empty();
+        $.each(list_data, function () {
             dropdown.append($("<option />").val(this.id).text(this.name));
         });
-    }); 
+    }).done(function () {
+        // Manually trigger a first change so ports dropdown will be automatically selected
+        $(dropdown).trigger('change');
+    });
 
     // Populate the Ports dropdown when in this dropdown we have selected another value
-    $('form').on('change', 'select[name="patch_panel[]"]', function() {
-        console.log("** Dropdown Change called!");
+    $('form').on('change', 'select[name="patch_panel[]"]', function () {
+        console.log("** Circuit dropdown Change called!");
         populatePortsDropDown(this);
     });
+
+
 }
 
 // ***************************************************************
 // Populate the ports dynamic fields
 // **************************************************************
 function populatePortsDropDown(portField) {
-// Do a JSON call and populate the dropdown select field
+    // Do a JSON call and populate the dropdown select field
+    // TODO: Service name/link should be dynamic
     $.getJSON('/api/patch_panel-service/ports/' + $(portField).val(), function (list_data) {
         portField = $(portField).parent().parent().next().find("select");
         $(portField).empty();
-        $.each(list_data, function () { 
+        $.each(list_data, function () {
             $(portField).append($("<option />").val(this.id).text(this.label));
             //console.log("** Adding [Label "+this.label+"] [ID "+this.id+"]");
         });
-        
+
         console.log("** Received Patch Panel JSON info to populate the dynamic ports dropdown for a patch panel");
-    }); 
+    });
 }
