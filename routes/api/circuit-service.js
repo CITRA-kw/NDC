@@ -41,15 +41,94 @@ router.post('/api/circuit-service', function (req, res) {
 
     console.log(newCircuit);
 
+
+
+
+    connection.beginTransaction(function (err) {
+        if (err) {
+            throw err;
+        }
+        var query = connection.query('INSERT INTO circuit SET moc_id=?, interface_type=?, provision_speed=?, service=?, provider=?, isp=?, comment=?', [newCircuit.moc_id, newCircuit.interface_type, newCircuit.provision_speed, newCircuit.service, newCircuit.provider, newCircuit.isp, newCircuit.comment], function (error, results, fields) {
+            if (error) {
+                res.send(JSON.stringify({
+                    result: "Epic Fail!",
+                    sql: query.sql
+                }));
+                return connection.rollback(function () {
+                    throw error;
+                });
+            }
+            console.log("** POST Circuit - query result: " + JSON.stringify(results));
+            res.set('Content-Type', 'application/json');
+
+            // ---------- REACHED HERE
+
+            var arr = newCircuit['patch_panel[]'];
+            for (var val in arr) {
+                console.log('iteration');
+                console.log(val);
+            }
+
+
+
+            var result2 = insertCircuitPorts(newCircuit['patch_panel[]'], newCircuit['port[]'], result.insertId);
+
+            res.send(JSON.stringify({
+                result: "Insert Successful for MoC ID " + newCircuit.moc_id + "\n\n " + result2
+            }));
+
+            var log = 'Post ' + results.insertId + ' added';
+
+            connection.query('INSERT INTO log SET data=?', log, function (error, results, fields) {
+                if (error) {
+                    return connection.rollback(function () {
+                        throw error;
+                    });
+                }
+                connection.commit(function (err) {
+                    if (err) {
+                        return connection.rollback(function () {
+                            throw err;
+                        });
+                    }
+                    console.log('success!');
+                });
+            });
+        });
+    });
+
+    function insertCircuitPorts(patch_panel, port, circuitID) {
+        var arr = newCircuit['patch_panel[]'];
+        for (var val in arr) {
+            console.log('iteration');
+            console.log(val);
+        }
+
+        console.log("** Inserting the ports now for that Circuit");
+        // Now insert the ports for this patch panel
+        connection.query('INSERT INTO patch_panel_port (id, patch_panel_id, label) VALUES ' + valuesString, function (error, results) {
+            if (error) {
+                throw error;
+            }
+
+            console.log("** POST Also added " + num + " ports");
+            return "Insert Successful for " + num + " ports";
+        });
+    }
+
+
+
+
+
+
+
+
+
     /*for(var i = 0; i < newCircuit.patch_panel.length; i ++) {
         console.log('iteration');
         console.log(newCircuit.patch_panel[i]);
     } */
-    var arr = newCircuit['patch_panel[]'];
-    for(var val in arr) {
-        console.log('iteration');
-        console.log(val);        
-    }
+
 
     /*
     Finding this solution caused me lots of troubles and chain of changes both in the DB and in the codebase. Be thankful that I've done this not you!
@@ -57,6 +136,7 @@ router.post('/api/circuit-service', function (req, res) {
     I've used BEFORE INSERT trigger on the database (table: circuit) to set the ID of each row as a combination of ISP and Provider and Circuit_NUM    
     */
 
+    /*
     var query = connection.query('INSERT INTO circuit SET moc_id=?, interface_type=?, provision_speed=?, service=?, provider=?, isp=?, comment=?', [newCircuit.moc_id, newCircuit.interface_type, newCircuit.provision_speed, newCircuit.service, newCircuit.provider, newCircuit.isp, newCircuit.comment], function (error, results) {
         if (error) {
             res.send(JSON.stringify({
@@ -69,10 +149,16 @@ router.post('/api/circuit-service', function (req, res) {
 
         console.log("** POST Circuit - query result: " + JSON.stringify(results));
         res.set('Content-Type', 'application/json');
+        
+        var result2 = insertCircuitPorts(newCircuit['patch_panel[]'], newCircuit['port[]'], result.insertId);
+        
         res.send(JSON.stringify({
-            result: "Insert Successful for MoC ID " + newCircuit.moc_id
+            result: "Insert Successful for MoC ID " + newCircuit.moc_id + "\n\n " + result2
         }));
     });
+    */
+
+
 });
 
 // ***************************************************************
