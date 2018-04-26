@@ -20,13 +20,14 @@ body.dragging, body.dragging * {
   z-index: 2000;
 }
 
-ol.example li.placeholder {
+ol.ordered-circuit-conn-fields li.placeholder {
   position: relative;
   /** More li styles **/
 }
-ol.example li.placeholder:before {
+ol.ordered-circuit-conn-fields li.placeholder:before {
   position: absolute;
   /** Define arrowhead **/
+    
 }
 
 

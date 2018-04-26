@@ -7,6 +7,9 @@ $(document).ready(function () {
     updateFormISPList();
     updateFormProviderList();
     formDynamicField();
+    
+    // Make the connection fields sortable
+    $("ol.ordered-circuit-conn-fields").sortable();
 
 
 
@@ -162,8 +165,6 @@ $(document).ready(function () {
         }); // end submit
 
     }
-
-
 
 }); // end jQuery document
 
