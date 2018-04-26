@@ -68,21 +68,25 @@ router.post('/api/circuit-service', function (req, res) {
             // ------------------------------------------
 
             // Get the inserted CircuitId from the previous insert
-            var circuit_id = result.insertId;
+            var circuit_id = results.insertId;
             var valuesString = "";
             var patch_panel_ids = newCircuit['patch_panel[]'];
             var port_ids = newCircuit['port[]'];
             for (var i = 0; i < patch_panel_ids.length; i++) {
-                valuesString += "(" + circuit_id + ", ", port_ids[i] + ", " + patch_panel_id[i] + ", " + i + ")";
+                valuesString += "(" + circuit_id + ", " + port_ids[i] + ", " + patch_panel_ids[i] + ", " + i + ")";
                 if (i != patch_panel_ids.length - 1) {
                     valuesString += ", ";
                 }
             }
 
-            var query2 = connection.query('INSERT INTO ports_circuit (circuit_id, port_id, patch_panel_id, sequence) VALUES ' + valuesString, log, function (error, results2, fields) {
+            var query2 = connection.query('INSERT INTO ports_circuit (circuit_id, port_id, patch_panel_id, sequence) VALUES ' + valuesString, function (error, results2, fields) {
                 if (error) {
                     return connection.rollback(function () {
-                        throw error;
+                        res.send(JSON.stringify({
+                                result: "Epic Fail!",
+                                sql: query2.sql
+                            }));
+                            throw error;
                     });
                 }
                 connection.commit(function (err) {
@@ -92,15 +96,15 @@ router.post('/api/circuit-service', function (req, res) {
                                 result: "Epic Fail!",
                                 sql: query2.sql
                             }));
+                            
                             throw err;
                         });
                     }
-                    console.log("** POST Also added " + num + " ports");
+                    console.log("** POST also added " + port_ids.length + " ports");
                     console.log("The ports_circuit SQL is: " + JSON.stringify(results2));
                     res.send(JSON.stringify({
-                        result: "Insert Successful for MoC ID " + newCircuit.moc_id + " and Circuit ID " + circuit_id
+                        result: "Insert Successful for (MoC ID " + newCircuit.moc_id + ") "
                     }));
-
 
                 });
             });
