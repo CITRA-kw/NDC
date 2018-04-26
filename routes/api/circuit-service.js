@@ -78,8 +78,17 @@ router.post('/api/circuit-service', function (req, res) {
             }));
 
             var log = 'Post ' + results.insertId + ' added';
-
-            connection.query('INSERT INTO log SET data=?', log, function (error, results, fields) {
+            
+            
+            
+            
+            
+        var arr = newCircuit['patch_panel[]'];
+        for (var val in arr) {
+            console.log('iteration');
+            console.log(val);
+        }
+            connection.query('INSERT INTO patch_panel_port (id, patch_panel_id, label) VALUES ' + valuesString, log, function (error, results, fields) {
                 if (error) {
                     return connection.rollback(function () {
                         throw error;
@@ -91,34 +100,15 @@ router.post('/api/circuit-service', function (req, res) {
                             throw err;
                         });
                     }
+                    console.log("** POST Also added " + num + " ports");
                     console.log('success!');
+                    
                 });
             });
         });
     });
-
-    function insertCircuitPorts(patch_panel, port, circuitID) {
-        var arr = newCircuit['patch_panel[]'];
-        for (var val in arr) {
-            console.log('iteration');
-            console.log(val);
-        }
-
-        console.log("** Inserting the ports now for that Circuit");
-        // Now insert the ports for this patch panel
-        connection.query('INSERT INTO patch_panel_port (id, patch_panel_id, label) VALUES ' + valuesString, function (error, results) {
-            if (error) {
-                throw error;
-            }
-
-            console.log("** POST Also added " + num + " ports");
-            return "Insert Successful for " + num + " ports";
-        });
-    }
-
-
-
-
+    
+    
 
 
 
