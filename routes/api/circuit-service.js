@@ -42,53 +42,44 @@ router.post('/api/circuit-service', function (req, res) {
     console.log(newCircuit);
 
 
-
-
+    // Using Transactions so we can rollback if failed in any step
     connection.beginTransaction(function (err) {
         if (err) {
             throw err;
         }
         var query = connection.query('INSERT INTO circuit SET moc_id=?, interface_type=?, provision_speed=?, service=?, provider=?, isp=?, comment=?', [newCircuit.moc_id, newCircuit.interface_type, newCircuit.provision_speed, newCircuit.service, newCircuit.provider, newCircuit.isp, newCircuit.comment], function (error, results, fields) {
             if (error) {
-                res.send(JSON.stringify({
-                    result: "Epic Fail!",
-                    sql: query.sql
-                }));
                 return connection.rollback(function () {
+                    res.send(JSON.stringify({
+                        result: "Epic Fail!",
+                        sql: query.sql
+                    }));
                     throw error;
                 });
             }
             console.log("** POST Circuit - query result: " + JSON.stringify(results));
             res.set('Content-Type', 'application/json');
 
-            // ---------- REACHED HERE
 
-            var arr = newCircuit['patch_panel[]'];
-            for (var val in arr) {
-                console.log('iteration');
-                console.log(val);
+
+
+            //-------------------------------------------
+            // Creating the value string for MySQL insert
+            // ------------------------------------------
+
+            // Get the inserted CircuitId from the previous insert
+            var circuit_id = result.insertId;
+            var valuesString = "";
+            var patch_panel_ids = newCircuit['patch_panel[]'];
+            var port_ids = newCircuit['port[]'];
+            for (var i = 0; i < patch_panel_ids.length; i++) {
+                valuesString += "(" + circuit_id + ", ", port_ids[i] + ", " + patch_panel_id[i] + ", " + i + ")";
+                if (i != patch_panel_ids.length - 1) {
+                    valuesString += ", ";
+                }
             }
 
-
-
-            var result2 = insertCircuitPorts(newCircuit['patch_panel[]'], newCircuit['port[]'], result.insertId);
-
-            res.send(JSON.stringify({
-                result: "Insert Successful for MoC ID " + newCircuit.moc_id + "\n\n " + result2
-            }));
-
-            var log = 'Post ' + results.insertId + ' added';
-            
-            
-            
-            
-            
-        var arr = newCircuit['patch_panel[]'];
-        for (var val in arr) {
-            console.log('iteration');
-            console.log(val);
-        }
-            connection.query('INSERT INTO patch_panel_port (id, patch_panel_id, label) VALUES ' + valuesString, log, function (error, results, fields) {
+            var query2 = connection.query('INSERT INTO ports_circuit (circuit_id, port_id, patch_panel_id, sequence) VALUES ' + valuesString, log, function (error, results2, fields) {
                 if (error) {
                     return connection.rollback(function () {
                         throw error;
@@ -97,18 +88,26 @@ router.post('/api/circuit-service', function (req, res) {
                 connection.commit(function (err) {
                     if (err) {
                         return connection.rollback(function () {
+                            res.send(JSON.stringify({
+                                result: "Epic Fail!",
+                                sql: query2.sql
+                            }));
                             throw err;
                         });
                     }
                     console.log("** POST Also added " + num + " ports");
-                    console.log('success!');
-                    
+                    console.log("The ports_circuit SQL is: " + JSON.stringify(results2));
+                    res.send(JSON.stringify({
+                        result: "Insert Successful for MoC ID " + newCircuit.moc_id + " and Circuit ID " + circuit_id
+                    }));
+
+
                 });
             });
         });
     });
-    
-    
+
+
 
 
 
