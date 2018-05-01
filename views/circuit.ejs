@@ -99,10 +99,10 @@
                         <label for="comment">Comments</label>
                         <textarea rows="4" class="form-control" id="comment"></textarea>
                     </div>
-                    
+
 
                     <hr class="mb-4">
-                    
+
 
                     <h5 class="mb-3">Circuit Connection</h5>
 
@@ -118,36 +118,36 @@
                             </div>
                             <div class="col-md-4">
                                 <select class="custom-select d-block" name="port[]" required>
-                        <option value="">Choose Port...</option>                   
-                    </select>
+                                    <option value="">Choose Port...</option>                   
+                                </select>
                             </div>
                             <div class="col-md-1">
                                 <button type="button" class="btn btn-default addButton patch_panel_array"><i class="fa fa-xs fa-plus"></i></button>
                             </div>
                         </li>
-                    
 
-                    <!-- The option field template containing an option field and a Remove button -->
-                    <li class="row form-group d-none" id="optionTemplate">
-                        <div class="col-md-6">
+
+                        <!-- The option field template containing an option field and a Remove button -->
+                        <li class="row form-group d-none" id="optionTemplate">
                             <i class="fas fa-xs fa-arrows-alt-v"></i>
-                            
-                            <div class="input-group">
-                                <select class="custom-select d-block" name="patch_panel[]" required>
-                            <option value="">Choose Patch Panel...</option>
-                        </select>
+                            <div class="col-md-6">
+
+                                <div class="input-group">
+                                    <select class="custom-select d-block" name="patch_panel[]" required>
+                                        <option value="">Choose Patch Panel...</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <select class="custom-select d-block" name="port[]" required>
+                            <div class="col-md-4">
+                                <select class="custom-select d-block" name="port[]" required>
                         <option value="">Choose Port...</option>                   
                     </select>
-                        </div>
-                        <div class="col-md-1">
-                                <button type="button" class="btn btn-default addButton patch_panel_array"><i class="fa fa-xs fa-plus"></i></button>
-                        </div>
-                    </li>
-</ol>
+                            </div>
+                            <div class="col-md-1">
+                                <button type="button" class="btn btn-default removeButton patch_panel_array"><i class="fa fa-xs fa-minus"></i></button>
+                            </div>
+                        </li>
+                    </ol>
                     <% } else { %>
 
 
@@ -234,45 +234,48 @@
 
                                 <h5 class="mb-3">Circuit Connection</h5>
 
-                                <div class="row form-group">
-                                    <div class="col-md-6">
-                                        <div class="input-group">
-                                            <!--<div class="input-group-prepend">
-                          <span class="input-group-text">#1</span>
-                        </div>-->
-                                            <select class="custom-select d-block patch_panel_array" name="patch_panel[]" required>
+                    <ol class="ordered-circuit-conn-fields">
+                        <li class="row form-group">
+                            <i class="fas fa-xs fa-arrows-alt-v"></i>
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <select class="custom-select d-block patch_panel_array" name="patch_panel[]" required>
                             <option value="">Choose Patch Panel...</option>
                         </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <select class="custom-select d-block" name="port[]" required>
-                        <option value="">Choose Port...</option>                   
-                    </select>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <button type="button" class="btn btn-default addButton patch_panel_array"><i class="fa fa-plus">+</i></button>
-                                    </div>
                                 </div>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="custom-select d-block" name="port[]" required>
+                                    <option value="">Choose Port...</option>                   
+                                </select>
+                            </div>
+                            <div class="col-md-1">
+                                <button type="button" class="btn btn-default addButton patch_panel_array"><i class="fa fa-xs fa-plus"></i></button>
+                            </div>
+                        </li>
 
-                                <!-- The option field template containing an option field and a Remove button -->
-                                <div class="row form-group d-none" id="optionTemplate">
-                                    <div class="col-md-6">
-                                        <div class="input-group">
-                                            <select class="custom-select d-block" name="patch_panel[]" required>
-                            <option value="">Choose Patch Panel...</option>
-                        </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <select class="custom-select d-block" name="port[]" required>
+
+                        <!-- The option field template containing an option field and a Remove button -->
+                        <li class="row form-group d-none" id="optionTemplate">
+                            <i class="fas fa-xs fa-arrows-alt-v"></i>
+                            <div class="col-md-6">
+
+                                <div class="input-group">
+                                    <select class="custom-select d-block" name="patch_panel[]" required>
+                                        <option value="">Choose Patch Panel...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="custom-select d-block" name="port[]" required>
                         <option value="">Choose Port...</option>                   
                     </select>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <button type="button" class="btn btn-default removeButton"><i class="fa fa-minus">-</i></button>
-                                    </div>
-                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <button type="button" class="btn btn-default removeButton patch_panel_array"><i class="fa fa-xs fa-minus"></i></button>
+                            </div>
+                        </li>
+                    </ol>
 
                                 <% } %>
 

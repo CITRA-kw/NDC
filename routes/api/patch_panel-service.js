@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
 
-var connection = mysql.createConnection({
+var connection = mysql.createConnection({ 
     host: '192.168.100.8',
     user: 'root',
     password: '1234',
@@ -94,7 +94,7 @@ router.get('/api/patch_panel-service/ports/:id', function (req, res) {
     var patch_panel_id = req.params.id;
     console.log('** GET ports of Patch Panel ID ' + patch_panel_id);
 
-    connection.query('SELECT * FROM patch_panel_port WHERE patch_panel_id=?', [patch_panel_id], function (error, results, fields) {
+    connection.query('SELECT * FROM patch_panel_port WHERE patch_panel_id=? && CONCAT_WS(patch_panel_id, " ", id) NOT IN (SELECT CONCAT_WS(patch_panel_id, " ", port_id) FROM ports_circuit)', [patch_panel_id], function (error, results, fields) {
         if (error) {
             res.send(JSON.stringify({
                 result: "Epic Fail!"

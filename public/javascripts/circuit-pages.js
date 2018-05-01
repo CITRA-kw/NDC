@@ -212,7 +212,7 @@ function updateFormISPList() {
 // Program the dynamic field for circuit connections
 // ***************************************************************    
 // Got this code from http://formvalidation.io/examples/adding-dynamic-field/
-// It's using the old Bootstrap hide so I changed it to use "d-none"
+// It's using the old Bootstrap hide so I changed it to use "d-none" for Bootstrap4
 // 
 // For bookmarking and future reference here's other examples
 // https://bootsnipp.com/snippets/XaXB0
@@ -254,7 +254,7 @@ function formDynamicField() {
                     }
                 })*/
 
-        // Add button click handler
+        // The click handler of the add button
         .on('click', '.addButton', function () {
             console.log("** Add button clicked ");
             var $template = $('#optionTemplate'),
@@ -262,19 +262,19 @@ function formDynamicField() {
                 .clone()
                 .removeClass('d-none')
                 .removeAttr('id')
-                .insertBefore($template),
-                $option = $clone.find('[name="option[]"]');
+                .insertBefore($template);
+                //$option = $clone.find('[name="option[]"]');
 
             // Add new field
             // TODO review this
             //$('form').formValidation('addField', $option);
         })
 
-        // Remove button click handler
+        // The click handler of the remove button
         .on('click', '.removeButton', function () {
             console.log("** Remove button clicked ");
-            var $row = $(this).parents('.form-group'),
-                $option = $row.find('[name="option[]"]');
+            var $row = $(this).parents('.form-group');
+                //$option = $row.find('[name="option[]"]');
 
             // Remove element containing the option
             $row.remove();
@@ -286,6 +286,7 @@ function formDynamicField() {
 
         // Called after adding new field
         .on('added.field.fv', function (e, data) {
+            console.log('** + ');
             // data.field   --> The field name
             // data.element --> The new field element
             // data.options --> The new field options
@@ -294,13 +295,12 @@ function formDynamicField() {
                 if ($('form').find(':visible[name="option[]"]').length >= MAX_OPTIONS) {
                     $('form').find('.addButton').attr('disabled', 'disabled');
                 }
-            }
-        
-            
+            }            
         })
 
         // Called after removing the field
         .on('removed.field.fv', function (e, data) {
+            console.log('** - ');
             if (data.field === 'option[]') {
                 if ($('form').find(':visible[name="option[]"]').length < MAX_OPTIONS) {
                     $('form').find('.addButton').removeAttr('disabled');
