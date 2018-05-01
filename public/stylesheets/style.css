@@ -46,6 +46,10 @@ ol.ordered-circuit-conn-fields li.placeholder:before {
     border-right: none;    
 }
 
+ol.ordered-circuit-conn-fields {
+    padding:0;
+}
+
 
 
 

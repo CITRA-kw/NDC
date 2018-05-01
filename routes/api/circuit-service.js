@@ -113,45 +113,6 @@ router.post('/api/circuit-service', function (req, res) {
 
 
 
-
-
-
-
-    /*for(var i = 0; i < newCircuit.patch_panel.length; i ++) {
-        console.log('iteration');
-        console.log(newCircuit.patch_panel[i]);
-    } */
-
-
-    /*
-    Finding this solution caused me lots of troubles and chain of changes both in the DB and in the codebase. Be thankful that I've done this not you!
-    
-    I've used BEFORE INSERT trigger on the database (table: circuit) to set the ID of each row as a combination of ISP and Provider and Circuit_NUM    
-    */
-
-    /*
-    var query = connection.query('INSERT INTO circuit SET moc_id=?, interface_type=?, provision_speed=?, service=?, provider=?, isp=?, comment=?', [newCircuit.moc_id, newCircuit.interface_type, newCircuit.provision_speed, newCircuit.service, newCircuit.provider, newCircuit.isp, newCircuit.comment], function (error, results) {
-        if (error) {
-            res.send(JSON.stringify({
-                result: "Epic Fail!",
-                sql: query.sql
-            }));
-
-            throw error;
-        }
-
-        console.log("** POST Circuit - query result: " + JSON.stringify(results));
-        res.set('Content-Type', 'application/json');
-        
-        var result2 = insertCircuitPorts(newCircuit['patch_panel[]'], newCircuit['port[]'], result.insertId);
-        
-        res.send(JSON.stringify({
-            result: "Insert Successful for MoC ID " + newCircuit.moc_id + "\n\n " + result2
-        }));
-    });
-    */
-
-
 });
 
 // ***************************************************************
