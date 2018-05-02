@@ -130,9 +130,10 @@ function printList(list_data) {
         // it was hard to write
         // so it should be hard to read
 
-        // Circuit has no names so I'm using its MOC ID instead
+        // Circuit has no names so I'm using its MOC ID and circuit_num instead
         if (!this.name) {
             this.name = this.moc_id;
+            this.id = this.circuit_num;
         }
 
         $('<li>').addClass('list-group-item d-flex justify-content-between lh-condensed').appendTo('#some_list');

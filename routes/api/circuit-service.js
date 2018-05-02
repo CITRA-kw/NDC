@@ -6,7 +6,7 @@ var connection = mysql.createConnection({
     host: '192.168.100.8',
     user: 'root',
     password: '1234',
-    database: 'isp_links'
+    database: 'isp_links_test'
 });
 
 connection.connect();
@@ -41,7 +41,6 @@ router.post('/api/circuit-service', function (req, res) {
 
     console.log(newCircuit);
 
-
     // Using Transactions so we can rollback if failed in any step
     connection.beginTransaction(function (err) {
         if (err) {
@@ -54,39 +53,40 @@ router.post('/api/circuit-service', function (req, res) {
                         result: "Epic Fail!",
                         sql: query.sql
                     }));
+                    console.log('MySQL rolling back!');
                     throw error;
                 });
             }
             console.log("** POST Circuit - query result: " + JSON.stringify(results));
             res.set('Content-Type', 'application/json');
 
-
-
-
             //-------------------------------------------
             // Creating the value string for MySQL insert
             // ------------------------------------------
 
             // Get the inserted CircuitId from the previous insert
-            var circuit_id = results.insertId;
+            var circuit_num = results.insertId; // CHANGE: Get actual ID
             var valuesString = "";
             var patch_panel_ids = newCircuit['patch_panel[]'];
             var port_ids = newCircuit['port[]'];
+
+            // Create the SQL sinsert sequence 
             for (var i = 0; i < patch_panel_ids.length; i++) {
-                valuesString += "(" + circuit_id + ", " + port_ids[i] + ", " + patch_panel_ids[i] + ", " + i + ")";
+                valuesString += "(" + circuit_num + ", " + port_ids[i] + ", " + patch_panel_ids[i] + ", " + i + ")";
                 if (i != patch_panel_ids.length - 1) {
                     valuesString += ", ";
                 }
             }
 
-            var query2 = connection.query('INSERT INTO ports_circuit (circuit_id, port_id, patch_panel_id, sequence) VALUES ' + valuesString, function (error, results2, fields) {
+            var query2 = connection.query('INSERT INTO ports_circuit (circuit_num, port_id, patch_panel_id, sequence) VALUES ' + valuesString, function (error, results2, fields) {
                 if (error) {
                     return connection.rollback(function () {
                         res.send(JSON.stringify({
-                                result: "Epic Fail!",
-                                sql: query2.sql
-                            }));
-                            throw error;
+                            result: "Epic Fail!",
+                            sql: query2.sql
+                        }));
+                        console.log('MySQL rolling back #2!');
+                        throw error;
                     });
                 }
                 connection.commit(function (err) {
@@ -96,7 +96,7 @@ router.post('/api/circuit-service', function (req, res) {
                                 result: "Epic Fail!",
                                 sql: query2.sql
                             }));
-                            
+
                             throw err;
                         });
                     }
@@ -111,23 +111,43 @@ router.post('/api/circuit-service', function (req, res) {
         });
     });
 
-
-
 });
 
 // ***************************************************************
 // Get a single Circuit detail
 // ***************************************************************
 router.get('/api/circuit-service/:id', function (req, res) {
-    console.log('** GET Single Circuit: select * from circuit where id = ' + req.params.id);
+    console.log('** GET Single Circuit id = ' + req.params.id);
 
-    connection.query('SELECT * FROM circuit WHERE id = "' + req.params.id + '"', function (err, results, fields) {
+    var toSend;
+
+    connection.query('SELECT * FROM circuit WHERE circuit_num = "' + req.params.id + '"', function (err, results, fields) {
         if (err) throw err;
-
+        
+        console.log(this.sql);
+        console.log('** Result from first query: ');
+        //console.log(results[0]['circuit_num']);
         console.log(results);
+        toSend = results;
 
-        res.json(results);
+        //res.json(results);
     });
+    connection.query('SELECT * FROM ports_circuit WHERE circuit_num = "' + req.params.id + '" ORDER BY sequence ASC', function (err, results, fields) {
+        if (err) throw err;
+        
+        console.log(this.sql);
+        
+        console.log('** Result from second query: ');
+        console.log(results);
+        
+        //console.log(toSend);
+        
+        toSend[1] = results;
+        //toSend[2] = results[0]['patch_panel_id'];
+
+        res.json(toSend);
+    });
+
 });
 
 // ***************************************************************
@@ -159,11 +179,12 @@ router.put('/api/circuit-service', function (req, res) {
 // ***************************************************************
 // Delete Circuit
 // ***************************************************************
+// TODO delete also circuit_port and use Transactions
 router.delete('/api/circuit-service/:id', function (req, res) {
     var delete_circuit = req.body;
-    console.log("** DELETE - delete Circuit ID: " + delete_circuit.id);
+    console.log("** DELETE - delete circuit_num: " + delete_circuit.id);
 
-    var query = connection.query('UPDATE circuit SET active = "0" where id=?', [update_circuit.id], function (error, results, fields) {
+    var query = connection.query('UPDATE circuit SET active = "0" where circuit_num=?', [delete_circuit.id], function (error, results, fields) {
         if (error) {
             res.send(JSON.stringify({
                 result: "Epic Fail!"
@@ -175,7 +196,7 @@ router.delete('/api/circuit-service/:id', function (req, res) {
         console.log("** DELETE Circuit - query result: " + JSON.stringify(results));
         res.set('Content-Type', 'application/json');
         res.send(JSON.stringify({
-            result: "Delete success for Circuit ID " + delete_circuit.id
+            result: "Delete success for circuit_num " + delete_circuit.id
         }));
     });
 });

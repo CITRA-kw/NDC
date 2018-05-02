@@ -7,15 +7,14 @@ $(document).ready(function () {
     updateFormISPList();
     updateFormProviderList();
     formDynamicField();
-    
+
     // Make the connection fields sortable
     $("ol.ordered-circuit-conn-fields").sortable();
 
 
 
     // ***************************************************************
-    // Update Circuit Form Page
-    // ***************************************************************
+    // Update Circuit Form Page ***************************************************************
     // When I'm in Circuit update page, populate the form
     if (document.location.href.indexOf("/circuit/updateform/") > -1) {
         console.log("** Circuits update form");
@@ -34,6 +33,13 @@ $(document).ready(function () {
             $("select#isp").val(json[0].isp);
             $("input#comment").attr("value", json[0].comment);
             console.log("** Received circuit JSON info to populate form for MOC ID " + json[0].moc_id);
+
+            // populate the circuit connection dropdowns
+            console.log(json[1].length);
+            for (var i = 0; i < json[1].length; i++) {
+
+
+            }
         });
 
         // Update form is submitted 
@@ -122,9 +128,27 @@ $(document).ready(function () {
             $('select[name="port[]"]').each(function () {
                 formData.port.push($(this).val());
             });
-            // Pop last value which is hidden
+            // Pop last value which is the hidden field
             formData.patch_panel.pop();
             formData.port.pop();
+
+            // Check duplicates
+            var duplicate = false;
+            for (var i = 0; i < formData.port.length; i++) {
+                for (var j = 0; j < formData.port.length; j++) {
+                    if (i == j) continue;
+                    if (formData.port[i] == formData.port[j] &&
+                        formData.patch_panel[i] == formData.patch_panel[j]) {
+                        duplicate = true;
+                        break;
+                    }
+                }
+            }
+            if (duplicate) {
+                showMessage('Error - Duplicate found in Circuit Connection');
+                console.log('Submission stopped - Duplicates found!');
+                return;
+            }
 
             console.log("** Sending POST: " + JSON.stringify(formData));
 
@@ -224,46 +248,10 @@ function formDynamicField() {
 
 
     $('form')
-        /*
-                .formValidation({
-                    framework: 'bootstrap',
-                    icon: {
-                        valid: 'glyphicon glyphicon-ok',
-                        invalid: 'glyphicon glyphicon-remove',
-                        validating: 'glyphicon glyphicon-refresh'
-                    },
-                    fields: {
-                        question: {
-                            validators: {
-                                notEmpty: {
-                                    message: 'The question required and cannot be empty'
-                                }
-                            }
-                        },
-                        'option[]': {
-                            validators: {
-                                notEmpty: {
-                                    message: 'The option required and cannot be empty'
-                                },
-                                stringLength: {
-                                    max: 100,
-                                    message: 'The option must be less than 100 characters long'
-                                }
-                            }
-                        }
-                    }
-                })*/
-
         // The click handler of the add button
         .on('click', '.addButton', function () {
-            console.log("** Add button clicked ");
-            var $template = $('#optionTemplate'),
-                $clone = $template
-                .clone()
-                .removeClass('d-none')
-                .removeAttr('id')
-                .insertBefore($template);
-                //$option = $clone.find('[name="option[]"]');
+            addButtonClicked();
+            //$option = $clone.find('[name="option[]"]');
 
             // Add new field
             // TODO review this
@@ -274,7 +262,7 @@ function formDynamicField() {
         .on('click', '.removeButton', function () {
             console.log("** Remove button clicked ");
             var $row = $(this).parents('.form-group');
-                //$option = $row.find('[name="option[]"]');
+            //$option = $row.find('[name="option[]"]');
 
             // Remove element containing the option
             $row.remove();
@@ -284,6 +272,7 @@ function formDynamicField() {
             //$('form').formValidation('removeField', $option);
         })
 
+        // TODO This is not being called. Will do in the future because I'm receving pressure to finish the project very soon
         // Called after adding new field
         .on('added.field.fv', function (e, data) {
             console.log('** + ');
@@ -295,7 +284,7 @@ function formDynamicField() {
                 if ($('form').find(':visible[name="option[]"]').length >= MAX_OPTIONS) {
                     $('form').find('.addButton').attr('disabled', 'disabled');
                 }
-            }            
+            }
         })
 
         // Called after removing the field
@@ -307,10 +296,20 @@ function formDynamicField() {
                 }
             }
         });
-    
+
     populatePatchPanelDropDown();
 }
 
+// When add button clicked for circuit connections - to add an extra circuit field
+function addButtonClicked() {
+    console.log("** Add button clicked ");
+    var $template = $('#optionTemplate'),
+        $clone = $template
+        .clone()
+        .removeClass('d-none')
+        .removeAttr('id')
+        .insertBefore($template);
+}
 // ***************************************************************
 // Populate the patch_panel dynamic fields
 // **************************************************************
