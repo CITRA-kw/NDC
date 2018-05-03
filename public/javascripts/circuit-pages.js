@@ -14,7 +14,8 @@ $(document).ready(function () {
 
 
     // ***************************************************************
-    // Update Circuit Form Page ***************************************************************
+    // Update Circuit Form Page 
+    // ***************************************************************
     // When I'm in Circuit update page, populate the form
     if (document.location.href.indexOf("/circuit/updateform/") > -1) {
         console.log("** Circuits update form");
@@ -36,8 +37,9 @@ $(document).ready(function () {
 
             // populate the circuit connection dropdowns
             console.log(json[1].length);
-            for (var i = 0; i < json[1].length; i++) {
-
+            // Starting from 1 because 0 is reserved for the other form data
+            for (var i = 1; i < json[1].length; i++) {
+                addButtonClicked();
 
             }
         });
