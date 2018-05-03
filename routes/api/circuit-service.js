@@ -6,7 +6,7 @@ var connection = mysql.createConnection({
     host: '192.168.100.8',
     user: 'root',
     password: '1234',
-    database: 'isp_links'
+    database: 'isp_links_test'
 });
 
 connection.connect();
@@ -132,7 +132,7 @@ router.get('/api/circuit-service/:id', function (req, res) {
 
         //res.json(results);
     });
-    connection.query('SELECT * FROM ports_circuit WHERE circuit_num = "' + req.params.id + '" ORDER BY sequence ASC', function (err, results, fields) {
+    connection.query('SELECT *  FROM ports_circuit INNER JOIN patch_panel_port ON ports_circuit.port_id = patch_panel_port.id AND ports_circuit.patch_panel_id = patch_panel_port.patch_panel_id INNER JOIN patch_panel ON patch_panel.id = ports_circuit.patch_panel_id WHERE ports_circuit.circuit_num = "' + req.params.id + '" ORDER BY ports_circuit.sequence ASC', function (err, results, fields) {
         if (err) throw err;
         
         console.log(this.sql);
