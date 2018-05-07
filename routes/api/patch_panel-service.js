@@ -6,7 +6,7 @@ var connection = mysql.createConnection({
     host: '192.168.100.8',
     user: 'root',
     password: '1234',
-    database: 'isp_links_test'
+    database: 'isp_links'
 });
 
 connection.connect();
@@ -41,7 +41,7 @@ router.post('/api/patch_panel-service/patch_panel', function (req, res) {
 
     //console.log('** POST Received: ' + newPatchPanel);
 
-    connection.query('INSERT INTO patch_panel SET name=?', [newPatchPanel.name], function (error, results) {
+    connection.query('INSERT INTO patch_panel SET name=?, location=?', [newPatchPanel.name, newPatchPanel.location], function (error, results) {
         if (error) {
             res.send(JSON.stringify({
                 result: "Epic Fail!"
@@ -56,7 +56,7 @@ router.post('/api/patch_panel-service/patch_panel', function (req, res) {
         var result2 = insertPorts(newPatchPanelID);
         
         res.send(JSON.stringify({
-            result: "Insert Successful for " + newPatchPanel.name + " with ID: " + newPatchPanelID + "\n " + result2
+            result: "Insert Successful for " + newPatchPanel.name
         }));
 
 
@@ -131,7 +131,7 @@ router.put('/api/patch_panel-service/patch_panel', function (req, res) {
     var update_patch_panel = req.body;
     console.log("** PUT - update single Patch Panel: " + update_patch_panel.name);
 
-    var query = connection.query('UPDATE patch_panel SET name=? where id=?', [update_patch_panel.name, update_patch_panel.id], function (error, results, fields) {
+    var query = connection.query('UPDATE patch_panel SET name=?, location=? where id=?', [update_patch_panel.name, update_patch_panel.location, update_patch_panel.id], function (error, results, fields) {
         if (error) {
             res.send(JSON.stringify({
                 result: "Epic Fail!"

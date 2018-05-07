@@ -21,9 +21,7 @@ $(document).ready(function () {
         // Do a JSON call and populate the form
         $.getJSON('/api/' + service_name + '/' + patchPanelID, function (json) {
             $("input#name").attr("value", json[0].name);
-            $("input#contact_name").attr("value", json[0].contact_name);
-            $("input#contact_phone").attr("value", json[0].contact_phone);
-            $("input#contact_email").attr("value", json[0].contact_email);
+            $("input#location").attr("value", json[0].location);
             console.log("** Received Patch Panel JSON info to populate form for " + json[0].name);
 
         });
@@ -36,11 +34,9 @@ $(document).ready(function () {
             var formData = {};
             formData.id = $("input#patchPanelId").val();
             formData.name = $("input#name").val();
-            formData.contact_name = $("input#contact_name").val();
-            formData.contact_phone = $("input#contact_phone").val();
-            formData.contact_email = $("input#contact_email").val();
+            formData.location = $("select#location").val();
 
-            console.log("** Sending PUT: " + JSON.stringify(formData));
+            console.log("** Sending PUT: " + JSON.stringify(formData)); 
 
             // JSON call to add form data
             $.getJSON({
@@ -94,9 +90,7 @@ $(document).ready(function () {
             var formData = {};
             formData.id = $("input#patchPanelId").val();
             formData.name = $("input#name").val();
-            formData.contact_name = $("input#contact_name").val();
-            formData.contact_phone = $("input#contact_phone").val();
-            formData.contact_email = $("input#contact_email").val();
+            formData.location = $("select#location").val();
 
             console.log("** Sending POST: " + JSON.stringify(formData));
 
