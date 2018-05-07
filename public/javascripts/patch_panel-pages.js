@@ -21,8 +21,8 @@ $(document).ready(function () {
         // Do a JSON call and populate the form
         $.getJSON('/api/' + service_name + '/' + patchPanelID, function (json) {
             $("input#name").attr("value", json[0].name);
-            $("input#location").attr("value", json[0].location);
-            console.log("** Received Patch Panel JSON info to populate form for " + json[0].name);
+            $("select#location").val(json[0].location);
+            console.log("** Received Patch Panel JSON info to populate form for " + json[0].name + " location " + json[0].location);
 
         });
 
