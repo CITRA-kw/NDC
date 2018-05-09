@@ -6,7 +6,7 @@ var connection = mysql.createConnection({
     host: '192.168.100.8',
     user: 'root',
     password: '1234',
-    database: 'isp_links'
+    database: 'isp_links_test'
 });
 
 connection.connect();
@@ -64,11 +64,14 @@ router.post('/api/circuit-service', function (req, res) {
             // Creating the value string for MySQL insert
             // ------------------------------------------
 
-            // Get the inserted CircuitId from the previous insert
+            // Get the inserted CircuitId from the pr[evious insert
             var circuit_num = results.insertId; // CHANGE: Get actual ID
             var valuesString = "";
-            var patch_panel_ids = newCircuit['patch_panel[]'];
-            var port_ids = newCircuit['port[]'];
+            // Make sure the following variables are an Array, otherwise turn them into an array of single value
+            var patch_panel_ids = newCircuit['patch_panel[]'] ? (Array.isArray(newCircuit['patch_panel[]']) ? newCircuit['patch_panel[]']: [newCircuit['patch_panel[]']]) : [];
+            var port_ids = newCircuit['port[]'] ? (Array.isArray(newCircuit['port[]']) ? newCircuit['port[]']: [newCircuit['port[]']]) : [];
+            console.log("** Number of circuit connections: " + patch_panel_ids.length);
+
 
             // Create the SQL sinsert sequence 
             for (var i = 0; i < patch_panel_ids.length; i++) {

@@ -6,7 +6,7 @@ var connection = mysql.createConnection({
     host: '192.168.100.8',
     user: 'root',
     password: '1234',
-    database: 'isp_links'
+    database: 'isp_links_test'
 });
 
 connection.connect();
@@ -39,7 +39,7 @@ router.post('/api/provider-service', function (req, res) {
     var newProvider = req.body;
     console.log('** POST Single Provider: ' + newProvider.name);
 
-    connection.query('INSERT INTO provider SET name=?, contact_name=?, contact_phone=?, contact_email=?', [newProvider.name, newProvider.contact_name, newProvider.contact_phone, newProvider.contact_email], function (error, results) {
+    connection.query('INSERT INTO provider SET name=?, contact_name=?, contact_phone=?, contact_email=?, code=?', [newProvider.name, newProvider.contact_name, newProvider.contact_phone, newProvider.contact_email, newProvider.code], function (error, results) {
         if (error) {
             res.send(JSON.stringify({
                 result: "Epic Fail!"
@@ -79,7 +79,7 @@ router.put('/api/provider-service', function (req, res) {
     var update_provider = req.body;
     console.log("** PUT - update single Provider: " + update_provider.name);
 
-    var query = connection.query('UPDATE provider SET name=?, contact_name=?, contact_phone=?, contact_email=? where id=?', [update_provider.name, update_provider.contact_name, update_provider.contact_phone, update_provider.contact_email, update_provider.id], function (error, results, fields) {
+    var query = connection.query('UPDATE provider SET name=?, contact_name=?, contact_phone=?, contact_email=?, code=? where id=?', [update_provider.name, update_provider.contact_name, update_provider.contact_phone, update_provider.contact_email, update_provider.code, update_provider.id], function (error, results, fields) {
         if (error) {
             res.send(JSON.stringify({
                 result: "Epic Fail!"

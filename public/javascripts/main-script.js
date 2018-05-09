@@ -226,3 +226,11 @@ $('.delete-btn-confirm').click(function () {
     }); // end getJSON
 
 }); // end click
+
+// ***************************************************************
+// Force lower characters on Code fields
+// ***************************************************************
+function forceLower(strInput) 
+{
+    strInput.value=strInput.value.toLowerCase();
+}

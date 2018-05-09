@@ -6,7 +6,7 @@ var connection = mysql.createConnection({
     host: '192.168.100.8',
     user: 'root',
     password: '1234',
-    database: 'isp_links'
+    database: 'isp_links_test'
 });
 
 connection.connect();
@@ -37,7 +37,7 @@ router.post('/api/isp-service', function (req, res) {
     var newISP = req.body;
     console.log('** POST Single ISP: ' + newISP.name);
 
-    connection.query('INSERT INTO isp SET name=?, contact_name=?, contact_phone=?, contact_email=?', [newISP.name, newISP.contact_name, newISP.contact_phone, newISP.contact_email], function (error, results) {
+    connection.query('INSERT INTO isp SET name=?, contact_name=?, contact_phone=?, contact_email=?, code=?', [newISP.name, newISP.contact_name, newISP.contact_phone, newISP.contact_email, newISP.code], function (error, results) {
         if (error) {
             res.send(JSON.stringify({
                 result: "Epic Fail!"
@@ -77,7 +77,7 @@ router.put('/api/isp-service', function (req, res) {
     var update_isp = req.body;
     console.log("** PUT - update single ISP: " + update_isp.name);
 
-    var query = connection.query('UPDATE isp SET name=?, contact_name=?, contact_phone=?, contact_email=? where id=?', [update_isp.name, update_isp.contact_name, update_isp.contact_phone, update_isp.contact_email, update_isp.id], function (error, results, fields) {
+    var query = connection.query('UPDATE isp SET name=?, contact_name=?, contact_phone=?, contact_email=?, code=? where id=?', [update_isp.name, update_isp.contact_name, update_isp.contact_phone, update_isp.contact_email, update_isp.code, update_isp.id], function (error, results, fields) {
         if (error) {
             res.send(JSON.stringify({
                 result: "Epic Fail!"

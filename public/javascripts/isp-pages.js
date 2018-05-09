@@ -1,4 +1,4 @@
-// If you change tabs to spaces, you'll be killed!
+ // If you change tabs to spaces, you'll be killed!
 
 $(document).ready(function () {
     console.log("** Loaded isp-pages.js");
@@ -24,6 +24,7 @@ $(document).ready(function () {
             $("input#contact_name").attr("value", json[0].contact_name);
             $("input#contact_phone").attr("value", json[0].contact_phone);
             $("input#contact_email").attr("value", json[0].contact_email);
+            $("input#isp_code").attr("value", json[0].code);
             console.log("** Received ISP JSON info to populate form for " + json[0].name);
 
         });
@@ -39,6 +40,7 @@ $(document).ready(function () {
             formData.contact_name = $("input#contact_name").val();
             formData.contact_phone = $("input#contact_phone").val();
             formData.contact_email = $("input#contact_email").val();
+            formData.code = $("input#isp_code").val();
 
             console.log("** Sending PUT: " + JSON.stringify(formData));
 
@@ -97,6 +99,7 @@ $(document).ready(function () {
             formData.contact_name = $("input#contact_name").val();
             formData.contact_phone = $("input#contact_phone").val();
             formData.contact_email = $("input#contact_email").val();
+            formData.code = $("input#isp_code").val();
 
             console.log("** Sending POST: " + JSON.stringify(formData));
 
@@ -138,8 +141,6 @@ $(document).ready(function () {
     }
 
 }); // end jQuery document
-
-
 
 
 
