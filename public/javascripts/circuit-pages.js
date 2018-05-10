@@ -38,10 +38,13 @@ $(document).ready(function () {
             $("select#isp").val(json[0].isp);
             $("input#comment").attr("value", json[0].comment);
             console.log("** Received circuit JSON info to populate form for MOC ID " + json[0].moc_id);
+            console.log("** The data is: " + JSON.stringify(json));
 
             // Populate the circuit connection dropdowns            
             // Starting from 1 because 0 is reserved for the other form data
-            for (var i = 1; i < json[1].length; i++) {
+            console.log("** First patch panel name: " + json[1][0].label);
+            var i;
+            for (i = 0; i < json.length; i++) {
                 addButtonClicked(json[1][i].patch_panel_id, json[1][i].name , json[1][i].port_id, json[1][i].label);
             }
         });

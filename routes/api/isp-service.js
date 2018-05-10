@@ -6,7 +6,7 @@ var connection = mysql.createConnection({
     host: '192.168.100.8',
     user: 'root',
     password: '1234',
-    database: 'isp_links'
+    database: 'isp_links_test'
 });
 
 connection.connect();
@@ -60,7 +60,7 @@ router.post('/api/isp-service', function (req, res) {
 router.get('/api/isp-service/:id', function (req, res) {
     console.log('** GET Single ISP: select * from isp where id = ' + req.params.id);
 
-    connection.query('select * from isp where id = ' + req.params.id, function (err, results, fields) {
+    connection.query('select * from isp where id = ?',[req.params.id] , function (err, results, fields) {
         if (err) throw err;
 
         console.log(results);

@@ -6,7 +6,7 @@ var connection = mysql.createConnection({
     host: '192.168.100.8',
     user: 'root',
     password: '1234',
-    database: 'isp_links'
+    database: 'isp_links_test'
 });
 
 connection.connect();
@@ -114,7 +114,7 @@ router.get('/api/patch_panel-service/ports/:id', function (req, res) {
 router.get('/api/patch_panel-service/patch_panel/:id', function (req, res) {
     console.log('** GET Single Patch Panel for ID ' + req.params.id);
 
-    connection.query('select * from patch_panel where id = ' + req.params.id, function (err, results, fields) {
+    connection.query('select * from patch_panel where id = ?', [req.params.id], function (err, results, fields) {
         if (err) throw err;
 
         console.log(results);
