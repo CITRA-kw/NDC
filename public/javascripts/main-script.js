@@ -44,12 +44,12 @@ $(document).ready(function () {
             console.log("** Received circuit JSON info to populate form for", json);
 
             //make an array
-            var data = [];
+            var data = []; 
 
             for (var i in json) {
                 var row = json[i];
 
-                var datum = [row["id"], row["moc_id"], row["isp"], row["provider"], row["provision_speed"]];
+                var datum = [row["id"], row["moc_id"], row["isp_code"], row["provider_code"], row["provision_speed"]];
                 data.push(datum);
             }
             $('#example').DataTable({
