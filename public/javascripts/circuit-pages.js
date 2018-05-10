@@ -44,7 +44,7 @@ $(document).ready(function () {
             // Starting from 1 because 0 is reserved for the other form data
             console.log("** First patch panel name: " + json[1][0].label);
             var i;
-            for (i = 0; i < json.length; i++) {
+            for (i = 0; i < json[1].length; i++) {
                 addButtonClicked(json[1][i].patch_panel_id, json[1][i].name , json[1][i].port_id, json[1][i].label);
             }
         });
