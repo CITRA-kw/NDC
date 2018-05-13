@@ -43,9 +43,11 @@ $(document).ready(function () {
             // Populate the circuit connection dropdowns            
             // Starting from 1 because 0 is reserved for the other form data
             console.log("** First patch panel name: " + json[1][0].label);
+            console.log("** Number of connections to be added " + json[1].length);
             var i;
             for (i = 0; i < json[1].length; i++) {
-                addButtonClicked(json[1][i].patch_panel_id, json[1][i].name , json[1][i].port_id, json[1][i].label);
+                //console.log("** Adding connection # " + i);
+                addButtonClicked(json[1][i].patch_panel_id, json[1][i].name, json[1][i].port_id, json[1][i].label);
             }
         });
 
@@ -309,7 +311,8 @@ function formDynamicField() {
 
 // When add button clicked for circuit connections - to add an extra circuit field
 function addButtonClicked(patch_panel_id, patch_panel_name, port_id, port_name) {
-    console.log("** Add button clicked with values: ");
+    console.log('**************************************');
+    console.log("** addButtonClicked() with values: ");
     console.log("**** Patch Panel ID: " + patch_panel_id);
     console.log("**** Patch Panel Name: " + patch_panel_name);
     console.log("**** Port ID: " + port_id);
@@ -319,7 +322,11 @@ function addButtonClicked(patch_panel_id, patch_panel_name, port_id, port_name) 
         .clone()
         .removeClass('d-none')
         .removeAttr('id')
-        .insertBefore($template);
+        .insertBefore($template).on('change', 'select[name="patch_panel[]"]', function () {
+        console.log("** Circuit dropdown Change called!");
+        populatePortsDropDown(this, port_id, port_name);
+    });
+;
     populatePatchPanelDropDown(patch_panel_id, patch_panel_name, port_id, port_name);
 
 }
@@ -340,23 +347,27 @@ function populatePatchPanelDropDown(patch_panel_value, patch_panel_name, port_va
         console.log("** Received Patch Panel JSON info to populate the dynamic patch_panel dropdown menu");
         dropdown.empty();
         $.each(list_data, function () {
-            dropdown.append($("<option />").val(this.id).text(this.name));
+            if (typeof patch_panel_value !== 'undefined' && patch_panel_value == this.id) {
+                dropdown.append($("<option />").val(this.id).text(this.name).attr('selected', 'selected'));
+            } else {
+                dropdown.append($("<option />").val(this.id).text(this.name));
+            }
         });
     }).done(function () {
-        // Manually trigger a first change so ports dropdown will be automatically selected
+        // Manually trigger a first change so ports dropdown will be automatically updated and select first value
         $(dropdown).trigger('change');
+        if (typeof patch_panel_value !== 'undefined') {
+            dropdown.prepend($("<option />").val(patch_panel_value).text(patch_panel_name).attr('selected', 'selected'));
+            console.log("*** Selected should be added for patch panel " + patch_panel_name);
+        }
     });
-    if (typeof patch_panel_value !== 'undefined') {
-        dropdown.prepend($("<option />").val(patch_panel_value).text(patch_panel_name).attr('selected', 'selected'));
-        console.log("*** Selected should be added for patch panel " + patch_panel_name);
 
-    }
 
     // Populate the Ports dropdown when in this dropdown we have selected another value
-    $('form').on('change', 'select[name="patch_panel[]"]', function () {
+    /*$('form').on('change', 'select[name="patch_panel[]"]', function () {
         console.log("** Circuit dropdown Change called!");
         populatePortsDropDown(this, port_value, port_name);
-    });
+    });*/
 
 
 }
@@ -376,9 +387,9 @@ function populatePortsDropDown(portField, port_value, port_name) {
         });
         if (typeof port_value !== 'undefined') {
             $(portField).prepend($("<option />").val(port_value).text(port_name).attr('selected', 'selected'));
-            console.log("*** Selected should be added for port " + port_name);
-            
+            console.log("*** Adding SELECTED attribute for port: " + port_name);
         }
-        console.log("** Received Patch Panel JSON info to populate the dynamic ports dropdown for a patch panel");
+        
+        //console.log("** Received Patch Panel JSON info to populate the dynamic ports dropdown for a patch panel");
     });
 }
