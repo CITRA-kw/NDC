@@ -68,8 +68,8 @@ router.post('/api/circuit-service', function (req, res) {
             var circuit_num = results.insertId; // CHANGE: Get actual ID
             var valuesString = "";
             // Make sure the following variables are an Array, otherwise turn them into an array of single value
-            var patch_panel_ids = newCircuit['patch_panel[]'] ? (Array.isArray(newCircuit['patch_panel[]']) ? newCircuit['patch_panel[]']: [newCircuit['patch_panel[]']]) : [];
-            var port_ids = newCircuit['port[]'] ? (Array.isArray(newCircuit['port[]']) ? newCircuit['port[]']: [newCircuit['port[]']]) : [];
+            var patch_panel_ids = newCircuit['patch_panel[]'] ? (Array.isArray(newCircuit['patch_panel[]']) ? newCircuit['patch_panel[]'] : [newCircuit['patch_panel[]']]) : [];
+            var port_ids = newCircuit['port[]'] ? (Array.isArray(newCircuit['port[]']) ? newCircuit['port[]'] : [newCircuit['port[]']]) : [];
             console.log("** Number of circuit connections: " + patch_panel_ids.length);
 
 
@@ -127,27 +127,27 @@ router.get('/api/circuit-service/:id', function (req, res) {
     // First, get a specific circuit data
     connection.query('SELECT * FROM circuit WHERE circuit_num = "' + req.params.id + '"', function (err, results, fields) {
         if (err) throw err;
-        
-        console.log(this.sql); 
+
+        console.log(this.sql);
         console.log('** Result from first query: ');
         console.log(results);
         toSend = results;
 
     });
-    
+
     // Second, get the connection of that specific circuit
     connection.query('SELECT *  FROM ports_circuit INNER JOIN patch_panel_port ON ports_circuit.port_id = patch_panel_port.id AND ports_circuit.patch_panel_id = patch_panel_port.patch_panel_id INNER JOIN patch_panel ON patch_panel.id = ports_circuit.patch_panel_id WHERE ports_circuit.circuit_num = ? ORDER BY ports_circuit.sequence ASC', [req.params.id], function (err, results, fields) {
         if (err) throw err;
-        
+
         console.log(this.sql);
-        
+
         console.log('** Result from second query: ');
         console.log(results);
-        
+
         toSend[1] = results;
         console.log('** Send back the following info: ');
         console.log(toSend);
-        
+
         res.json(toSend);
     });
 
@@ -177,6 +177,83 @@ router.put('/api/circuit-service', function (req, res) {
             result: "Update Successful for Circuit ID" + update_circuit.id
         }));
     });
+    
+    
+    
+    // ----------------- USING MYSQL TRANSACTIONS INSTEAD --------
+    // Using Transactions so we can rollback if failed in any step
+    connection.beginTransaction(function (err) {
+        if (err) {
+            throw err;
+        }
+        var query = connection.query('UPDATE circuit SET moc_id=?, interface_type=?, provision_speed=?, service=?, provider=?, isp=?, comment=? where id=?', [update_circuit.moc_id, update_circuit.interface_type, update_circuit.provision_speed, update_circuit.service, update_circuit.provider, update_circuit.isp, update_circuit.comment, update_circuit.id], function (error, results, fields) {
+            if (error) {
+                return connection.rollback(function () {
+                    res.send(JSON.stringify({
+                        result: "Epic Fail!",
+                        sql: query.sql
+                    }));
+                    console.log('MySQL rolling back!');
+                    throw error;
+                });
+            }
+            console.log("** POST Circuit - query result: " + JSON.stringify(results));
+            res.set('Content-Type', 'application/json');
+
+            //-------------------------------------------
+            // Creating the value string for MySQL insert
+            // ------------------------------------------
+
+            // Get the inserted CircuitId from the pr[evious insert
+            var circuit_num = results.insertId; // CHANGE: Get actual ID
+            var valuesString = "";
+            // Make sure the following variables are an Array, otherwise turn them into an array of single value
+            var patch_panel_ids = newCircuit['patch_panel[]'] ? (Array.isArray(newCircuit['patch_panel[]']) ? newCircuit['patch_panel[]'] : [newCircuit['patch_panel[]']]) : [];
+            var port_ids = newCircuit['port[]'] ? (Array.isArray(newCircuit['port[]']) ? newCircuit['port[]'] : [newCircuit['port[]']]) : [];
+            console.log("** Number of circuit connections: " + patch_panel_ids.length);
+
+
+            // Create the SQL sinsert sequence 
+            for (var i = 0; i < patch_panel_ids.length; i++) {
+                valuesString += "(" + circuit_num + ", " + port_ids[i] + ", " + patch_panel_ids[i] + ", " + i + ")";
+                if (i != patch_panel_ids.length - 1) {
+                    valuesString += ", ";
+                }
+            }
+
+            var query2 = connection.query('INSERT INTO ports_circuit (circuit_num, port_id, patch_panel_id, sequence) VALUES ' + valuesString, function (error, results2, fields) {
+                if (error) {
+                    return connection.rollback(function () {
+                        res.send(JSON.stringify({
+                            result: "Epic Fail!",
+                            sql: query2.sql
+                        }));
+                        console.log('MySQL rolling back #2!');
+                        throw error;
+                    });
+                }
+                connection.commit(function (err) {
+                    if (err) {
+                        return connection.rollback(function () {
+                            res.send(JSON.stringify({
+                                result: "Epic Fail!",
+                                sql: query2.sql
+                            }));
+
+                            throw err;
+                        });
+                    }
+                    console.log("** POST also added " + port_ids.length + " ports");
+                    console.log("The ports_circuit SQL is: " + JSON.stringify(results2));
+                    res.send(JSON.stringify({
+                        result: "Insert Successful for (MoC ID " + newCircuit.moc_id + ") "
+                    }));
+
+                });
+            });
+        });
+    });
+    
 });
 
 // ***************************************************************

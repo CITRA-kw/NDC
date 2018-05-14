@@ -201,8 +201,6 @@ $(document).ready(function () {
 
 }); // end jQuery document
 
-
-
 // ***************************************************************
 // Populate the Providers dropdown
 // ***************************************************************    
@@ -221,7 +219,6 @@ function updateFormProviderList() {
     }
 }
 
-
 // ***************************************************************
 // Populate ISPs dropdown
 // ***************************************************************    
@@ -239,7 +236,6 @@ function updateFormISPList() {
         });
     }
 }
-
 
 // ***************************************************************
 // Program the dynamic field for circuit connections
@@ -322,29 +318,33 @@ function addButtonClicked(patch_panel_id, patch_panel_name, port_id, port_name) 
         .clone()
         .removeClass('d-none')
         .removeAttr('id')
-        .insertBefore($template).on('change', 'select[name="patch_panel[]"]', function () {
-        console.log("** Circuit dropdown Change called!");
-        populatePortsDropDown(this, port_id, port_name);
-    });
-;
+        .insertBefore($template);
     populatePatchPanelDropDown(patch_panel_id, patch_panel_name, port_id, port_name);
 
+
 }
+
 // ***************************************************************
 // Populate the patch_panel dynamic fields
 // ***************************************************************
 function populatePatchPanelDropDown(patch_panel_value, patch_panel_name, port_value, port_name) {
+        console.log("** populatePatchPanelDropDown() called! -- Passed values " + patch_panel_value + " " + patch_panel_name + " " +  port_value + " " + port_name);
+
     // How to get array of fields https://stackoverflow.com/questions/7880619/multiple-inputs-with-same-name-through-post-in-php
     // http://www.dreamincode.net/forums/topic/245179-how-to-insert-data-using-multiple-input-with-same-name/
 
     // Obviously selector for the patch_panel dropdown!
     // Before the last because last one is the hidden template
     var dropdown = $("form select[name='patch_panel[]']").eq(-2);
+    
+    // First remove change
+    $(dropdown).off('change');
+    
     // TODO: Service name/link should be dynamic
     // Do a JSON call and populate the dropdown
     $.getJSON('/api/patch_panel-service/patch_panel', function (list_data) {
 
-        console.log("** Received Patch Panel JSON info to populate the dynamic patch_panel dropdown menu");
+        console.log("** JSON received on populatePatchPanelDropDown() - Populating the dropdown");
         dropdown.empty();
         $.each(list_data, function () {
             if (typeof patch_panel_value !== 'undefined' && patch_panel_value == this.id) {
@@ -355,19 +355,21 @@ function populatePatchPanelDropDown(patch_panel_value, patch_panel_name, port_va
         });
     }).done(function () {
         // Manually trigger a first change so ports dropdown will be automatically updated and select first value
-        $(dropdown).trigger('change');
-        if (typeof patch_panel_value !== 'undefined') {
-            dropdown.prepend($("<option />").val(patch_panel_value).text(patch_panel_name).attr('selected', 'selected'));
-            console.log("*** Selected should be added for patch panel " + patch_panel_name);
-        }
+        $(dropdown).trigger('change', [{port_value:port_value, port_name:port_name}]);
+
     });
 
 
-    // Populate the Ports dropdown when in this dropdown we have selected another value
-    /*$('form').on('change', 'select[name="patch_panel[]"]', function () {
+    // Add onChange() again
+    $(dropdown).on('change', dropdown, function (evnet, obj) {
         console.log("** Circuit dropdown Change called!");
-        populatePortsDropDown(this, port_value, port_name);
-    });*/
+        if (typeof obj !== 'undefined') {
+            populatePortsDropDown(dropdown, obj.port_value, obj.port_name);
+        } else {
+            populatePortsDropDown(dropdown);
+            
+        }
+    });
 
 
 }
@@ -376,6 +378,8 @@ function populatePatchPanelDropDown(patch_panel_value, patch_panel_name, port_va
 // Populate the ports dynamic fields
 // **************************************************************
 function populatePortsDropDown(portField, port_value, port_name) {
+    console.log("** populatePortsDropDown() called! -- Passed values " + port_value + " " + port_name);
+
     // Do a JSON call and populate the dropdown select field
     // TODO: Service name/link should be dynamic
     $.getJSON('/api/patch_panel-service/ports/' + $(portField).val(), function (list_data) {
@@ -387,9 +391,9 @@ function populatePortsDropDown(portField, port_value, port_name) {
         });
         if (typeof port_value !== 'undefined') {
             $(portField).prepend($("<option />").val(port_value).text(port_name).attr('selected', 'selected'));
-            console.log("*** Adding SELECTED attribute for port: " + port_name);
+            console.log("*** Activating a port dropdown select for: " + port_name);
         }
-        
+
         //console.log("** Received Patch Panel JSON info to populate the dynamic ports dropdown for a patch panel");
     });
 }
