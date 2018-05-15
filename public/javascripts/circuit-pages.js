@@ -67,6 +67,38 @@ $(document).ready(function () {
             formData.isp = $("select#isp").val();
             formData.comment = $("textarea#comment").val();
 
+            // Get circuit selection array from the form
+            formData.patch_panel = new Array();
+            $('select[name="patch_panel[]"]').each(function () {
+                formData.patch_panel.push($(this).val());
+            });
+            formData.port = new Array();
+            $('select[name="port[]"]').each(function () {
+                formData.port.push($(this).val());
+            });
+            // Pop last value which is the hidden field
+            formData.patch_panel.pop();
+            formData.port.pop();
+
+            // Check duplicates
+            var duplicate = false;
+            for (var i = 0; i < formData.port.length; i++) {
+                for (var j = 0; j < formData.port.length; j++) {
+                    if (i == j) continue;
+                    if (formData.port[i] == formData.port[j] &&
+                        formData.patch_panel[i] == formData.patch_panel[j]) {
+                        duplicate = true;
+                        break;
+                    }
+                }
+            }
+            if (duplicate) {
+                showMessage('Error - Duplicate found in Circuit Connection');
+                console.log('Submission stopped - Duplicates found!');
+                return;
+            }
+
+
             console.log("** Sending PUT: " + JSON.stringify(formData));
 
             // JSON call to add form data
@@ -328,7 +360,7 @@ function addButtonClicked(patch_panel_id, patch_panel_name, port_id, port_name) 
 // Populate the patch_panel dynamic fields
 // ***************************************************************
 function populatePatchPanelDropDown(patch_panel_value, patch_panel_name, port_value, port_name) {
-        console.log("** populatePatchPanelDropDown() called! -- Passed values " + patch_panel_value + " " + patch_panel_name + " " +  port_value + " " + port_name);
+    console.log("** populatePatchPanelDropDown() called! -- Passed values " + patch_panel_value + " " + patch_panel_name + " " + port_value + " " + port_name);
 
     // How to get array of fields https://stackoverflow.com/questions/7880619/multiple-inputs-with-same-name-through-post-in-php
     // http://www.dreamincode.net/forums/topic/245179-how-to-insert-data-using-multiple-input-with-same-name/
@@ -336,10 +368,10 @@ function populatePatchPanelDropDown(patch_panel_value, patch_panel_name, port_va
     // Obviously selector for the patch_panel dropdown!
     // Before the last because last one is the hidden template
     var dropdown = $("form select[name='patch_panel[]']").eq(-2);
-    
+
     // First remove change
     $(dropdown).off('change');
-    
+
     // TODO: Service name/link should be dynamic
     // Do a JSON call and populate the dropdown
     $.getJSON('/api/patch_panel-service/patch_panel', function (list_data) {
@@ -355,7 +387,10 @@ function populatePatchPanelDropDown(patch_panel_value, patch_panel_name, port_va
         });
     }).done(function () {
         // Manually trigger a first change so ports dropdown will be automatically updated and select first value
-        $(dropdown).trigger('change', [{port_value:port_value, port_name:port_name}]);
+        $(dropdown).trigger('change', [{
+            port_value: port_value,
+            port_name: port_name
+        }]);
 
     });
 
@@ -367,7 +402,7 @@ function populatePatchPanelDropDown(patch_panel_value, patch_panel_name, port_va
             populatePortsDropDown(dropdown, obj.port_value, obj.port_name);
         } else {
             populatePortsDropDown(dropdown);
-            
+
         }
     });
 
