@@ -1,0 +1,80 @@
+docker run -d --name=mysql -e MYSQL_ROOT_PASSWORD='sql@Citra2018' -e MYSQL_USER="citra" -e MYSQL_PASSWORD="sql@Citra2018" -v /local/mysql_data:/var/lib/mysql mysql:5.7.22
+## To login
+## Username: root or citra
+## Password: sql@Citra2018
+## To enter shell: docker exec -it mysql /bin/bash
+
+docker run --name phpmyadmin -d --link mysql:db -p 8080:80 -v /local/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php phpmyadmin/phpmyadmin:4.7
+
+
+docker network create mysql-network
+if I use that then I'll need to add --net=mysql-network
+
+
+
+---------------- Docker Compose File -------------------
+version: '2'
+services:
+  #######################################
+  # PHP application Docker container
+  #######################################
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    links:
+      - mysql
+    ports:
+      - "8000:80"
+    volumes:
+      - ./app/:/app/
+      - ./:/docker/
+    volumes_from:
+      - storage
+    networks:
+      - php-network
+#######################################
+# MySQL server
+#######################################
+  mysql:
+    build:
+      context: docker/mysql/
+      dockerfile: MySQL-5.7.Dockerfile
+    restart: always
+    volumes_from:
+      - storage
+    env_file:
+      - etc/environment.yml
+    networks:
+    - php-network
+#######################################
+# PHP MY ADMIN
+#######################################
+  myphpadmin:
+    build:
+      context: docker/myphpadmin
+      dockerfile: Dockerfile
+    restart: always
+    links:
+    - mysql
+    ports:
+    - 8080:80
+    environment:
+    - PMA_ARBITRARY=1
+    networks:
+    - php-network
+
+  storage:
+    build:
+      context: docker/storage/
+    volumes:
+      - /storage
+
+networks:
+    php-network:
+      driver: bridge
+      
+environment:
+  PMA_HOST: mysql
+  PMA_PORT: 3306      
+      

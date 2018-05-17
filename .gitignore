@@ -61,4 +61,7 @@ typings/
 # next.js build output
 .next
 
+# My private notes
+._priv
+
 
