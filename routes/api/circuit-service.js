@@ -3,9 +3,9 @@ var router = express.Router();
 var mysql = require('mysql');
 
 var connection = mysql.createConnection({
-    host: '192.168.100.8',
+    host: 'localhost',
     user: 'root',
-    password: '1234',
+    password: 'sql@Citra2018',
     database: 'isp_links'
 });
 
