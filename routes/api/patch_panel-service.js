@@ -1,12 +1,14 @@
 var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
+// Load config file for database access
+var config = require('config').get('dbConfig');;
 
 var connection = mysql.createConnection({ 
-    host: 'localhost',
-    user: 'root',
-    password: 'sql@Citra2018',
-    database: 'isp_links'
+    host: config.get('host'),
+    user: config.get('username'),
+    password: config.get('password'),
+    database: config.get('dbname')
 });
 
 connection.connect();
