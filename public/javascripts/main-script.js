@@ -49,7 +49,7 @@ $(document).ready(function () {
             for (var i in json) {
                 var row = json[i];
 
-                var datum = [row["id"], row["moc_id"], row["isp_code"], row["provider_code"], row["provision_speed"]];
+                var datum = [row["id"], row["moc_id"], row["isp_code"], row["provider_code"], row["provision_speed"], row["comment"]];
                 data.push(datum);
             }
             $('#example').DataTable({
@@ -69,6 +69,9 @@ $(document).ready(function () {
                     },
                     {
                         title: "Speed"
+                    },
+                    {
+                        title: "Comments"
                     },
                 ]
             }); //datatables init
