@@ -1,4 +1,4 @@
-docker run -d --name=mysql -e MYSQL_ROOT_PASSWORD='sql@Citra2018' -e MYSQL_USER="citra" -e MYSQL_PASSWORD="sql@Citra2018" -v /local/mysql_data:/var/lib/mysql mysql:5.7.22
+docker run -d --name=mysql -e MYSQL_ROOT_PASSWORD='sql@Citra2018' -e MYSQL_USER="citra" -e MYSQL_PASSWORD="sql@Citra2018" -p 3306:3306 -v /local/mysql_data:/var/lib/mysql mysql:5.7.22
 ## To login
 ## Username: root or citra
 ## Password: sql@Citra2018
