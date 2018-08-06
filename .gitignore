@@ -63,6 +63,8 @@ typings/
 
 # My private notes
 ._priv
+notes._priv
 
 # My config files
 config/default.json
+
