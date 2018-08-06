@@ -5,17 +5,10 @@ var mysql = require('mysql');
 var config = require('config').get('dbConfig');;
 
 var connection = mysql.createConnection({
-<<<<<<< HEAD
     host: config.get('host'),
     user: config.get('username'),
     password: config.get('password'),
     database: config.get('dbname')
-=======
-    host: '10.0.0.12',
-    user: 'root',
-    password: 'sql@Citra2018',
-    database: 'isp_links'
->>>>>>> 6ec5cf6d780f48b94dd6308665b58e23576d9f3e
 });
 
 connection.connect();
