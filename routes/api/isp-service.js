@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
 // Load config file for database access
-var config = require('config').get('dbConfig');;
+var config = require('config').get('dbConfig');
 
 var connection = mysql.createConnection({
     host: config.get('host'),
