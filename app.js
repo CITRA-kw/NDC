@@ -20,6 +20,9 @@ var app = express();
 var reload = require('reload');
 reload(app);
 
+// Raven (Sentry) for error reporting to developers dashboard
+var Raven = require('raven');
+Raven.config('https://19f12b14d1bb4f4f8b331e63c9c16edc@sentry.io/1261883').install();
 
 // set listening port for server
 app.set(require('config').get('webport'));
