@@ -17,8 +17,8 @@ var provider = require('./routes/provider');
 var app = express();
 
 // Page reload plugin
-var reload = require('reload');
-reload(app);
+//var reload = require('reload');
+//reload(app);
 
 // Raven (Sentry) for error reporting to developers dashboard
 var Raven = require('raven');
