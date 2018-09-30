@@ -22,6 +22,7 @@ $(document).ready(function () {
         $.getJSON('/api/' + service_name + '/' + patchPanelID, function (json) {
             $("input#name").attr("value", json[0].name);
             $("select#location").val(json[0].location);
+            $("input#portsNum").val(json[0].portsNum);
             console.log("** Received Patch Panel JSON info to populate form for " + json[0].name + " location " + json[0].location);
 
         });
@@ -35,6 +36,7 @@ $(document).ready(function () {
             formData.id = $("input#patchPanelId").val();
             formData.name = $("input#name").val();
             formData.location = $("select#location").val();
+            formData.portsNum = $("input#portsNum").val();
 
             console.log("** Sending PUT: " + JSON.stringify(formData)); 
 
@@ -91,6 +93,7 @@ $(document).ready(function () {
             formData.id = $("input#patchPanelId").val();
             formData.name = $("input#name").val();
             formData.location = $("select#location").val();
+            formData.portsNum = $("input#portsNum").val();
 
             console.log("** Sending POST: " + JSON.stringify(formData));
 

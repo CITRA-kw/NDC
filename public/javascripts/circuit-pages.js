@@ -42,7 +42,7 @@ $(document).ready(function () {
 
             // Populate the circuit connection dropdowns            
             // Starting from 1 because 0 is reserved for the other form data
-            console.log("** First patch panel name: " + json[1][0].label);
+            //console.log("** First patch panel name: " + json[1][0].label);
             console.log("** Number of connections to be added " + json[1].length);
             var i;
             for (i = 0; i < json[1].length; i++) {
@@ -129,7 +129,6 @@ $(document).ready(function () {
                     updateList();
                 },
                 beforeSend: function () {
-                    //$(".post_submitting").show().html("<center><img src='images/loading.gif'/></center>");
                 },
                 error: function () {}
             }); // end getJSON
@@ -205,7 +204,6 @@ $(document).ready(function () {
                     console.log("** Received after POST: " + data.result);
 
                     // Reset the form
-                    //$('form').parent().empty();
                     $('form')[0].reset();
 
                     // Compose the feedback message
@@ -222,7 +220,6 @@ $(document).ready(function () {
                     updateList(service_name);
                 },
                 beforeSend: function () {
-                    //$(".post_submitting").show().html("<center><img src='images/loading.gif'/></center>");
                 },
                 error: function () {}
             }); // end getJSON
@@ -286,11 +283,9 @@ function formDynamicField() {
 
     $('form')
         // The click handler of the add button
-        .on('click', '.addButton', function () {
+        .on('click', '.addButtonIngress', function () {
             addButtonClicked();
-            //$option = $clone.find('[name="option[]"]');
 
-            // Add new field
             // TODO review this
             //$('form').formValidation('addField', $option);
         })
@@ -299,12 +294,10 @@ function formDynamicField() {
         .on('click', '.removeButton', function () {
             console.log("** Remove button clicked ");
             var $row = $(this).parents('.form-group');
-            //$option = $row.find('[name="option[]"]');
 
             // Remove element containing the option
             $row.remove();
 
-            // Remove field
             // TODO review this
             //$('form').formValidation('removeField', $option);
         })
@@ -313,9 +306,7 @@ function formDynamicField() {
         // Called after adding new field
         .on('added.field.fv', function (e, data) {
             console.log('** + ');
-            // data.field   --> The field name
-            // data.element --> The new field element
-            // data.options --> The new field options
+
 
             if (data.field === 'option[]') {
                 if ($('form').find(':visible[name="option[]"]').length >= MAX_OPTIONS) {
@@ -339,12 +330,12 @@ function formDynamicField() {
 
 // When add button clicked for circuit connections - to add an extra circuit field
 function addButtonClicked(patch_panel_id, patch_panel_name, port_id, port_name) {
-    console.log('**************************************');
-    console.log("** addButtonClicked() with values: ");
-    console.log("**** Patch Panel ID: " + patch_panel_id);
-    console.log("**** Patch Panel Name: " + patch_panel_name);
-    console.log("**** Port ID: " + port_id);
-    console.log("**** Port Name: " + port_name);
+    //console.log('**************************************');
+    //console.log("** addButtonClicked() with values: ");
+    //console.log("**** Patch Panel ID: " + patch_panel_id);
+    //console.log("**** Patch Panel Name: " + patch_panel_name);
+    //console.log("**** Port ID: " + port_id);
+    //console.log("**** Port Name: " + port_name);
     var $template = $('#optionTemplate'),
         $clone = $template
         .clone()
@@ -413,6 +404,86 @@ function populatePatchPanelDropDown(patch_panel_value, patch_panel_name, port_va
 // Populate the ports dynamic fields
 // **************************************************************
 function populatePortsDropDown(portField, port_value, port_name) {
+    console.log("** populatePortsDropDown() called! -- Passed values " + port_value + " " + port_name);
+
+    // Do a JSON call and populate the dropdown select field
+    // TODO: Service name/link should be dynamic
+    $.getJSON('/api/patch_panel-service/ports/' + $(portField).val(), function (list_data) {
+        portField = $(portField).parent().parent().next().find("select");
+        $(portField).empty();
+        $.each(list_data, function () {
+            $(portField).append($("<option />").val(this.id).text(this.label));
+        });
+        if (typeof port_value !== 'undefined') {
+            $(portField).prepend($("<option />").val(port_value).text(port_name).attr('selected', 'selected'));
+            console.log("*** Activating a port dropdown select for: " + port_name);
+        }
+
+    });
+}
+
+
+
+
+
+// ************************************************************************************************
+// ***************************************************************
+// Populate the patch_panel dynamic fields (Egress)
+// ***************************************************************
+function populatePatchPanelDropDown2(patch_panel_value, patch_panel_name, port_value, port_name) {
+    console.log("** populatePatchPanelDropDown() called! -- Passed values " + patch_panel_value + " " + patch_panel_name + " " + port_value + " " + port_name);
+
+    // How to get array of fields https://stackoverflow.com/questions/7880619/multiple-inputs-with-same-name-through-post-in-php
+    // http://www.dreamincode.net/forums/topic/245179-how-to-insert-data-using-multiple-input-with-same-name/
+
+    // Obviously selector for the patch_panel dropdown!
+    // Before the last because last one is the hidden template
+    var dropdown = $("form select[name='patch_panel[]']").eq(-2);
+
+    // First remove change
+    $(dropdown).off('change');
+
+    // TODO: Service name/link should be dynamic
+    // Do a JSON call and populate the dropdown
+    $.getJSON('/api/patch_panel-service/patch_panel', function (list_data) {
+
+        console.log("** JSON received on populatePatchPanelDropDown() - Populating the dropdown");
+        dropdown.empty();
+        $.each(list_data, function () {
+            if (typeof patch_panel_value !== 'undefined' && patch_panel_value == this.id) {
+                dropdown.append($("<option />").val(this.id).text(this.name).attr('selected', 'selected'));
+            } else {
+                dropdown.append($("<option />").val(this.id).text(this.name));
+            }
+        });
+    }).done(function () {
+        // Manually trigger a first change so ports dropdown will be automatically updated and select first value
+        $(dropdown).trigger('change', [{
+            port_value: port_value,
+            port_name: port_name
+        }]);
+
+    });
+
+
+    // Add onChange() again
+    $(dropdown).on('change', dropdown, function (evnet, obj) {
+        console.log("** Circuit dropdown Change called!");
+        if (typeof obj !== 'undefined') {
+            populatePortsDropDown2(dropdown, obj.port_value, obj.port_name);
+        } else {
+            populatePortsDropDown2(dropdown);
+
+        }
+    });
+
+
+}
+
+// ***************************************************************
+// Populate the ports dynamic fields (Egress)
+// **************************************************************
+function populatePortsDropDown2(portField, port_value, port_name) {
     console.log("** populatePortsDropDown() called! -- Passed values " + port_value + " " + port_name);
 
     // Do a JSON call and populate the dropdown select field

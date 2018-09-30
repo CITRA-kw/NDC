@@ -43,6 +43,64 @@ router.post('/api/patch_panel-service/patch_panel', function (req, res) {
 
     //console.log('** POST Received: ' + newPatchPanel);
 
+    connection.query('INSERT INTO patch_panel SET name=?, location=? WHERE type = "Engress", [newPatchPanel.name, newPatchPanel.location], function (error, results) {
+        if (error) {
+            res.send(JSON.stringify({
+                result: "Epic Fail!"
+            }));
+            throw error;
+        }
+
+        console.log("** POST Patch Panel - query result: " + JSON.stringify(results));
+        newPatchPanelID = results.insertId;
+
+        // Now insert the ports
+        var result2 = insertPorts(newPatchPanelID);
+        
+        res.send(JSON.stringify({
+            result: "Insert Successful for " + newPatchPanel.name
+        }));
+
+
+    });
+
+    // Insert 24 ports for each patch panel we have added to the DB
+    function insertPorts(forID) {
+        // Create value string of the patch_panel_port
+        var num = 24;
+        var valuesString = '';
+        for (var i = 0; i < num; i++) {
+            if (i != 0) {
+                valuesString += ', ';
+            }
+            var portId = parseInt(i) + 1;
+            valuesString += '(' + portId + ', ' + forID + ', "# ' + portId + '")';
+        }
+        console.log("** Ports to insert " + valuesString);
+        // Now insert the ports for this patch panel
+        connection.query('INSERT INTO patch_panel_port (id, patch_panel_id, label) VALUES ' + valuesString, function (error, results) {
+            if (error) {
+                throw error;
+            }
+
+            console.log("** POST Also added " + num + " ports");
+            return "Insert Successful for " + num + " ports";
+        });
+    }
+});
+
+// copy - this is the original
+// ***************************************************************
+// Add a Patch Panel
+// ***************************************************************
+
+// TODO check if Patch Panel name already exists
+router.post('/api/patch_panel-service/patch_panel', function (req, res) {
+    var newPatchPanel = req.body;
+    console.log('** POST Single Patch Panel: ' + newPatchPanel.name);
+
+    //console.log('** POST Received: ' + newPatchPanel);
+
     connection.query('INSERT INTO patch_panel SET name=?, location=?', [newPatchPanel.name, newPatchPanel.location], function (error, results) {
         if (error) {
             res.send(JSON.stringify({
@@ -116,7 +174,7 @@ router.get('/api/patch_panel-service/ports/:id', function (req, res) {
 router.get('/api/patch_panel-service/patch_panel/:id', function (req, res) {
     console.log('** GET Single Patch Panel for ID ' + req.params.id);
 
-    connection.query('select * from patch_panel where id = ?', [req.params.id], function (err, results, fields) {
+    connection.query('SELECT pp.id, pp.name, pp.location, count(ppp.patch_panel_id) AS portsNum FROM patch_panel AS pp LEFT JOIN patch_panel_port AS ppp ON pp.id = ppp.patch_panel_id WHERE pp.id = ?', [req.params.id], function (err, results, fields) {
         if (err) throw err;
 
         console.log(results);

@@ -46,7 +46,7 @@ ol.ordered-circuit-conn-fields li.placeholder:before {
     border-right: none;    
 }
 
-ol.ordered-circuit-conn-fields {
+ol.ordered-circuit-conn-ingress-fields {
     padding:0;
 }
 

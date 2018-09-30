@@ -47,6 +47,33 @@
               </div>              
             </div> 
               
+            <div class="row"> 
+              <div class="col-md-6 mb-3">
+                <label for="portsNum">No. of Ports</label>
+                <input type="number" min="0" class="form-control" id="portsNum" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  Valid number of ports is required.
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="type">Type</label>
+                <select class="custom-select d-block w-100" id="location" required>
+                  <option>SC</option>
+                  <option>FC</option>
+                  <option>LC</option>
+                </select>                
+                  <div class="invalid-feedback">
+                  Valid type is required.
+                </div>
+              </div>  
+            </div>
+            <div class="row">
+              <div class="col">
+                <label for="comment">Comments</label>
+                <textarea rows="4" class="form-control" id="comment"></textarea>
+              </div>
+            </div>
+             
              
 <% } else { %>
 
@@ -74,6 +101,33 @@
                   Valid location name is required.
                 </div>
               </div>              
+            </div> 
+              
+            <div class="row"> 
+              <div class="col-md-6 mb-3">
+                <label for="portsNum">No. of Ports</label>
+                <input type="number" min="0" class="form-control" id="portsNum" placeholder="" value="" required readonly>
+                <div class="invalid-feedback">
+                  Valid number of ports is required.
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="type">Type</label>
+                <select class="custom-select d-block w-100" id="location" required>
+                  <option>SC</option>
+                  <option>FC</option>
+                  <option>LC</option>
+                </select>                
+                  <div class="invalid-feedback">
+                  Valid type is required.
+                </div>
+              </div>  
+            </div>
+            <div class="row">
+              <div class="col">
+                <label for="comment">Comments</label>
+                <textarea rows="4" class="form-control" id="comment"></textarea>
+              </div>
             </div>
               
                  
