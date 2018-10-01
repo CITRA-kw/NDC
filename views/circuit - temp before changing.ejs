@@ -64,9 +64,9 @@
 
                             <label for="service">Service</label>
                             <select class="custom-select d-block w-100" id="service" required>
-                              <option>Internet</option>
-                              <option>IPLC</option>
-                            </select>
+                  <option>Internet</option>
+                  <option>IPLC</option>
+                </select>
                             <div class="invalid-feedback">
                                 Please select a valid service.
                             </div>
@@ -79,7 +79,7 @@
                             <label for="provider">Provider</label>
                             <select class="custom-select d-block w-100" id="provider" required>
                   
-                            </select>
+                </select>
                             <div class="invalid-feedback">
                                 Please select a valid Provider.
                             </div>
@@ -88,7 +88,7 @@
                             <label for="isp">ISP</label>
                             <select class="custom-select d-block w-100" id="isp" required>
                   
-                            </select>
+                </select>
                             <div class="invalid-feedback">
                                 Please select a valid ISP.
                             </div>
@@ -104,17 +104,14 @@
                     <hr class="mb-4">
 
 
-                    <h5 class="mb-3">Circuit Connection</h5>
+                    <h5 class="mb-3">Circuit Connection <button type="button" class="btn btn-default addButton patch_panel_array btn-link btn-sm">Add Port</button></h5>
                     
-                    <!-- INGRESS -->
-                    <h6 class="mb-3">Ingress <button type="button" class="btn btn-default addButtonIngress patch_panel_array btn-link btn-sm">Add Port</button></h6>
-                    
-                    <ol class="ordered-circuit-conn-ingress-fields">
+                    <ol class="ordered-circuit-conn-fields">
                         
 
 
                         <!-- The option field template containing an option field and a Remove button -->
-                        <li class="row form-group d-none" id="ingressOptionTemplate">
+                        <li class="row form-group d-none" id="optionTemplate">
                             <i class="fas fa-xs fa-arrows-alt-v"></i>
                             <div class="col-md-6">
 
@@ -126,43 +123,14 @@
                             </div>
                             <div class="col-md-4">
                                 <select class="custom-select d-block" name="port[]" required>
-                                    <option value="">Choose Port...</option>                   
-                                </select>
+                        <option value="">Choose Port...</option>                   
+                    </select>
                             </div>
                             <div class="col-md-1">
                                 <button type="button" class="btn btn-default removeButton patch_panel_array"><i class="fa fa-xs fa-minus"></i></button>
                             </div>
                         </li>
                     </ol>
-                    
-                    <!-- EGRESS -->
-                    <h6 class="mb-3">Egress <button type="button" class="btn btn-default addButtonEgress patch_panel_array btn-link btn-sm">Add Port</button></h6>
-                    
-                    <ol class="ordered-circuit-conn-egress-fields">
-                        
-
-
-                        <!-- The option field template containing an option field and a Remove button -->
-                        <li class="row form-group d-none" id="egressOptionTemplate">
-                            <i class="fas fa-xs fa-arrows-alt-v"></i>
-                            <div class="col-md-6">
-
-                                <div class="input-group">
-                                    <select class="custom-select d-block" name="patch_panel[]" required>
-                                        <option value="">Choose Patch Panel...</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <select class="custom-select d-block" name="port[]" required>
-                                    <option value="">Choose Port...</option>                   
-                                </select>
-                            </div>
-                            <div class="col-md-1">
-                                <button type="button" class="btn btn-default removeButton patch_panel_array"><i class="fa fa-xs fa-minus"></i></button>
-                            </div>
-                        </li>
-                    </ol>                    
                     <% } else { %>
 
 
@@ -224,7 +192,7 @@
                                         <label for="provider">Provider</label>
                                         <select class="custom-select d-block w-100" id="provider" required>
                   
-                                        </select>
+                </select>
                                         <div class="invalid-feedback">
                                             Please select a valid Provider.
                                         </div>
@@ -233,7 +201,7 @@
                                         <label for="isp">ISP</label>
                                         <select class="custom-select d-block w-100" id="isp" required>
                   
-                                        </select>
+                </select>
                                         <div class="invalid-feedback">
                                             Please select a valid ISP.
                                         </div>
@@ -249,17 +217,14 @@
 
 
 
-                                <h5 class="mb-3">Circuit Connection</h5>
+                                <h5 class="mb-3">Circuit Connection <b></b><button type="button" class="btn btn-default addButton patch_panel_array btn-link btn-sm">Add Port</button></h5>
 
-                                <!-- INGRESS -->
-                                <h6 class="mb-3">Ingress <button type="button" class="btn btn-default addButtonIngress patch_panel_array btn-link btn-sm">Add Port</button></h6>
-
-                                <ol class="ordered-circuit-conn-ingress-fields">
+                                <ol class="ordered-circuit-conn-fields">
                                     
 
 
                                     <!-- The option field template containing an option field and a Remove button -->
-                                    <li class="row form-group d-none" id="ingressOptionTemplate">
+                                    <li class="row form-group d-none" id="optionTemplate">
                                         <i class="fas fa-xs fa-arrows-alt-v"></i>
                                         <div class="col-md-6">
 
@@ -271,37 +236,8 @@
                                         </div>
                                         <div class="col-md-4">
                                             <select class="custom-select d-block" name="port[]" required>
-                                                <option value="">Choose Port...</option>                   
-                                            </select>
-                                        </div>
-                                        <div class="col-md-1">
-                                            <button type="button" class="btn btn-default removeButton patch_panel_array"><i class="fa fa-xs fa-minus"></i></button>
-                                        </div>
-                                    </li>
-                                </ol>
-                                
-                                <!-- EGRESS -->
-                                <h6 class="mb-3">Egress <button type="button" class="btn btn-default addButtonEgress patch_panel_array btn-link btn-sm">Add Port</button></h6>
-
-                                <ol class="ordered-circuit-conn-egress-fields">
-                                    
-
-
-                                    <!-- The option field template containing an option field and a Remove button -->
-                                    <li class="row form-group d-none" id="egressOptionTemplate">
-                                        <i class="fas fa-xs fa-arrows-alt-v"></i>
-                                        <div class="col-md-6">
-
-                                            <div class="input-group">
-                                                <select class="custom-select d-block" name="patch_panel[]" required>
-                                        <option value="">Choose Patch Panel...</option>
-                                    </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <select class="custom-select d-block" name="port[]" required>
-                                                <option value="">Choose Port...</option>                   
-                                            </select>
+                        <option value="">Choose Port...</option>                   
+                    </select>
                                         </div>
                                         <div class="col-md-1">
                                             <button type="button" class="btn btn-default removeButton patch_panel_array"><i class="fa fa-xs fa-minus"></i></button>

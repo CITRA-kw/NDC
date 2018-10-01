@@ -1,5 +1,26 @@
 // If you change tabs to spaces, you'll be killed!
 
+//function to get the patch panel fields instead of doing it in each if/else
+function addPatchPanelData(className, prefix, formData) {
+    // Get circuit selection array from the form
+    var patch_panel = new Array();
+    $(`${className} select[name="patch_panel[]"]`).each(function () {
+        patch_panel.push($(this).val());
+    });
+    var port = new Array();
+    $(`${className} select[name="port[]"]`).each(function () {
+        port.push($(this).val());
+    });
+
+    // Pop last value which is the hidden field
+    patch_panel.pop();
+    port.pop();
+
+    formData[prefix + "_patch_panel"] = patch_panel;
+    formData[prefix + "_port"] = port;
+}
+
+
 $(document).ready(function () {
     console.log("** Loaded circuit-pages.js");
     // Get list of circuits and print them
@@ -14,6 +35,11 @@ $(document).ready(function () {
     $("#optionTemplate").sortable({
         drop: false
     });
+
+
+
+
+
 
 
 
@@ -47,7 +73,7 @@ $(document).ready(function () {
             var i;
             for (i = 0; i < json[1].length; i++) {
                 //console.log("** Adding connection # " + i);
-                addButtonClicked(json[1][i].patch_panel_id, json[1][i].name, json[1][i].port_id, json[1][i].label);
+                addButtonClicked("ingress", json[1][i].patch_panel_id, json[1][i].name, json[1][i].port_id, json[1][i].label);
             }
         });
 
@@ -68,18 +94,12 @@ $(document).ready(function () {
             formData.comment = $("textarea#comment").val();
 
             // Get circuit selection array from the form
-            formData.patch_panel = new Array();
-            $('select[name="patch_panel[]"]').each(function () {
-                formData.patch_panel.push($(this).val());
-            });
-            formData.port = new Array();
-            $('select[name="port[]"]').each(function () {
-                formData.port.push($(this).val());
-            });
-            // Pop last value which is the hidden field
-            formData.patch_panel.pop();
-            formData.port.pop();
+            addPatchPanelData(".ordered-circuit-conn-ingress-fields", "ingress", formData);
+            addPatchPanelData(".ordered-circuit-conn-egress-fields", "egress", formData);
 
+            console.log(formData);
+
+            /*TODO: Move this to a function.
             // Check duplicates
             var duplicate = false;
             for (var i = 0; i < formData.port.length; i++) {
@@ -97,7 +117,7 @@ $(document).ready(function () {
                 console.log('Submission stopped - Duplicates found!');
                 return;
             }
-
+            */
 
             console.log("** Sending PUT: " + JSON.stringify(formData));
 
@@ -159,19 +179,15 @@ $(document).ready(function () {
             formData.isp = $("select#isp").val();
             formData.comment = $("textarea#comment").val();
 
-            // Get circuit selection array from the form
-            formData.patch_panel = new Array();
-            $('select[name="patch_panel[]"]').each(function () {
-                formData.patch_panel.push($(this).val());
-            });
-            formData.port = new Array();
-            $('select[name="port[]"]').each(function () {
-                formData.port.push($(this).val());
-            });
-            // Pop last value which is the hidden field
-            formData.patch_panel.pop();
-            formData.port.pop();
 
+
+            addPatchPanelData(".ordered-circuit-conn-ingress-fields", "ingress", formData);
+            addPatchPanelData(".ordered-circuit-conn-egress-fields", "egress", formData);
+
+            console.log(formData);
+
+            //TODO: Move this to a function
+            /*
             // Check duplicates
             var duplicate = false;
             for (var i = 0; i < formData.port.length; i++) {
@@ -189,7 +205,7 @@ $(document).ready(function () {
                 console.log('Submission stopped - Duplicates found!');
                 return;
             }
-
+            */
             console.log("** Sending POST: " + JSON.stringify(formData));
 
 
@@ -284,7 +300,14 @@ function formDynamicField() {
     $('form')
         // The click handler of the add button
         .on('click', '.addButtonIngress', function () {
-            addButtonClicked();
+            addButtonClicked("ingress");
+
+            // TODO review this
+            //$('form').formValidation('addField', $option);
+        })
+
+        .on('click', '.addButtonEgress', function () {
+            addButtonClicked("egress");
 
             // TODO review this
             //$('form').formValidation('addField', $option);
@@ -329,14 +352,14 @@ function formDynamicField() {
 
 
 // When add button clicked for circuit connections - to add an extra circuit field
-function addButtonClicked(patch_panel_id, patch_panel_name, port_id, port_name) {
+function addButtonClicked(direction, patch_panel_id, patch_panel_name, port_id, port_name) {
     //console.log('**************************************');
     //console.log("** addButtonClicked() with values: ");
     //console.log("**** Patch Panel ID: " + patch_panel_id);
     //console.log("**** Patch Panel Name: " + patch_panel_name);
     //console.log("**** Port ID: " + port_id);
     //console.log("**** Port Name: " + port_name);
-    var $template = $('#optionTemplate'),
+    var $template = $(`#${direction}OptionTemplate`),
         $clone = $template
         .clone()
         .removeClass('d-none')
@@ -423,3 +446,83 @@ function populatePortsDropDown(portField, port_value, port_name) {
 }
 
 
+
+
+
+// ************************************************************************************************
+// ***************************************************************
+// Populate the patch_panel dynamic fields (Egress)
+// ***************************************************************
+function populatePatchPanelDropDown2(patch_panel_value, patch_panel_name, port_value, port_name) {
+    console.log("** populatePatchPanelDropDown() called! -- Passed values " + patch_panel_value + " " + patch_panel_name + " " + port_value + " " + port_name);
+
+    // How to get array of fields https://stackoverflow.com/questions/7880619/multiple-inputs-with-same-name-through-post-in-php
+    // http://www.dreamincode.net/forums/topic/245179-how-to-insert-data-using-multiple-input-with-same-name/
+
+    // Obviously selector for the patch_panel dropdown!
+    // Before the last because last one is the hidden template
+    var dropdown = $("form select[name='patch_panel[]']").eq(-2);
+
+    // First remove change
+    $(dropdown).off('change');
+
+    // TODO: Service name/link should be dynamic
+    // Do a JSON call and populate the dropdown
+    $.getJSON('/api/patch_panel-service/patch_panel', function (list_data) {
+
+        console.log("** JSON received on populatePatchPanelDropDown() - Populating the dropdown");
+        dropdown.empty();
+        $.each(list_data, function () {
+            if (typeof patch_panel_value !== 'undefined' && patch_panel_value == this.id) {
+                dropdown.append($("<option />").val(this.id).text(this.name).attr('selected', 'selected'));
+            } else {
+                dropdown.append($("<option />").val(this.id).text(this.name));
+            }
+        });
+    }).done(function () {
+        // Manually trigger a first change so ports dropdown will be automatically updated and select first value
+        $(dropdown).trigger('change', [{
+            port_value: port_value,
+            port_name: port_name
+        }]);
+
+    });
+
+
+    // Add onChange() again
+    $(dropdown).on('change', dropdown, function (evnet, obj) {
+        console.log("** Circuit dropdown Change called!");
+        if (typeof obj !== 'undefined') {
+            populatePortsDropDown2(dropdown, obj.port_value, obj.port_name);
+        } else {
+            populatePortsDropDown2(dropdown);
+
+        }
+    });
+
+
+}
+
+// ***************************************************************
+// Populate the ports dynamic fields (Egress)
+// **************************************************************
+function populatePortsDropDown2(portField, port_value, port_name) {
+    console.log("** populatePortsDropDown() called! -- Passed values " + port_value + " " + port_name);
+
+    // Do a JSON call and populate the dropdown select field
+    // TODO: Service name/link should be dynamic
+    $.getJSON('/api/patch_panel-service/ports/' + $(portField).val(), function (list_data) {
+        portField = $(portField).parent().parent().next().find("select");
+        $(portField).empty();
+        $.each(list_data, function () {
+            $(portField).append($("<option />").val(this.id).text(this.label));
+            //console.log("** Adding [Label "+this.label+"] [ID "+this.id+"]");
+        });
+        if (typeof port_value !== 'undefined') {
+            $(portField).prepend($("<option />").val(port_value).text(port_name).attr('selected', 'selected'));
+            console.log("*** Activating a port dropdown select for: " + port_name);
+        }
+
+        //console.log("** Received Patch Panel JSON info to populate the dynamic ports dropdown for a patch panel");
+    });
+}
