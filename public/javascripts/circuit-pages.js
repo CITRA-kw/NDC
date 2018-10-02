@@ -52,7 +52,7 @@ $(document).ready(function () {
             var i;
             for (i = 0; i < json[1].length; i++) {
                 //console.log("** Adding connection # " + i);
-                addButtonClicked("ingress", json[1][i].patch_panel_id, json[1][i].name, json[1][i].port_id, json[1][i].label);
+                addButtonClicked(null, "ingress", json[1][i].patch_panel_id, json[1][i].name, json[1][i].port_id, json[1][i].label);
             }
         });
 
@@ -308,7 +308,7 @@ function formDynamicField() {
 
 
 // When add button clicked for circuit connections - to add an extra circuit field
-function addButtonClicked(element, direction, patch_panel_id, patch_panel_name, port_id, port_name) {
+function addButtonClicked(element, patch_panel_id, patch_panel_name, port_id, port_name) {
     //console.log('**************************************');
     /*console.log("** addButtonClicked() with values: ");
     console.log("**** Patch Panel ID: " + patch_panel_id);
@@ -335,11 +335,11 @@ function populatePatchPanelDropDown(element, patch_panel_value, patch_panel_name
     // How to get array of fields https://stackoverflow.com/questions/7880619/multiple-inputs-with-same-name-through-post-in-php
     // http://www.dreamincode.net/forums/topic/245179-how-to-insert-data-using-multiple-input-with-same-name/
 
+    // I want the specific patch panel dropdown
     var dropdown = $(element).find('select').first();
     
     // First remove change
-    $(dropdown).off('change');
-    
+    $(dropdown).off('change'); 
     
 
     // TODO: Service name/link should be dynamic
@@ -358,8 +358,6 @@ function populatePatchPanelDropDown(element, patch_panel_value, patch_panel_name
         console.log("** Adding change() to a patch panel dropdown");
         // When a selection is changed on the patch patch dropdown
         $(dropdown).change(function () {
-            //console.log("** Circuit dropdown Change called!");
-            //$(this).css('background-color', 'red');
             if (typeof obj !== 'undefined') {
                 populatePortsDropDown(dropdown, this.port_value, this.port_name);
             } else {
@@ -407,11 +405,11 @@ function populatePortsDropDown(portField, port_value, port_name) {
 function addPatchPanelData(className, prefix, formData) {
     // Get circuit selection array from the form
     var patch_panel = new Array();
-    $(`${className} select[name="patch_panel[]"]`).each(function () {
+    $('${className} select[name="patch_panel[]"]).each(function () {
         patch_panel.push($(this).val());
     });
     var port = new Array();
-    $(`${className} select[name="port[]"]`).each(function () {
+    $('${className} select[name="port[]"]').each(function () {
         port.push($(this).val());
     });
 
