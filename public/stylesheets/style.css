@@ -19,9 +19,9 @@ body.dragging * {
     position: absolute;
     opacity: 0.5;
     z-index: 2000;
-}
+} 
 
-ol.ordered-circuit-conn-fields li.placeholder {
+ol.ordered-circuit-conn-ingress-fields li.placeholder, ol.ordered-circuit-conn-egress-fields li.placeholder {
     position: relative;
     /** More li styles **/
     padding: 0;
@@ -31,7 +31,7 @@ ol.ordered-circuit-conn-fields li.placeholder {
     list-style-type: none;
 }
 
-ol.ordered-circuit-conn-fields li.placeholder:before {
+ol.ordered-circuit-conn-ingress-fields li.placeholder:before, ol.ordered-circuit-conn-egress-fields li.placeholder:before {
     position: absolute;
     /** Define arrowhead **/
     padding: 0;
