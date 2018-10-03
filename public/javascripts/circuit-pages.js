@@ -25,7 +25,7 @@ $(document).ready(function () {
     // ***************************************************************
     // Update Circuit Form Page 
     // ***************************************************************
-    // When I'm in Circuit update page, populate the form
+    // When I'm in Circuit update page, fetch data and populate the form
     if (document.location.href.indexOf("/circuit/updateform/") > -1) {
         console.log("** Circuits update form");
 
@@ -52,7 +52,7 @@ $(document).ready(function () {
             var i;
             for (i = 0; i < json[1].length; i++) {
                 //console.log("** Adding connection # " + i);
-                addButtonClicked(null, "ingress", json[1][i].patch_panel_id, json[1][i].name, json[1][i].port_id, json[1][i].label);
+                addButtonClicked(null, json[1][i].patch_panel_id, json[1][i].name, json[1][i].port_id, json[1][i].label, json[1][i].direction);
             }
         });
 
@@ -65,7 +65,7 @@ $(document).ready(function () {
             formData.id = $("input#circuitId").val();
             formData.moc_id = $("input#moc_id").val();
             formData.interface_type = $("select#interface_type").val();
-            console.log("** I T" + formData.interface_type);
+            console.log("** I T " + formData.interface_type);
             formData.provision_speed = $("input#provision_speed").val();
             formData.service = $("select#service").val();
             formData.provider = $("select#provider").val();
@@ -258,14 +258,14 @@ function formDynamicField() {
     $('form')
         // The click handler of the add button
         .on('click', '.addButtonIngress', function () {
-            addButtonClicked(this, "ingress");
+            addButtonClicked(this);
 
             // TODO review this
             //$('form').formValidation('addField', $option);
         })
 
         .on('click', '.addButtonEgress', function () {
-            addButtonClicked(this, "egress");
+            addButtonClicked(this);
 
         })
 
@@ -308,13 +308,21 @@ function formDynamicField() {
 
 
 // When add button clicked for circuit connections - to add an extra circuit field
-function addButtonClicked(element, patch_panel_id, patch_panel_name, port_id, port_name) {
+function addButtonClicked(element, patch_panel_id, patch_panel_name, port_id, port_name, direction) {
     //console.log('**************************************');
     /*console.log("** addButtonClicked() with values: ");
     console.log("**** Patch Panel ID: " + patch_panel_id);
     console.log("**** Patch Panel Name: " + patch_panel_name);
     console.log("**** Port ID: " + port_id);
     console.log("**** Port Name: " + port_name);*/
+    if(direction !== null) {
+        console.log("** Explicitly called addButtonClick() with direction = " + direction);
+        if(direction == 'ingress') { console.log("Ingress");
+            element = $('.addButtonIngress');
+        } else if (direction == 'egress') { console.log("Egress");
+            element = $('.addButtonEgress');
+        }
+    }
     var $template = $(element).parent().next().children().last(),
         $dropdown = $template
         .clone()
@@ -335,7 +343,7 @@ function populatePatchPanelDropDown(element, patch_panel_value, patch_panel_name
     // How to get array of fields https://stackoverflow.com/questions/7880619/multiple-inputs-with-same-name-through-post-in-php
     // http://www.dreamincode.net/forums/topic/245179-how-to-insert-data-using-multiple-input-with-same-name/
 
-    // I want the specific patch panel dropdown
+    // I want the specific patch panel dropdown HTML DOM
     var dropdown = $(element).find('select').first();
     
     // First remove change
@@ -346,7 +354,7 @@ function populatePatchPanelDropDown(element, patch_panel_value, patch_panel_name
     // Do a JSON call and populate the dropdown
     $.getJSON('/api/patch_panel-service/patch_panel', function (list_data) {
         console.log("** JSON received on populatePatchPanelDropDown() - Populating the dropdown " + dropdown);        
-        $(dropdown).find('option').remove(); // Empty the dropdown first
+        $(dropdown).find('option').remove(); // Empty the dropdown first just in case
         $.each(list_data, function () {
             if (typeof patch_panel_value !== 'undefined' && patch_panel_value == this.id) {
                 $(dropdown).append($("<option />").val(this.id).text(this.name).attr('selected', 'selected'));
@@ -356,13 +364,19 @@ function populatePatchPanelDropDown(element, patch_panel_value, patch_panel_name
         });
     }).done(function () {
         console.log("** Adding change() to a patch panel dropdown");
+        // Populate initially
+        populatePortsDropDown(dropdown, this.port_value, this.port_name);
+        
         // When a selection is changed on the patch patch dropdown
         $(dropdown).change(function () {
-            if (typeof obj !== 'undefined') {
+            if (typeof this.port_value !== 'undefined') {
                 populatePortsDropDown(dropdown, this.port_value, this.port_name);
             } else {
                 populatePortsDropDown(dropdown);
             }
+//            var port_value = $(this).children("option").filter(":selected").val();
+//            var port_name = $(this).children("option").filter(":selected").text();
+            populatePortsDropDown(dropdown, port_value, port_name);
         });
         
         // Manually trigger a first change so ports dropdown will be automatically updated and select first value
@@ -385,11 +399,13 @@ function populatePortsDropDown(portField, port_value, port_name) {
     // Do a JSON call and populate the dropdown select field
     // TODO: Service name/link should be dynamic
     $.getJSON('/api/patch_panel-service/ports/' + $(portField).val(), function (list_data) {
+        // Get the specific port HTML DOM element
         portField = $(portField).parent().parent().next().find("select");
         $(portField).empty();
         $.each(list_data, function () {
             $(portField).append($("<option />").val(this.id).text(this.label));
         });
+        // SQL statement won't return the specific port selected so I'll add it and make it SELECTED
         if (typeof port_value !== 'undefined') {
             $(portField).prepend($("<option />").val(port_value).text(port_name).attr('selected', 'selected'));
             console.log("*** Activating a port dropdown select for: " + port_name);
@@ -405,11 +421,11 @@ function populatePortsDropDown(portField, port_value, port_name) {
 function addPatchPanelData(className, prefix, formData) {
     // Get circuit selection array from the form
     var patch_panel = new Array();
-    $('${className} select[name="patch_panel[]"]).each(function () {
+    $(`${className} select[name="patch_panel[]"]`).each(function () {
         patch_panel.push($(this).val());
     });
     var port = new Array();
-    $('${className} select[name="port[]"]').each(function () {
+     $(`${className} select[name="port[]"]`).each(function () {
         port.push($(this).val());
     });
 

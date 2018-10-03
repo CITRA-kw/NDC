@@ -89,12 +89,7 @@ router.post('/api/circuit-service', function (req, res) {
             console.log("** POST Circuit - query result: " + JSON.stringify(results));
             res.set('Content-Type', 'application/json');
 
-            //-------------------------------------------
-            // Creating the value string for MySQL insert
-            // ------------------------------------------
-
-
-
+            
             // Get the inserted CircuitId from the pr[evious insert
             var circuit_num = results.insertId; // CHANGE: Get actual ID
             // var valuesString = "";
@@ -108,17 +103,6 @@ router.post('/api/circuit-service', function (req, res) {
 
             console.log(rows);
 
-
-            /*   
-            // Create the SQL sinsert sequence 
-            for (var i = 0; i < patch_panel_ids.length; i++) {
-                valuesString += "(" + circuit_num + ", " + port_ids[i] + ", " + patch_panel_ids[i] + ", " + i + ")";
-                if (i != patch_panel_ids.length - 1) {
-                    valuesString += ", ";
-                }
-            }
-            */
-            //TODO: VERY dangerous!  Use ? instead
             var query2 = connection.query('INSERT INTO ports_circuit VALUES ? ', [rows], function (error, results2, fields) {
                 console.log(query2.sql);
                 if (error) {
