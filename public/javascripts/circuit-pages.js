@@ -65,7 +65,6 @@ $(document).ready(function () {
             formData.id = $("input#circuitId").val();
             formData.moc_id = $("input#moc_id").val();
             formData.interface_type = $("select#interface_type").val();
-            console.log("** I T " + formData.interface_type);
             formData.provision_speed = $("input#provision_speed").val();
             formData.service = $("select#service").val();
             formData.provider = $("select#provider").val();
@@ -131,7 +130,6 @@ $(document).ready(function () {
             var formData = {};
             formData.moc_id = $("input#moc_id").val();
             formData.interface_type = $("select#interface_type").val();
-            //console.log('** submitted interface type '+$("select#interface_type").val());
             formData.provision_speed = $("input#provision_speed").val();
             formData.service = $("select#service").val();
             formData.provider = $("select#provider").val();
