@@ -30,11 +30,11 @@ $(document).ready(function () {
         console.log("** Circuits update form");
 
         // Get ID of the hidden form element
-        var circuitID = $("input#circuitId").attr("value");
+        var circuit_num = $("input#circuit_num").attr("value");
         var circuitData;
 
         // Do a JSON call and populate the form
-        $.getJSON('/api/' + service_name + '/' + circuitID, function (json) {
+        $.getJSON('/api/' + service_name + '/' + circuit_num, function (json) {
             $("input#moc_id").attr("value", json[0].moc_id);
             $("select#interface_type").val(json[0].interface_type);
             $("input#provision_speed").attr("value", json[0].provision_speed);
@@ -62,7 +62,7 @@ $(document).ready(function () {
 
             // Create circuit form data for JSON request
             var formData = {};
-            formData.id = $("input#circuitId").val();
+            formData.circuit_num = $("input#circuit_num").val();
             formData.moc_id = $("input#moc_id").val();
             formData.interface_type = $("select#interface_type").val();
             formData.provision_speed = $("input#provision_speed").val();
@@ -104,7 +104,7 @@ $(document).ready(function () {
                     }
 
                     // Update circuit list 
-                    updateList();
+                    updateList(service_name);
                 },
                 beforeSend: function () {
                 },
@@ -175,9 +175,9 @@ $(document).ready(function () {
                     data = jQuery.parseJSON(data);
                     console.log("** Received after POST: " + data.result);
 
-                    // Reset the form
-                    $('form')[0].reset();
-
+                    // Remove the form
+                    $('form').parent().empty();
+                    
                     // Compose the feedback message
                     var messageText = data.result;
 

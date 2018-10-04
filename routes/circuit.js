@@ -7,7 +7,7 @@ var router = express.Router();
 // ***************************************************************
 router.get('/circuit/updateform/:id', function (req, res, next) {
 
-    var update_circuit_id = req.params.id;
+    var update_circuit_num = req.params.id;
 
     res.render('circuit', {
         title: req.app.get('appTitle'),
@@ -15,7 +15,7 @@ router.get('/circuit/updateform/:id', function (req, res, next) {
         pageLeadText: '',
         pageID: "circuitUpdateForm",
         service_name: "circuit-service",
-        circuitID: update_circuit_id
+        circuit_num: update_circuit_num
     });
     console.log("** Loading Circuit Update Page");
 

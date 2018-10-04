@@ -23,9 +23,12 @@ $(document).ready(function () {
             $("input#name").attr("value", json[0].name);
             $("select#location").val(json[0].location);
             $("input#portsNum").val(json[0].portsNum);
+            $("input#odf").val(json[0].odf);
+            $("textarea#comment").val(json[0].comment);
+            $("select#ports_type").val(json[0].ports_type);
             console.log("** Received Patch Panel JSON info to populate form for " + json[0].name + " location " + json[0].location);
 
-        });
+        }); 
 
         // Update form is submitted 
         $('form').submit(function (e) {
@@ -37,6 +40,9 @@ $(document).ready(function () {
             formData.name = $("input#name").val();
             formData.location = $("select#location").val();
             formData.portsNum = $("input#portsNum").val();
+            formData.ports_type = $("select#ports_type").val();
+            formData.odf = $("input#odf").val();
+            formData.comment = $("textarea#comment").val();
 
             console.log("** Sending PUT: " + JSON.stringify(formData)); 
 
@@ -94,6 +100,9 @@ $(document).ready(function () {
             formData.name = $("input#name").val();
             formData.location = $("select#location").val();
             formData.portsNum = $("input#portsNum").val();
+            formData.ports_type = $("select#ports_type").val();
+            formData.odf = $("input#odf").val();
+            formData.comment = $("textarea#comment").val();
 
             console.log("** Sending POST: " + JSON.stringify(formData));
 
