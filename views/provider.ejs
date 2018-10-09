@@ -28,16 +28,16 @@
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="name">Provider Name</label>
-                <input type="text" class="form-control" id="name" placeholder="" value="" required>
+                <input type="text" class="form-control" id="name" required>
                 <div class="invalid-feedback">
-                  Valid Provider name is required.
+                  A valid provider name is required.
                 </div>
               </div>  
               <div class="col-md-6 mb-3">
                 <label for="provider_code">Provider Code</label>
-                <input type="text" class="form-control" id="provider_code" placeholder="" value="" maxlength="6" onkeyup="return forceLower(this);" required>
+                <input type="text" class="form-control" id="provider_code" maxlength="6" onkeyup="return forceLower(this);" required>
                 <div class="invalid-feedback">
-                  Valid Provider code is required.
+                  A valid provider code is required.
                 </div>
               </div>              
             </div>
@@ -46,16 +46,16 @@
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="contact_name">Contact Name</label>
-                <input type="text" class="form-control" id="contact_name" placeholder="" value="" required>
+                <input type="text" class="form-control" id="contact_name" required>
                 <div class="invalid-feedback">
-                  Valid contact name is required.
+                  A valid contact name is required.
                 </div>
               </div>              
               <div class="col-md-6 mb-3">
                 <label for="contact_phone">Contact Phone No.</label>
-                <input type="text" class="form-control" id="contact_phone" placeholder="" value="" required>
+                <input type="text" class="form-control" id="contact_phone" required>
                 <div class="invalid-feedback">
-                  Valid contact phone number is required.
+                  A valid contact phone number is required.
                 </div>
               </div>                              
             </div>
@@ -65,9 +65,13 @@
               <label for="contact_email">Email</label>
               <input type="email" class="form-control" id="contact_email" placeholder="you@example.com" required>
               <div class="invalid-feedback">
-                Please enter a valid email address.
+                A valid email address is required.
               </div>
             </div>
+              
+            <hr class="mb-4">
+
+            <button class="btn btn-primary btn-lg btn-block ladda-button" data-dismiss="modal" data-style="expand-right" type="submit">Submit</button>
 <% } else { %>
 
         <div class="col-md-8 order-md-1" id="pageContent">
@@ -76,17 +80,17 @@
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="name">Provider Name</label>
-                <input type="text" class="form-control" id="name" placeholder="" value="" required>
+                <input type="text" class="form-control" id="name" required>
                 <input type="hidden" name="providerId" id="providerId" value="<%= providerID %>" >
                 <div class="invalid-feedback">
-                  Valid Provider name is required.
+                  A valid Provider name is required.
                 </div>
               </div>   
               <div class="col-md-6 mb-3">
                 <label for="provider_code">Provider Code</label>
-                <input type="text" class="form-control" id="provider_code" placeholder="" value="" maxlength="6" onkeyup="return forceLower(this);" required>
+                <input type="text" class="form-control" id="provider_code" maxlength="6" onkeyup="return forceLower(this);" required>
                 <div class="invalid-feedback">
-                  Valid Provider code is required.
+                  A valid Provider code is required.
                 </div>
               </div>             
             </div>
@@ -95,16 +99,16 @@
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="contact_name">Contact Name</label>
-                <input type="text" class="form-control" id="contact_name" placeholder="" value="" required>
+                <input type="text" class="form-control" id="contact_name" required>
                 <div class="invalid-feedback">
-                  Valid contact name is required.
+                  A valid contact name is required.
                 </div>
               </div>              
               <div class="col-md-6 mb-3">
                 <label for="contact_phone">Contact Phone No.</label>
-                <input type="text" class="form-control" id="contact_phone" placeholder="" value="" required>
+                <input type="text" class="form-control" id="contact_phone" required>
                 <div class="invalid-feedback">
-                  Valid contact phone number is required.
+                  A valid contact phone number is required.
                 </div>
               </div>                              
             </div>
@@ -114,16 +118,17 @@
               <label for="contact_email">Email</label>
               <input type="email" class="form-control" id="contact_email" placeholder="you@example.com" required>
               <div class="invalid-feedback">
-                Please enter a valid email address.
+                A valid email address is required.
               </div>
-            </div>             
+            </div> 
+              
+            <hr class="mb-4">
+
+            <button class="btn btn-primary btn-lg btn-block ladda-button" data-dismiss="modal" data-style="expand-right" type="submit">Update</button>            
               
 <% } %>            
               
             
-            <hr class="mb-4">
-
-            <button class="btn btn-primary btn-lg btn-block ladda-button" data-dismiss="modal" data-style="expand-right" type="submit">Submit</button>
           </form>
         </div>
       </div>

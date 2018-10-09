@@ -59,8 +59,30 @@ $(document).ready(function () {
         // Update form is submitted 
         $('form').submit(function (e) {
             e.preventDefault();
+            
+            // Get this form element
+            var form = this;
+                
+            // Now check the validity
+            if (form.checkValidity() === false) {
+                console.log("** Something is invalid in the form.");
+                $(form).addClass('was-validated');
+                return;
+            }  
+            $(form).addClass('was-validated');
 
             // Create circuit form data for JSON request
+            
+            // Get this form element
+            var form = this;
+                
+            // Now check the validity
+            if (form.checkValidity() === false) {
+                console.log("** Something is invalid in the form.");
+                $(form).addClass('was-validated');
+                return;
+            }  
+            $(form).addClass('was-validated');
             var formData = {};
             formData.circuit_num = $("input#circuit_num").val();
             formData.moc_id = $("input#moc_id").val();
@@ -91,7 +113,6 @@ $(document).ready(function () {
 
                     // Remove the form
                     $('form').parent().empty();
-                    //$('form')[0].reset();
 
                     // Compose the feedback message
                     var messageText = data.result;
@@ -125,6 +146,17 @@ $(document).ready(function () {
         // When the form is submitted
         $('form').submit(function (e) {
             e.preventDefault();
+            
+            // Get this form element
+            var form = this;
+                
+            // Now check the validity
+            if (form.checkValidity() === false) {
+                console.log("** Something is invalid in the form.");
+                $(form).addClass('was-validated');
+                return;
+            }  
+            $(form).addClass('was-validated');
 
             // Create circuit form data for the JSON request
             var formData = {};

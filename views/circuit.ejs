@@ -29,9 +29,9 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="moc_id">MoC ID</label>
-                            <input type="text" class="form-control" id="moc_id" placeholder="" value="" required>
+                            <input type="text" class="form-control" id="moc_id" required>
                             <div class="invalid-feedback">
-                                Valid MoC ID is required.
+                                A valid MoC ID is required.
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -46,7 +46,7 @@
                               <option>DS3</option>
                             </select>
                             <div class="invalid-feedback">
-                                Please select a valid Interface Type.
+                                A valid Interface Type is required.
                             </div>
                         </div>
                     </div>
@@ -55,9 +55,9 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="provision_speed">Provision Speed (Kbps)</label>
-                            <input type="number" min="0" class="form-control" id="provision_speed" placeholder="" value="" required>
+                            <input type="number" min="0" class="form-control" id="provision_speed" required>
                             <div class="invalid-feedback">
-                                Valid Provision Speed is required.
+                                A valid Provision Speed is required.
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -68,7 +68,7 @@
                               <option>IPLC</option>
                             </select>
                             <div class="invalid-feedback">
-                                Please select a valid service.
+                                A valid service is required.
                             </div>
                         </div>
                     </div>
@@ -81,7 +81,7 @@
                   
                             </select>
                             <div class="invalid-feedback">
-                                Please select a valid Provider.
+                                A valid Provider is required.
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -90,7 +90,7 @@
                   
                             </select>
                             <div class="invalid-feedback">
-                                Please select a valid ISP.
+                                A valid ISP is required.
                             </div>
                         </div>
                     </div>
@@ -114,18 +114,19 @@
 
 
                         <!-- The option field template containing an option field and a Remove button -->
+                        <!-- Template start -->
                         <li class="row form-group d-none" id="ingressOptionTemplate">
                             <i class="fas fa-xs fa-arrows-alt-v"></i>
                             <div class="col-md-6">
 
                                 <div class="input-group">
-                                    <select class="custom-select d-block" name="patch_panel[]" required>
+                                    <select class="custom-select d-block" name="patch_panel[]">
                                         <option value="">Choose Patch Panel...</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <select class="custom-select d-block" name="port[]" required>
+                                <select class="custom-select d-block" name="port[]">
                                     <option value="">Choose Port...</option>                   
                                 </select>
                             </div>
@@ -133,6 +134,7 @@
                                 <button type="button" class="btn btn-default removeButton patch_panel_array"><i class="fa fa-xs fa-minus"></i></button>
                             </div>
                         </li>
+                        <!-- Template end -->
                     </ol>
                     
                     <!-- EGRESS -->
@@ -143,18 +145,19 @@
 
 
                         <!-- The option field template containing an option field and a Remove button -->
+                        <!-- Template start -->
                         <li class="row form-group d-none" id="egressOptionTemplate">
                             <i class="fas fa-xs fa-arrows-alt-v"></i>
                             <div class="col-md-6">
 
                                 <div class="input-group">
-                                    <select class="custom-select d-block" name="patch_panel[]" required>
+                                    <select class="custom-select d-block" name="patch_panel[]">
                                         <option value="">Choose Patch Panel...</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <select class="custom-select d-block" name="port[]" required>
+                                <select class="custom-select d-block" name="port[]">
                                     <option value="">Choose Port...</option>                   
                                 </select>
                             </div>
@@ -162,7 +165,11 @@
                                 <button type="button" class="btn btn-default removeButton patch_panel_array"><i class="fa fa-xs fa-minus"></i></button>
                             </div>
                         </li>
-                    </ol>                    
+                        <!-- Template end -->
+                    </ol>
+                    <hr class="mb-4">
+
+                    <button class="btn btn-primary btn-lg btn-block ladda-button" data-dismiss="modal" data-style="expand-right" type="submit">Submit</button>                    
                     <% } else { %>
 
 
@@ -172,11 +179,11 @@
 
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label for="moc_id">MoC ID</label>
-                                        <input type="text" class="form-control" id="moc_id" placeholder="" value="" required>
                                         <input type="hidden" name="circuit_num" id="circuit_num" value="<%= circuit_num %>">
+                                        <label for="moc_id">MoC ID</label>
+                                        <input type="text" class="form-control" id="moc_id" required>
                                         <div class="invalid-feedback">
-                                            Valid MoC ID is required.
+                                            A valid MoC ID is required.
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-3">
@@ -191,7 +198,7 @@
                                           <option>DS3</option>
                                         </select>
                                         <div class="invalid-feedback">
-                                            Please select a valid Interface Type.
+                                            A valid Interface Type is required.
                                         </div>
                                     </div>
                                 </div>
@@ -200,9 +207,9 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label for="provision_speed">Provision Speed (Kbps)</label>
-                                        <input type="number" class="form-control" id="provision_speed" placeholder="" value="" required>
+                                        <input type="number" class="form-control" id="provision_speed" required>
                                         <div class="invalid-feedback">
-                                            Valid Provision Speed is required.
+                                            A valid Provision Speed is required.
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-3">
@@ -213,32 +220,33 @@
                                           <option>IPLC</option>
                                         </select>
                                         <div class="invalid-feedback">
-                                            Please select a valid service.
+                                            A valid service is required.
                                         </div>
                                     </div>
                                 </div>
 
 
-                                <div class="row" style="display:none">
+                                <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label for="provider">Provider</label>
                                         <select class="custom-select d-block w-100" id="provider" required>
-                  
+
                                         </select>
                                         <div class="invalid-feedback">
-                                            Please select a valid Provider.
+                                            A valid Provider is required.
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="isp">ISP</label>
                                         <select class="custom-select d-block w-100" id="isp" required>
-                  
+
                                         </select>
                                         <div class="invalid-feedback">
-                                            Please select a valid ISP.
+                                            A valid ISP is required.
                                         </div>
                                     </div>
                                 </div>
+
 
                                 <div class="mb-3">
                                     <label for="comment">Comments</label>
@@ -255,22 +263,21 @@
                                 <h6 class="mb-3">Ingress <button type="button" class="btn btn-default addButtonIngress patch_panel_array btn-link btn-sm">Add Port</button></h6>
 
                                 <ol class="ordered-circuit-conn-ingress-fields">
-                                    
-
 
                                     <!-- The option field template containing an option field and a Remove button -->
+                                    <!-- Template start -->
                                     <li class="row form-group d-none" id="ingressOptionTemplate">
                                         <i class="fas fa-xs fa-arrows-alt-v"></i>
                                         <div class="col-md-6">
 
                                             <div class="input-group">
-                                                <select class="custom-select d-block" name="patch_panel[]" required>
+                                                <select class="custom-select d-block" name="patch_panel[]">
                                         <option value="">Choose Patch Panel...</option>
                                     </select>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
-                                            <select class="custom-select d-block" name="port[]" required>
+                                            <select class="custom-select d-block" name="port[]">
                                                 <option value="">Choose Port...</option>                   
                                             </select>
                                         </div>
@@ -278,28 +285,28 @@
                                             <button type="button" class="btn btn-default removeButton patch_panel_array"><i class="fa fa-xs fa-minus"></i></button>
                                         </div>
                                     </li>
+                                    <!-- Template end -->
                                 </ol>
                                 
                                 <!-- EGRESS -->
                                 <h6 class="mb-3">Egress <button type="button" class="btn btn-default addButtonEgress patch_panel_array btn-link btn-sm">Add Port</button></h6>
 
                                 <ol class="ordered-circuit-conn-egress-fields">
-                                    
-
 
                                     <!-- The option field template containing an option field and a Remove button -->
+                                    <!-- Template start -->
                                     <li class="row form-group d-none" id="egressOptionTemplate">
                                         <i class="fas fa-xs fa-arrows-alt-v"></i>
                                         <div class="col-md-6">
 
                                             <div class="input-group">
-                                                <select class="custom-select d-block" name="patch_panel[]" required>
+                                                <select class="custom-select d-block" name="patch_panel[]">
                                         <option value="">Choose Patch Panel...</option>
                                     </select>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
-                                            <select class="custom-select d-block" name="port[]" required>
+                                            <select class="custom-select d-block" name="port[]">
                                                 <option value="">Choose Port...</option>                   
                                             </select>
                                         </div>
@@ -307,14 +314,15 @@
                                             <button type="button" class="btn btn-default removeButton patch_panel_array"><i class="fa fa-xs fa-minus"></i></button>
                                         </div>
                                     </li>
+                                    <!-- Template end -->
                                 </ol>
+                                <hr class="mb-4">
+
+                                <button class="btn btn-primary btn-lg btn-block ladda-button" data-dismiss="modal" data-style="expand-right" type="submit">Update</button>
 
                                 <% } %>
 
 
-                                    <hr class="mb-4">
-
-                                    <button class="btn btn-primary btn-lg btn-block ladda-button" data-dismiss="modal" data-style="expand-right" type="submit">Submit</button>
                             </form>
                         </div>
             </div>

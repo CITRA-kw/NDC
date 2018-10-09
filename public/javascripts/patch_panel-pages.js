@@ -33,6 +33,17 @@ $(document).ready(function () {
         // Update form is submitted 
         $('form').submit(function (e) {
             e.preventDefault();
+            
+            // Get this form element
+            var form = this;
+                
+            // Now check the validity
+            if (form.checkValidity() === false) {
+                console.log("** Something is invalid in the form.");
+                $(form).addClass('was-validated');
+                return;
+            }  
+            $(form).addClass('was-validated');
 
             // Create Patch Panel form data for JSON request
             var formData = {};
@@ -58,7 +69,6 @@ $(document).ready(function () {
 
                     // Remove the form
                     $('form').parent().empty();
-                    //$('form')[0].reset();
 
                     // Compose the feedback message
                     var messageText = data.result;
@@ -93,6 +103,17 @@ $(document).ready(function () {
         // When the form is submitted
         $('form').submit(function (e) {
             e.preventDefault();
+            
+            // Get this form element
+            var form = this;
+                
+            // Now check the validity
+            if (form.checkValidity() === false) {
+                console.log("** Something is invalid in the form.");
+                $(form).addClass('was-validated');
+                return;
+            }  
+            $(form).addClass('was-validated');
 
             // Create Patch Panel form data for the JSON request
             var formData = {};
@@ -116,10 +137,8 @@ $(document).ready(function () {
                     data = jQuery.parseJSON(data);
                     console.log("** Received after POST: " + data.result);
 
-                    // Reset the form
-                    //$('form').parent().empty();
-                    $('form')[0].reset();
-
+                    // Remove the form
+                    $('form').parent().empty();
                     // Compose the feedback message
                     var messageText = data.result;
 

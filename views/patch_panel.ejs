@@ -28,9 +28,9 @@
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="name">Patch Panel Name</label>
-                <input type="text" class="form-control" id="name" placeholder="" value="" required>
+                <input type="text" class="form-control" id="name" required>
                 <div class="invalid-feedback">
-                  Valid Patch Panel name is required.
+                  A valid patch panel name is required.
                 </div>
               </div>
               <div class="col-md-6 mb-3">
@@ -42,7 +42,7 @@
                   <option>JHR</option>
                 </select>                
                   <div class="invalid-feedback">
-                  Valid location name is required.
+                  A valid location name is required.
                 </div>
               </div>              
             </div> 
@@ -50,9 +50,9 @@
             <div class="row"> 
               <div class="col-md-6 mb-3">
                 <label for="portsNum">No. of Ports</label>
-                <input type="number" min="0" class="form-control" id="portsNum" placeholder="" value="" required>
+                <input type="number" min="0" class="form-control" id="portsNum" required>
                 <div class="invalid-feedback">
-                  Valid number of ports is required.
+                  A valid number of ports is required.
                 </div>
               </div>
               <div class="col-md-6 mb-3">
@@ -63,14 +63,17 @@
                   <option>LC</option>
                 </select>                
                   <div class="invalid-feedback">
-                  Valid type is required.
+                  A valid type is required.
                 </div>
               </div>  
             </div>
             <div class="row"> 
               <div class="col">
                 <label for="odf">ODF</label>
-                <input type="text" class="form-control" id="odf" placeholder="" value="">             
+                <input type="text" class="form-control" id="odf" required>                 
+                  <div class="invalid-feedback">
+                  A valid ODF is required.
+                </div>            
               </div>              
             </div>
               <br/>
@@ -80,6 +83,10 @@
                 <textarea rows="4" class="form-control" id="comment"></textarea>
               </div>
             </div>
+              
+            <hr class="mb-4">
+
+            <button class="btn btn-primary btn-lg btn-block ladda-button" data-dismiss="modal" data-style="expand-right" type="submit">Submit</button>
              
              
 <% } else { %>
@@ -90,10 +97,10 @@
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="name">Patch Panel Name</label>
-                <input type="text" class="form-control" id="name" placeholder="" value="" required>
+                <input type="text" class="form-control" id="name" required>
                 <input type="hidden" name="patchPanelId" id="patchPanelId" value="<%= patchPanelID %>" >
                 <div class="invalid-feedback">
-                  Valid Patch Panel name is required.
+                  A valid patch panel name is required.
                 </div>
               </div>   
               <div class="col-md-6 mb-3">
@@ -105,7 +112,7 @@
                   <option>JHR</option>
                 </select>                
                   <div class="invalid-feedback">
-                  Valid location name is required.
+                  A valid location name is required.
                 </div>
               </div>              
             </div> 
@@ -113,9 +120,9 @@
             <div class="row"> 
               <div class="col-md-6 mb-3">
                 <label for="portsNum">No. of Ports</label>
-                <input type="number" min="0" class="form-control" id="portsNum" placeholder="" value="" required readonly>
+                <input type="number" min="0" class="form-control" id="portsNum" required readonly>
                 <div class="invalid-feedback">
-                  Valid number of ports is required.
+                  a valid number of ports is required.
                 </div>
               </div>
               <div class="col-md-6 mb-3">
@@ -126,14 +133,17 @@
                   <option>LC</option>
                 </select>                
                   <div class="invalid-feedback">
-                  Valid type is required.
+                  A valid type is required.
                 </div>
               </div>  
             </div>
             <div class="row"> 
               <div class="col">
                 <label for="odf">ODF</label>
-                <input type="text" class="form-control" id="odf" placeholder="">            
+                <input type="text" class="form-control" id="odf" required>                   
+                  <div class="invalid-feedback">
+                  A valid ODF is required.
+                </div>         
               </div>              
             </div>
               <br/>  
@@ -144,14 +154,15 @@
               </div>
             </div>
               
+            <hr class="mb-4">
+
+            <button class="btn btn-primary btn-lg btn-block ladda-button" data-dismiss="modal" data-style="expand-right" type="submit">Update</button>
+              
                  
               
 <% } %>            
               
             
-            <hr class="mb-4">
-
-            <button class="btn btn-primary btn-lg btn-block ladda-button" data-dismiss="modal" data-style="expand-right" type="submit">Submit</button>
           </form>
         </div>
       </div>

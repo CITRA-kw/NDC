@@ -31,6 +31,17 @@ $(document).ready(function () {
         // Update form is submitted 
         $('form').submit(function (e) {
             e.preventDefault();
+            
+            // Get this form element
+            var form = this;
+                
+            // Now check the validity
+            if (form.checkValidity() === false) {
+                console.log("** Something is invalid in the form.");
+                $(form).addClass('was-validated');
+                return;
+            }  
+            $(form).addClass('was-validated');
 
             // Create provider form data for JSON request
             var formData = {};
@@ -90,6 +101,17 @@ $(document).ready(function () {
         // When the form is submitted
         $('form').submit(function (e) {
             e.preventDefault();
+            
+            // Get this form element
+            var form = this;
+                
+            // Now check the validity
+            if (form.checkValidity() === false) {
+                console.log("** Something is invalid in the form.");
+                $(form).addClass('was-validated');
+                return;
+            }  
+            $(form).addClass('was-validated');
 
             // Create provider form data for the JSON request
             var formData = {};
