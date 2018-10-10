@@ -119,7 +119,7 @@ function showMessage(msg) {
 
 
 // ***************************************************************
-// Print a list
+// Print a list of delete/update 
 // ***************************************************************
 function printList(list_data) {
     console.log("** Printing the list");
@@ -139,10 +139,10 @@ function printList(list_data) {
             this.id = this.circuit_num;
         }
 
-        $('<li>').addClass('list-group-item d-flex justify-content-between lh-condensed').appendTo('#some_list');
-        $('<div>').appendTo('#some_list>li:last-child');
-        $('<h6>').addClass('my-0').text(this.name).appendTo('#some_list>li:last-child>div:last-child');
-        $('<small>').addClass('text-muted').appendTo('#some_list>li:last-child');
+        $('<li>').addClass('list-group-item d-flex justify-content-between lh-condensed p-1').appendTo('#some_list');
+        $('<div>').addClass('my-auto').appendTo('#some_list>li:last-child');
+        $('<span>').addClass('').text(this.name).appendTo('#some_list>li:last-child>div:last-child');
+        $('<small>').addClass('text-muted float-sm-right').appendTo('#some_list>li:last-child');
 
         // Check the link and make sure we don't have /updateform/ already on the page link
         var updateLink;
@@ -152,10 +152,10 @@ function printList(list_data) {
             updateLink = "updateform/";
         }
 
-        $('<a class="btn btn-link btn-sm" href="' + updateLink + this.id + '">').text('update').appendTo('#some_list>li:last-child>small');
-        $('#some_list>li:last-child>small').append(' | ');
+        $('<a class="btn btn-link btn-sm p-0" href="' + updateLink + this.id + '"><i class="fas fa-xs fa-edit"></i></a>').appendTo('#some_list>li:last-child>small')
+        $('#some_list>li:last-child>small').append(' ');
 
-        $('<button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#deleteModal" data-delete_id="' + this.id + '" data-delete_name="' + this.name + '">delete</button>').appendTo('#some_list>li:last-child>small');
+        $('<button type="button" class="btn btn-link btn-sm p-0" data-toggle="modal" data-target="#deleteModal" data-delete_id="' + this.id + '" data-delete_name="' + this.name + '"><i class="fas fa-xs fa-trash-alt"></i></button>').appendTo('#some_list>li:last-child>small');
     });
     $('#list_num').html(list_data.length);
 
