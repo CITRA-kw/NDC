@@ -41,7 +41,7 @@ $(document).ready(function () {
             $("select#service").val(json[0].service);
             $("select#provider").val(json[0].provider);
             $("select#isp").val(json[0].isp);
-            $("input#comment").attr("value", json[0].comment);
+            $("textarea#comment").val(json[0].comment);
             console.log("** Received circuit JSON info to populate form for MOC ID " + json[0].moc_id);
             console.log("** The data is: " + JSON.stringify(json));
 
