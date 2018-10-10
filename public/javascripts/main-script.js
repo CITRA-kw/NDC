@@ -139,6 +139,7 @@ function printList(list_data) {
             this.id = this.circuit_num;
         }
 
+        
         $('<li>').addClass('list-group-item d-flex justify-content-between lh-condensed p-1').appendTo('#some_list');
         $('<div>').addClass('my-auto').appendTo('#some_list>li:last-child');
         $('<span>').addClass('').text(this.name).appendTo('#some_list>li:last-child>div:last-child');
@@ -152,15 +153,18 @@ function printList(list_data) {
             updateLink = "updateform/";
         }
 
+        // Adding edit link
         $('<a class="btn btn-link btn-sm p-0" href="' + updateLink + this.id + '"><i class="fas fa-xs fa-edit"></i></a>').appendTo('#some_list>li:last-child>small')
         $('#some_list>li:last-child>small').append(' ');
 
+        // Adding remove link
         $('<button type="button" class="btn btn-link btn-sm p-0" data-toggle="modal" data-target="#deleteModal" data-delete_id="' + this.id + '" data-delete_name="' + this.name + '"><i class="fas fa-xs fa-trash-alt"></i></button>').appendTo('#some_list>li:last-child>small');
     });
-    $('#list_num').html(list_data.length);
+    $('#list_num').text(list_data.length);
 
     // Adding confirmation functionality when clicking delete link of each item on the list
     $('#deleteModal').on('show.bs.modal', function (event) {
+        console.log("** Delete button clicked");
         var button = $(event.relatedTarget) // Button that triggers the modal
         var delete_id = button.data('delete_id');
         var delete_name = button.data('delete_name');
