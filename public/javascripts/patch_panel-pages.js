@@ -27,6 +27,14 @@ $(document).ready(function () {
             $("textarea#comment").val(json[0].comment);
             $("select#ports_type").val(json[0].ports_type);
             console.log("** Received Patch Panel JSON info to populate form for " + json[0].name + " location " + json[0].location);
+            
+            // Now add the labels of each port so user can modify it
+            var i;
+            for (i = 0; i < json[1].length; i++) {
+                addPort(json[1][i].id, json[1][i].patch_panel_id, json[1][i].label);
+            }
+            
+
 
         }); 
 
@@ -168,4 +176,16 @@ $(document).ready(function () {
 
 
 
+// ***************************************************************
+// Append text field for each port label
+// ***************************************************************
+function addPort(id, patch_panel_id, label) {
+    var $template = $('#portLabelTemplate');
+    labelEelement = $template
+    .clone()
+    .removeClass('d-none')
+    .removeAttr('id')
+    .insertBefore($template);
 
+    $(labelEelement).find('input').first().val(label);
+}

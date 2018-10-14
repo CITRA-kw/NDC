@@ -422,7 +422,7 @@ function populatePatchPanelDropDown(element, patch_panel_value, patch_panel_name
 
 // ***************************************************************
 // Populate the ports dynamic dropdowns
-// **************************************************************
+// ***************************************************************
 function populatePortsDropDown(portField, port_value, port_name) {
     console.log("** populatePortsDropDown() called! -- Passed values " + port_value + " " + port_name);
 
@@ -447,7 +447,7 @@ function populatePortsDropDown(portField, port_value, port_name) {
 
 // ***************************************************************
 // Populate the patch panel dropdowns
-// **************************************************************
+// ***************************************************************
 function addPatchPanelData(className, prefix, formData) {
     // Get circuit selection array from the form
     var patch_panel = new Array();

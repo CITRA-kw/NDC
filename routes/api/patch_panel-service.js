@@ -61,9 +61,8 @@ router.post('/api/patch_panel-service/patch_panel', function (req, res) {
         res.send(JSON.stringify({
             result: "Insert Successful for " + newPatchPanel.name
         }));
-
-
     });
+    
 
     // Insert ports for each patch panel we have added to the DB
     function insertPorts(forID, num, ports_type) {
@@ -118,21 +117,35 @@ router.get('/api/patch_panel-service/ports/:id', function (req, res) {
 // ***************************************************************
 router.get('/api/patch_panel-service/patch_panel/:id', function (req, res) { 
     console.log('** GET Single Patch Panel for ID ' + req.params.id);
+    
+    var toSend;
 
+    // First get patch panel details
     connection.query('SELECT pp.id, pp.name, pp.location, pp.comment, count(ppp.patch_panel_id) AS portsNum, ppp.port_type AS ports_type, pp.odf FROM patch_panel AS pp LEFT JOIN patch_panel_port AS ppp ON pp.id = ppp.patch_panel_id WHERE pp.id = ? GROUP BY ppp.port_type', [req.params.id], function (err, results, fields) {
         if (err) throw err;
 
         console.log("** Get a single Patch Panel - query result: " + JSON.stringify(results));
 
-        res.json(results);
+        toSend = results;        
+    });
+    
+    // Now get all ports of a patch panel
+    connection.query('SELECT * FROM patch_panel_port WHERE patch_panel_id = "' + req.params.id + '"', function (error, results) {
+        if (error) {
+            throw error;
+        }
         
+        toSend[1] = results;
+        console.log('** Sending back the following info: ');
+        console.log(toSend);
+
+        res.json(toSend);
     });
 });
 
 // ***************************************************************
 // Update Patch Panel
 // ***************************************************************
-
 router.put('/api/patch_panel-service/patch_panel', function (req, res) {
     var update_patch_panel = req.body;
     console.log("** PUT - update single Patch Panel: " + update_patch_panel.name);
