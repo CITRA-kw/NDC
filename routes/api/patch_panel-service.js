@@ -4,11 +4,12 @@ var mysql = require('mysql');
 // Load config file for database access
 var config = require('config').get('dbConfig');
 
-var connection = mysql.createConnection({ 
+var connection = mysql.createConnection({
     host: config.get('host'),
     user: config.get('username'),
     password: config.get('password'),
-    database: config.get('dbname')
+    database: config.get('dbname'),
+    multipleStatements: true
 });
 
 connection.connect();
@@ -29,7 +30,7 @@ router.get('/api/patch_panel-service/patch_panel', function (req, res) {
         res.json(results);
         console.log("** Get Patch Panel list - query result: " + JSON.stringify(results));
     });
-    
+
 });
 
 
@@ -57,12 +58,12 @@ router.post('/api/patch_panel-service/patch_panel', function (req, res) {
 
         // Now insert the ports
         var result2 = insertPorts(newPatchPanelID, newPatchPanel.portsNum, newPatchPanel.ports_type);
-        
+
         res.send(JSON.stringify({
             result: "Insert Successful for " + newPatchPanel.name
         }));
     });
-    
+
 
     // Insert ports for each patch panel we have added to the DB
     function insertPorts(forID, num, ports_type) {
@@ -115,9 +116,9 @@ router.get('/api/patch_panel-service/ports/:id', function (req, res) {
 // ***************************************************************
 // Get a single Patch Panel detail
 // ***************************************************************
-router.get('/api/patch_panel-service/patch_panel/:id', function (req, res) { 
+router.get('/api/patch_panel-service/patch_panel/:id', function (req, res) {
     console.log('** GET Single Patch Panel for ID ' + req.params.id);
-    
+
     var toSend;
 
     // First get patch panel details
@@ -126,15 +127,15 @@ router.get('/api/patch_panel-service/patch_panel/:id', function (req, res) {
 
         console.log("** Get a single Patch Panel - query result: " + JSON.stringify(results));
 
-        toSend = results;        
+        toSend = results;
     });
-    
+
     // Now get all ports of a patch panel
     connection.query('SELECT * FROM patch_panel_port WHERE patch_panel_id = "' + req.params.id + '"', function (error, results) {
         if (error) {
             throw error;
         }
-        
+
         toSend[1] = results;
         console.log('** Sending back the following info: ');
         console.log(toSend);
@@ -150,21 +151,84 @@ router.put('/api/patch_panel-service/patch_panel', function (req, res) {
     var update_patch_panel = req.body;
     console.log("** PUT - update single Patch Panel: " + update_patch_panel.name);
 
-    var query = connection.query('UPDATE patch_panel SET name=?, location=?, odf=?, comment=? where id=?', [update_patch_panel.name, update_patch_panel.location, update_patch_panel.odf, update_patch_panel.comment, update_patch_panel.id], function (error, results, fields) {
-        if (error) {
-            res.send(JSON.stringify({
-                result: "Epic Fail!"
-            }));
 
-            throw error;
+    // ----------------- USING MYSQL TRANSACTIONS  ---------------
+    // Using Transactions so we can rollback if failed in any step
+    connection.beginTransaction(function (err) {
+        if (err) {
+            throw err;
         }
 
-        console.log("** PUT Patch Panel - query result: " + JSON.stringify(results));
-        res.set('Content-Type', 'application/json');
-        res.send(JSON.stringify({
-            result: "Update Successful for " + update_patch_panel.name
-        }));
+        var query = connection.query('UPDATE patch_panel SET name=?, location=?, odf=?, comment=? where id=?', [update_patch_panel.name, update_patch_panel.location, update_patch_panel.odf, update_patch_panel.comment, update_patch_panel.id], function (error, results, fields) {
+            console.log("** First SQL Transaction query: " + query.sql);
+            if (error) {
+                return connection.rollback(function () {
+                    res.send(JSON.stringify({
+                        result: "Epic Fail!",
+                        sql: query.sql
+                    }));
+                    console.log('MySQL rolling back query #1!');
+                    throw error;
+                });
+            }
+            console.log("** PUT Patch Panel - query result: " + JSON.stringify(results));
+            res.set('Content-Type', 'application/json');
+
+            //-----------------------------------------------
+            // Now update the labels
+            // ----------------------------------------------
+
+            // First create array of port labels and ids
+            var ports_label_vals = update_patch_panel['ports_label_val[]'] ? (Array.isArray(update_patch_panel['ports_label_val[]']) ? update_patch_panel['ports_label_val[]'] : [update_patch_panel['ports_label_val[]']]) : [];
+            var ports_label_ids = update_patch_panel['ports_label_id[]'] ? (Array.isArray(update_patch_panel['ports_label_id[]']) ? update_patch_panel['ports_label_id[]'] : [update_patch_panel['ports_label_id[]']]) : [];
+            var ports_label_patch_panel_ids = update_patch_panel['ports_label_patch_panel_id[]'] ? (Array.isArray(update_patch_panel['ports_label_patch_panel_id[]']) ? update_patch_panel['ports_label_patch_panel_id[]'] : [update_patch_panel['ports_label_patch_panel_id[]']]) : [];
+
+            var update_query = '';
+
+            for (var i = 0; i < ports_label_vals.length; i++) {
+                update_query += 'UPDATE patch_panel_port SET label = "' + ports_label_vals[i] + '" WHERE id = "' + ports_label_ids[i] + '" AND patch_panel_id = "' + ports_label_patch_panel_ids[i] + '";';
+            }
+
+            var query2 = connection.query(update_query, function (error, results2, fields) {
+                if (error) {
+                    return connection.rollback(function () {
+                        res.send(JSON.stringify({
+                            result: "Epic Fail!",
+                            sql: query2.sql
+                        }));
+                        console.log('MySQL rolling back from query #2!');
+                        throw error;
+                    });
+                }
+
+                console.log("The ports label update SQL is: " + JSON.stringify(query2.sql));
+
+                // Now commit the transaction
+                connection.commit(function (err) {
+                    if (err) {
+                        return connection.rollback(function () {
+                            res.send(JSON.stringify({
+                                result: "Epic Fail!",
+                                sql: query2.sql
+                            }));
+
+                            throw err;
+                        });
+                    }
+
+
+                    res.send(JSON.stringify({
+                        result: "Update patch panel successful for (" + update_patch_panel.name + ") "
+                    }));
+
+
+                });
+
+
+            });
+        });
     });
+
 });
 
 

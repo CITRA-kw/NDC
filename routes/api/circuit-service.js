@@ -33,21 +33,6 @@ router.get('/api/circuit-service', function (req, res) {
 
 
 
-function addPatchPanelData(direction, rows, newCircuit, circuit_num) {
-
-    var patch_panel_ids = newCircuit[direction+'_patch_panel[]'] ? (Array.isArray(newCircuit[direction+'_patch_panel[]']) ? newCircuit[direction+'_patch_panel[]'] : [newCircuit[direction+'_patch_panel[]']]) : [];
-    var port_ids = newCircuit[direction+'_port[]'] ? (Array.isArray(newCircuit[direction+'_port[]']) ? newCircuit[direction+'_port[]'] : [newCircuit[direction+'_port[]']]) : [];
-    console.log("** Number of circuit connections for " + direction + ": " + patch_panel_ids.length);
-
-    for (var i = 0; i < patch_panel_ids.length; i++) {
-
-        var row = [circuit_num, port_ids[i], patch_panel_ids[i], i, direction];
-
-        rows.push(row);
-    }
-}
-
-
 
 // ***************************************************************
 // Add a Circuit
@@ -129,6 +114,21 @@ router.post('/api/circuit-service', function (req, res) {
 
 });
 
+// Create rows string to be inserted for patch panel ports
+function addPatchPanelData(direction, rows, newCircuit, circuit_num) {
+
+    var patch_panel_ids = newCircuit[direction+'_patch_panel[]'] ? (Array.isArray(newCircuit[direction+'_patch_panel[]']) ? newCircuit[direction+'_patch_panel[]'] : [newCircuit[direction+'_patch_panel[]']]) : [];
+    var port_ids = newCircuit[direction+'_port[]'] ? (Array.isArray(newCircuit[direction+'_port[]']) ? newCircuit[direction+'_port[]'] : [newCircuit[direction+'_port[]']]) : [];
+    console.log("** Number of circuit connections for " + direction + ": " + patch_panel_ids.length);
+
+    for (var i = 0; i < patch_panel_ids.length; i++) {
+
+        var row = [circuit_num, port_ids[i], patch_panel_ids[i], i, direction];
+
+        rows.push(row);
+    }
+}
+
 // ***************************************************************
 // Get a single Circuit detail
 // ***************************************************************
@@ -174,7 +174,7 @@ router.put('/api/circuit-service', function (req, res) {
     var update_circuit = req.body;
     console.log("** PUT - update single Circuit circuit_num: " + update_circuit.circuit_num);
 
-    // ----------------- USING MYSQL TRANSACTIONS INSTEAD --------
+    // ----------------- USING MYSQL TRANSACTIONS  ---------------
     // Using Transactions so we can rollback if failed in any step
     connection.beginTransaction(function (err) {
         if (err) {
@@ -182,14 +182,14 @@ router.put('/api/circuit-service', function (req, res) {
         }
 
         var query = connection.query('UPDATE circuit SET moc_id=?, interface_type=?, provision_speed=?, service=?, provider=?, isp=?, comment=? where circuit_num=?', [update_circuit.moc_id, update_circuit.interface_type, update_circuit.provision_speed, update_circuit.service, update_circuit.provider, update_circuit.isp, update_circuit.comment, update_circuit.circuit_num], function (error, results, fields) {
-            console.log(query.sql);
+            console.log("** First SQL Transaction query: " + query.sql);
             if (error) {
                 return connection.rollback(function () {
                     res.send(JSON.stringify({
                         result: "Epic Fail!",
                         sql: query.sql
                     }));
-                    console.log('MySQL rolling back!');
+                    console.log('MySQL rolling back query #1!');
                     throw error;
                 });
             }
@@ -197,7 +197,7 @@ router.put('/api/circuit-service', function (req, res) {
             res.set('Content-Type', 'application/json');
 
             //-----------------------------------------------
-            // Delete all connections related to this circuit
+            // Delete all connections related to this circuit before inserting new connections
             // ----------------------------------------------
 
             var query2 = connection.query('DELETE FROM ports_circuit WHERE circuit_num = ?', [update_circuit.circuit_num], function (error, results2, fields) {
@@ -207,7 +207,7 @@ router.put('/api/circuit-service', function (req, res) {
                             result: "Epic Fail!",
                             sql: query2.sql
                         }));
-                        console.log('MySQL rolling back from #2!');
+                        console.log('MySQL rolling back from query #2!');
                         throw error;
                     });
                 }
@@ -234,7 +234,7 @@ router.put('/api/circuit-service', function (req, res) {
                                 result: "Epic Fail!",
                                 sql: query3.sql
                             }));
-                            console.log('MySQL rolling back from #3!');
+                            console.log('MySQL rolling back from query #3!');
                             throw error;
                         });
                     }
@@ -245,7 +245,7 @@ router.put('/api/circuit-service', function (req, res) {
                             return connection.rollback(function () {
                                 res.send(JSON.stringify({
                                     result: "Epic Fail!",
-                                    sql: query2.sql
+                                    sql: query3.sql
                                 }));
 
                                 throw err;
@@ -266,121 +266,6 @@ router.put('/api/circuit-service', function (req, res) {
     });
 });
 
-// THIS IS THE ORIGINAL
-router.put('/api/circuit-service2', function (req, res) {
-    var update_circuit = req.body;
-    console.log("** PUT - update single Circuit Circuit ID: " + update_circuit.id);
-
-    /*
-    var query = connection.query('UPDATE circuit SET moc_id=?, interface_type=?, provision_speed=?, service=?, provider=?, isp=?, comment=? where id=?', [update_circuit.moc_id, update_circuit.interface_type, update_circuit.provision_speed, update_circuit.service, update_circuit.provider, update_circuit.isp, update_circuit.comment, update_circuit.id], function (error, results, fields) {
-        if (error) {
-            res.send(JSON.stringify({
-                result: "Epic Fail!",
-                sql: query.sql
-            }));
-
-            throw error;
-        }
-
-        console.log("** PUT Circuit - query result: " + JSON.stringify(results));
-        res.set('Content-Type', 'application/json');
-        res.send(JSON.stringify({
-            result: "Update Successful for Circuit ID" + update_circuit.id
-        }));
-    });
-    */
-
-
-    // ----------------- USING MYSQL TRANSACTIONS INSTEAD --------
-    // Using Transactions so we can rollback if failed in any step
-    connection.beginTransaction(function (err) {
-        if (err) {
-            throw err;
-        }
-
-        var query = connection.query('UPDATE circuit SET moc_id=?, interface_type=?, provision_speed=?, service=?, provider=?, isp=?, comment=? where id=?', [update_circuit.moc_id, update_circuit.interface_type, update_circuit.provision_speed, update_circuit.service, update_circuit.provider, update_circuit.isp, update_circuit.comment, update_circuit.id], function (error, results, fields) {
-            if (error) {
-                return connection.rollback(function () {
-                    res.send(JSON.stringify({
-                        result: "Epic Fail!",
-                        sql: query.sql
-                    }));
-                    console.log('MySQL rolling back!');
-                    throw error;
-                });
-            }
-            console.log("** PUT Circuit - query result: " + JSON.stringify(results));
-            res.set('Content-Type', 'application/json');
-
-            //-----------------------------------------------
-            // Delete all connections related to this circuit
-            // ----------------------------------------------
-
-            var query2 = connection.query('DELETE FROM ports_circuit WHERE circuit_num = ?', [update_circuit.id], function (error, results2, fields) {
-                if (error) {
-                    return connection.rollback(function () {
-                        res.send(JSON.stringify({
-                            result: "Epic Fail!",
-                            sql: query2.sql
-                        }));
-                        console.log('MySQL rolling back from #2!');
-                        throw error;
-                    });
-                }
-                //-----------------------------------------------
-                // Insert the circuit connections
-                // ----------------------------------------------   
-                // Get the inserted CircuitId
-                var circuit_num = update_circuit.id;
-                var rows = [];
-
-
-                // Make sure the following variables are an Array, otherwise turn them into an array of single value
-                addPatchPanelData("ingress", rows, update_circuit, circuit_num);
-                addPatchPanelData("egress", rows, update_circuit, circuit_num);
-
-                console.log(rows);
-
-                var query3 = connection.query('INSERT INTO ports_circuit VALUES ?', [rows], function (error, results2, fields) {
-                    console.log(query3.sql);
-
-                    if (error) {
-                        return connection.rollback(function () {
-                            res.send(JSON.stringify({
-                                result: "Epic Fail!",
-                                sql: query3.sql
-                            }));
-                            console.log('MySQL rolling back from #3!');
-                            throw error;
-                        });
-                    }
-
-
-                    connection.commit(function (err) {
-                        if (err) {
-                            return connection.rollback(function () {
-                                res.send(JSON.stringify({
-                                    result: "Epic Fail!",
-                                    sql: query2.sql
-                                }));
-
-                                throw err;
-                            });
-                        }
-                        // console.log("** PUT also added " + port_ids.length + " ports");
-                        console.log("The ports_circuit SQL is: " + JSON.stringify(query3.sql));
-                        res.send(JSON.stringify({
-                            result: "Insert Successful for (MoC ID " + update_circuit.moc_id + ") "
-                        }));
-
-                    });
-                });
-
-
-            });
-        });
-    });
-});
 // ***************************************************************
 // Delete Circuit
 // ***************************************************************

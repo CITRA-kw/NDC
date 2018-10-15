@@ -33,9 +33,6 @@ $(document).ready(function () {
             for (i = 0; i < json[1].length; i++) {
                 addPort(json[1][i].id, json[1][i].patch_panel_id, json[1][i].label);
             }
-            
-
-
         }); 
 
         // Update form is submitted 
@@ -62,6 +59,21 @@ $(document).ready(function () {
             formData.ports_type = $("select#ports_type").val();
             formData.odf = $("input#odf").val();
             formData.comment = $("textarea#comment").val();
+            
+            // Getting port labels values from the form
+            var ports_label_val = new Array();
+            var ports_label_id = new Array();
+            var ports_label_pp_id = new Array();
+            $(`.port-label`).each(function () {
+                ports_label_val.push($(this).val());
+                ports_label_id.push($(this).attr("data-id"));
+                ports_label_pp_id.push($(this).attr("data-patch_panel_id"));
+            });
+            
+            formData.ports_label_val = ports_label_val;
+            formData.ports_label_id = ports_label_id;
+            formData.ports_label_patch_panel_id = ports_label_pp_id;
+
 
             console.log("** Sending PUT: " + JSON.stringify(formData)); 
 
@@ -188,4 +200,5 @@ function addPort(id, patch_panel_id, label) {
     .insertBefore($template);
 
     $(labelEelement).find('input').first().val(label);
+    $(labelEelement).find('input').first().attr("data-id", id).attr("data-patch_panel_id", patch_panel_id).addClass("port-label").attr("required", "");
 }
