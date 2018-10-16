@@ -67,7 +67,10 @@ $(document).ready(function () {
                     // Remove the form
                     $('form').parent().empty();
                     //$('form')[0].reset();
-
+                    
+                    // Remove the form
+                    $('form').parent().empty();
+                    
                     // Compose the feedback message
                     var messageText = data.result;
 
@@ -138,6 +141,9 @@ $(document).ready(function () {
                     //$('form').parent().empty();
                     $('form')[0].reset();
 
+                    // Remove the form
+                    $('form').parent().empty();
+                    
                     // Compose the feedback message
                     var messageText = data.result;
 

@@ -175,7 +175,7 @@ $(document).ready(function () {
 
             console.log(formData);
 
-            /*
+            /* 
             // Check duplicates
             var duplicate = false;
             for (var i = 0; i < formData.port.length; i++) {

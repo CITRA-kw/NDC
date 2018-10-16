@@ -159,6 +159,7 @@ $(document).ready(function () {
 
                     // Remove the form
                     $('form').parent().empty();
+                    
                     // Compose the feedback message
                     var messageText = data.result;
 

@@ -67,7 +67,6 @@ $(document).ready(function () {
 
                     // Remove the form
                     $('form').parent().empty();
-                    //$('form')[0].reset();
 
                     // Compose the feedback message
                     var messageText = data.result;
