@@ -23,7 +23,7 @@ connection.connect();
 router.get('/api/circuit-service', function (req, res) {
     console.log('** GET Circuits');
 
-    connection.query('SELECT c.*, p.code AS provider_code, i.code AS isp_code FROM circuit c INNER JOIN provider p ON c.provider = p.id INNER JOIN isp i ON c.isp = i.id WHERE c.active = true', function (err, results, fields) {
+    connection.query('SELECT c.*, p.code AS provider_code, i.code AS isp_code FROM circuit c INNER JOIN provider p ON c.provider = p.id INNER JOIN isp i ON c.isp = i.id', function (err, results, fields) {
         if (err) throw err;
 
         res.json(results);

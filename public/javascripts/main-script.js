@@ -139,11 +139,20 @@ function printList(list_data) {
             this.id = this.circuit_num;
         }
 
-        
+        // strike it or not? This is used for Circuit page, if the circuit has been deleted then strike the circuit name
+        var strikeIt = "<span>";
+        if(this.active == 0) {
+            console.log(' **XX** ');
+            strikeIt = "<s>";
+        }  
+        // Now add the elements to page DOM
         $('<li>').addClass('list-group-item d-flex justify-content-between lh-condensed p-1').appendTo('#some_list');
         $('<div>').addClass('my-auto').appendTo('#some_list>li:last-child');
-        $('<span>').addClass('').text(this.name).appendTo('#some_list>li:last-child>div:last-child');
+        $(strikeIt).addClass('').text(this.name).appendTo('#some_list>li:last-child>div:last-child');
         $('<small>').addClass('text-muted float-sm-right').appendTo('#some_list>li:last-child');
+        
+      
+
 
         // Check the link and make sure we don't have /updateform/ already on the page link
         var updateLink;
