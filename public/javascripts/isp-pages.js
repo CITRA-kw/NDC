@@ -84,7 +84,9 @@ $(document).ready(function () {
                 beforeSend: function () {
                     //$(".post_submitting").show().html("<center><img src='images/loading.gif'/></center>");
                 },
-                error: function () {}
+                error: function () {
+                    console.log("** Error: There's an error on getJSON");
+                }
             }); // end getJSON
 
         }); // end submit
@@ -154,7 +156,9 @@ $(document).ready(function () {
                 beforeSend: function () {
                     //$(".post_submitting").show().html("<center><img src='images/loading.gif'/></center>");
                 },
-                error: function () {}
+                error: function () {
+                    console.log("** Error: There's an error on getJSON");
+                }
             }); // end getJSON
 
         }); // end submit

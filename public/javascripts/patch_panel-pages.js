@@ -80,7 +80,7 @@ $(document).ready(function () {
             // JSON call to add form data
             $.getJSON({
                 url: "/api/" + service_name,
-                dataType: 'json',
+                dataType: 'text',
                 data: formData,
                 type: "put",
                 success: function (data) {
@@ -106,7 +106,9 @@ $(document).ready(function () {
                 beforeSend: function () {
                     //$(".post_submitting").show().html("<center><img src='images/loading.gif'/></center>");
                 },
-                error: function () {}
+                error: function () {
+                    console.log("** Error: There's an error on getJSON");
+                }
             }); // end getJSON
 
         }); // end submit
@@ -150,7 +152,7 @@ $(document).ready(function () {
             // JSON call to add form data
             $.getJSON({
                 url: "/api/" + service_name,
-                dataType: 'json',
+                dataType: 'text',
                 data: formData,
                 type: "post",
                 success: function (data) {
@@ -176,7 +178,9 @@ $(document).ready(function () {
                 beforeSend: function () {
                     //$(".post_submitting").show().html("<center><img src='images/loading.gif'/></center>");
                 },
-                error: function () {}
+                error: function () {
+                    console.log("** Error: There's an error on getJSON");
+                }
             }); // end getJSON
 
         }); // end submit
