@@ -80,7 +80,7 @@ $(document).ready(function () {
             // JSON call to add form data
             $.getJSON({
                 url: "/api/" + service_name,
-                dataType: 'text',
+                dataType: 'json',
                 data: formData,
                 type: "put",
                 success: function (data) {
@@ -150,7 +150,7 @@ $(document).ready(function () {
             // JSON call to add form data
             $.getJSON({
                 url: "/api/" + service_name,
-                dataType: 'text',
+                dataType: 'json',
                 data: formData,
                 type: "post",
                 success: function (data) {
