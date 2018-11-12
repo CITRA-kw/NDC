@@ -75,12 +75,12 @@ $(document).ready(function () {
             formData.ports_label_patch_panel_id = ports_label_pp_id;
 
 
-            console.log("** Sending PUT: " + JSON.stringify(formData)); 
+            console.log("** Sending PUT: " , formData); 
 
             // JSON call to add form data
             $.getJSON({
                 url: "/api/" + service_name,
-                dataType: 'text',
+                dataType: 'json',
                 data: formData,
                 type: "put",
                 success: function (data) {
