@@ -142,7 +142,6 @@ function printList(list_data) {
         // strike it or not? This is used for Circuit page, if the circuit has been deleted then strike the circuit name
         var strikeIt = "<span>";
         if(this.active == 0) {
-            console.log(' **XX** ');
             strikeIt = "<s>";
         }  
         // Now add the elements to page DOM
