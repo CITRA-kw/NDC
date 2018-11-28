@@ -50,7 +50,7 @@ router.post('/api/circuit-service', function (req, res) {
         if (err) {
             throw err;
         }
-        var query = connection.query('INSERT INTO circuit SET moc_id=?, interface_type=?, provision_speed=?, service=?, provider=?, isp=?, comment=?', [newCircuit.moc_id, newCircuit.interface_type, newCircuit.provision_speed, newCircuit.service, newCircuit.provider, newCircuit.isp, newCircuit.comment], function (error, results, fields) {
+        var query = connection.query('INSERT INTO circuit SET id=?, moc_id=?, interface_type=?, provision_speed=?, service=?, provider=?, isp=?, comment=?', [newCircuit.id, newCircuit.moc_id, newCircuit.interface_type, newCircuit.provision_speed, newCircuit.service, newCircuit.provider, newCircuit.isp, newCircuit.comment], function (error, results, fields) {
             if (error) {
                 return connection.rollback(function () {
                     res.send(JSON.stringify({
@@ -181,7 +181,7 @@ router.put('/api/circuit-service', function (req, res) {
             throw err;
         }
 
-        var query = connection.query('UPDATE circuit SET moc_id=?, interface_type=?, provision_speed=?, service=?, provider=?, isp=?, comment=? where circuit_num=?', [update_circuit.moc_id, update_circuit.interface_type, update_circuit.provision_speed, update_circuit.service, update_circuit.provider, update_circuit.isp, update_circuit.comment, update_circuit.circuit_num], function (error, results, fields) {
+        var query = connection.query('UPDATE circuit SET id=?, moc_id=?, interface_type=?, provision_speed=?, service=?, provider=?, isp=?, comment=? where circuit_num=?', [update_circuit.id, update_circuit.moc_id, update_circuit.interface_type, update_circuit.provision_speed, update_circuit.service, update_circuit.provider, update_circuit.isp, update_circuit.comment, update_circuit.circuit_num], function (error, results, fields) {
             console.log("** First SQL Transaction query: " + query.sql);
             if (error) {
                 return connection.rollback(function () {

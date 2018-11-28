@@ -35,6 +35,7 @@ $(document).ready(function () {
 
         // Do a JSON call and populate the form
         $.getJSON('/api/' + service_name + '/' + circuit_num, function (json) {
+            $("input#id").attr("value", json[0].id);
             $("input#moc_id").attr("value", json[0].moc_id);
             $("select#interface_type").val(json[0].interface_type);
             $("input#provision_speed").attr("value", json[0].provision_speed);
@@ -84,6 +85,7 @@ $(document).ready(function () {
             }  
             $(form).addClass('was-validated');
             var formData = {};
+            formData.id = $("input#id").val();
             formData.circuit_num = $("input#circuit_num").val();
             formData.moc_id = $("input#moc_id").val();
             formData.interface_type = $("select#interface_type").val();
@@ -162,6 +164,7 @@ $(document).ready(function () {
 
             // Create circuit form data for the JSON request
             var formData = {};
+            formData.id = $("input#id").val();
             formData.moc_id = $("input#moc_id").val();
             formData.interface_type = $("select#interface_type").val();
             formData.provision_speed = $("input#provision_speed").val();
@@ -177,25 +180,7 @@ $(document).ready(function () {
 
             console.log(formData);
 
-            /* 
-            // Check duplicates
-            var duplicate = false;
-            for (var i = 0; i < formData.port.length; i++) {
-                for (var j = 0; j < formData.port.length; j++) {
-                    if (i == j) continue;
-                    if (formData.port[i] == formData.port[j] &&
-                        formData.patch_panel[i] == formData.patch_panel[j]) {
-                        duplicate = true;
-                        break;
-                    }
-                }
-            }
-            if (duplicate) {
-                showMessage('Error - Duplicate found in Circuit Connection');
-                console.log('Submission stopped - Duplicate(s) found!');
-                return;
-            }
-            */
+
             console.log("** Sending POST: " + JSON.stringify(formData));
 
 
