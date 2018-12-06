@@ -60,17 +60,6 @@ $(document).ready(function () {
         // Update form is submitted 
         $('form').submit(function (e) {
             e.preventDefault();
-            
-            // Get this form element
-            var form = this;
-                
-            // Now check the validity
-            if (form.checkValidity() === false) {
-                console.log("** Something is invalid in the form.");
-                $(form).addClass('was-validated');
-                return;
-            }  
-            $(form).addClass('was-validated');
 
             // Create circuit form data for JSON request
             
@@ -423,6 +412,10 @@ function populatePortsDropDown(portField, port_value, port_name) {
         $(portField).empty();
         $.each(list_data, function () {
             $(portField).append($("<option />").val(this.id).text(this.label));
+            if(!this.used) {                
+                $(portField).children().last().prop("disabled", true);
+                $(portField).children().last().append(" (" + this.moc_id + ")");
+            } 
         });
         // SQL statement won't return the specific port selected so I'll add it and make it SELECTED
         if (typeof port_value !== 'undefined') {
