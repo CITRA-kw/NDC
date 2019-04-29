@@ -20,18 +20,115 @@ connection.connect();
 // ***************************************************************
 // Get the whole list
 // ***************************************************************
-router.get('/api/circuit-service', function (req, res) {
+
+function getCircuits(req, res) {
     console.log('** GET Circuits');
 
     connection.query('SELECT c.*, p.code AS provider_code, i.code AS isp_code FROM circuit c INNER JOIN provider p ON c.provider = p.id INNER JOIN isp i ON c.isp = i.id', function (err, results, fields) {
         if (err) throw err;
 
-        res.json(results);
+        let circuits = {};
+
+
+        for (var i = results.length - 1; i >= 0; i--) {
+            let result = results[i];
+            result.status = "-";
+
+            circuits[result.circuit_num] = result;
+        }
+
+        //get all status audit
+        connection.query('SELECT * FROM circuit_audit ORDER BY `date`', function (err, audit_rows) {
+
+            for (var i = audit_rows.length - 1; i >= 0; i--) {
+                let row = audit_rows[i];
+                let circuit = circuits[row.circuit_id];
+
+                if (!circuit.history) circuit.history = [];
+
+                circuit.history.push(row);
+
+                //stupid and inefficient bas shasawy
+                if (circuit.status == "-") circuit.status = row.status;
+            }
+
+           
+
+            //get types of ENUM
+            connection.query('SHOW COLUMNS FROM circuit_audit LIKE "status"', function (err, r) {
+
+                // console.log(err, enums);
+
+                let enums = r[0].Type.match(/\'(.*?)\'/g).map(res => res.replace(/\'/g, ""))
+                let json = {
+                    data: results,
+                    enums: enums
+                };
+
+                res.json(json);
+
+            });
+
+
+        });
+
+
     });
 
+}
+
+
+router.get('/api/circuit-service', getCircuits);
+
+router.post('/api/changeStatus/:id', async function (req, res) {
+    console.log('** Add status change = ', req.params.id, req.body);
+
+    let status = req.body.selected;
+
+    let id = req.params.id;
+
+
+    //check, is the state the same?
+    //get last status audit
+    connection.query('SELECT * FROM circuit_audit WHERE circuit_id = ? ORDER BY `date` DESC LIMIT 1', [id], function (err, audit_rows) {
+
+        console.log(audit_rows);
+        if (audit_rows.length > 0) {
+            let row = audit_rows[0];
+            if (row.status == status) {
+                return res.status(400).json({
+                    result: `Duplicate status '${status}'`,
+                })
+            }
+            
+        }
+
+
+
+
+
+
+
+        connection.query('INSERT INTO circuit_audit SET circuit_id=?, status=?, date=NOW()', [id, status], function (error, results, fields) {
+
+            console.log(error, results, fields);
+
+            // return req.redirect('/api/circuit-service');
+            // return getCircuits(req, res);
+
+
+            connection.query('SELECT * FROM circuit_audit WHERE circuit_id = ? ORDER BY `date` DESC LIMIT 1', [id], function (err, audit_rows) {
+
+                let row = audit_rows[0];
+                res.json({
+                    result: "success",
+                    data: row
+                });
+
+            });
+        });
+    });
 });
-
-
 
 
 // ***************************************************************

@@ -5,6 +5,50 @@
 // TODO https://stackoverflow.com/questions/14949210/dynamically-update-a-table-using-javascript 
 
 
+var statusColors = {
+    connecting: '#adddce',
+    active: '#70ae98',
+    suspended: '#f0a35e',
+    cancelled: '#ca7e8d',
+    testing: '#e6b655',
+}
+
+function capitalize(s) {
+  if (typeof s !== 'string') return ''
+  return s.charAt(0).toUpperCase() + s.slice(1)
+}
+
+
+function drawStatusTable(row) {
+    var data = '<table  class="col-md-6" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+        '<tr>'+
+            '<th>Date</th>'+
+            '<th>Time</th>'+
+            '<th>Status</th>'+
+        '</tr>';
+
+    for (var i in row.history) {
+
+        var d = moment(row.history[i].date);
+        var status = row.history[i].status;
+
+
+        data += '<tr>'+
+            '<td style="color: #00008f">'+ d.format("DD-MM-YYYY") +'</td>'+
+            '<td style="color: #00008f">'+ d.format("h:mm:ss a") +'</td>'+
+            '<td style="color: '+statusColors[status]+'">'+ status +'</td>'+
+        '</tr>'
+    }
+
+    data += '</table>';
+    return data;
+}
+
+
+function rowCallback( tr, data ) {
+    $('td:eq(6)', tr).html(data.status)
+    $('td:eq(6)', tr).css("color", statusColors[data.status])
+}
 
 
 $(document).ready(function () {
@@ -42,7 +86,7 @@ $(document).ready(function () {
         // Do a JSON call and populate the form
         $.getJSON('/api/circuit-service/', function (json) {
             console.log("** Received circuit JSON info to populate form for", json);
-
+/*
             //make an array
             var data = []; 
 
@@ -52,29 +96,182 @@ $(document).ready(function () {
                 var datum = [row["id"], row["moc_id"], row["isp_code"], row["provider_code"], row["provision_speed"], row["comment"]];
                 data.push(datum);
             }
-            $('#example').DataTable({
-                data: data,
+
+*/
+
+
+
+
+            var table = $('#circuitsTable').DataTable({
+                data: json.data,
+                pageLength: 100,
                 columns: [
                     {
+                        "orderable":      false,
+                        "data":           null,
+                        "defaultContent": '<i class="fas fa-angle-right" id="expandButton"></i>'
+                    },
+                    {
+                        data: "id",
                         title: "ID"
                     },
                     {
+                        data: "moc_id",
                         title: "MOC ID"
                     },
                     {
+                        data: "isp_code",
                         title: "ISP"
                     },
                     {
+                        data: "provider_code",
                         title: "Provider"
                     },
                     {
+                        data: "provision_speed",
                         title: "Speed"
                     },
                     {
+                        data: "status",
+                        title: "Status"
+                    },
+                    {
+                        data: "comment",
                         title: "Comments"
                     },
-                ]
+                ],
+
+                "order": [[1, 'asc']],
+
+                "rowCallback": rowCallback
+
+
             }); //datatables init
+
+
+            //expand row to show circuit status history and option to change status
+            var rowDetails = function(row, rowData) {
+                var data = '<div class="col-md-12">';
+
+                data += '<div id="statusTable">';
+
+                if (rowData.history && rowData.history.length > 0) {
+                    data += drawStatusTable(rowData); 
+                }
+
+                data += '</div>';
+
+                submitChange = function() {
+                    var selected = $("#damn").children("option:selected").val();
+
+                    if (selected && selected != "") {
+
+                        var formData = {
+                            selected: selected
+                        };
+
+                        //disable submit button
+                        $("#submitButton").prop("disabled",true);
+
+                        // JSON call to add form data
+                        $.ajax({
+                            url: "/api/changeStatus/" + rowData.circuit_num,
+                            dataType: 'json',
+                            data: formData,
+                            type: "post",
+                            success: function (data) {
+                                // data = jQuery.parseJSON(data);
+                                console.log("** Received after POST: ", data);
+
+                                
+                                // Compose the feedback message
+                                var messageText = data.result;
+
+                                // If we have messageAlert and messageText
+                                if (messageText) {
+                                    // inject the alert to the div
+                                    showMessage(messageText, "success", "submitStatusError" + rowData.circuit_num );
+                                    console.log("** Success message should appear on page");
+                                }
+
+                                // Update Circuits list 
+                                // updateList(service_name);
+                                $("#submitButton").prop("disabled", false);
+
+                                // json.data = data.data;
+
+                                // table.ajax.reload();
+                                // table.draw('full-reset');
+
+                                //redraw the status table
+
+                                rowData.status = selected;
+
+                                $("#statusTable").empty();
+
+                                if (!rowData.history) rowData.history = [];
+
+                                rowData.history.unshift(data.data)
+                                $("#statusTable").append(drawStatusTable(rowData));
+
+                                //change status as well
+                                rowCallback(row, rowData)
+
+
+
+                            },
+                            error: function (jqXHR,  textStatus,  errorThrown) {
+                                console.log("** Error: There's an error on getJSON", jqXHR.responseJSON);
+                                var data = jqXHR.responseJSON;
+
+                                $("#submitButton").prop("disabled",false);
+
+                                var messageText = data.result;
+
+                                showMessage(messageText, "danger", "submitStatusError" + rowData.circuit_num );
+
+                            }
+                        }); // end getJSON
+
+
+                    }
+                    
+                }
+
+
+                data += '<hr/><div class="col-md-12">' +
+                    '<select id="damn"><option></option>' +
+                    json.enums.map(function(entry) { return "<option value='"+ entry +"'>"+ capitalize(entry) +"</option>"}) +
+                    '<input type="submit" id="submitButton" onclick="return submitChange();"/> </select>' +
+                '</div>';
+
+                data += '<div id="submitStatusError'+ rowData.circuit_num +'"></div>'
+
+                data += '</div>'
+                return data;
+            }
+
+
+            $('#circuitsTable tbody').on('click', 'td i#expandButton', function () {
+                var tr = $(this).closest('tr');
+                var row = table.row( tr );
+         
+                var symbol = $(this).closest('i');
+
+                if ( row.child.isShown() ) {
+                    // This row is already open - close it
+                    row.child.hide();
+                    tr.removeClass('shown');
+                    symbol.removeClass("fa-angle-down").addClass('fa-angle-right');
+                }
+                else {
+                    // Open this row
+                    row.child( rowDetails(tr, row.data()) ).show();
+                    tr.addClass('shown');
+                    symbol.removeClass("fa-angle-right").addClass('fa-angle-down');
+
+                }
+            } );
 
 
         });
@@ -110,9 +307,11 @@ function updateList(service_name) {
 // ***************************************************************
 // Show message
 // ***************************************************************  
-function showMessage(msg) {
-    var msgBox = '<div class="alert alert-warning alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + msg + '</div>';
-    $('#pageContent').prepend(msgBox);
+function showMessage(msg, type, elementID) {
+    type = type || "warning";
+    elementID = elementID || "pageContent";
+    var msgBox = '<div class="alert alert-'+type+' alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + msg + '</div>';
+    $('#'+elementID).prepend(msgBox);
     console.log("** Showing mesasge box: " + msg);
 
 }
