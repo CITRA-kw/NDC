@@ -46,10 +46,147 @@ function drawStatusTable(row) {
 
 
 function rowCallback( tr, data ) {
-    $('td:eq(6)', tr).html(data.status)
-    $('td:eq(6)', tr).css("color", statusColors[data.status])
+    //find column with status.
+    $(tr).find('td').each(function() {
+        //stupid check, but if it's colorable, then color it!
+        for (var key in statusColors) {
+            if ($(this).html() == key) {
+                $(this).html(data.status)
+                $(this).css("color", statusColors[data.status])
+                break;
+            }
+        }
+    })
+    // $('td:eq(6)', tr).html(data.status)
+    // $('td:eq(6)', tr).css("color", statusColors[data.status])
 }
 
+
+function addTableDropdown(table, json) {
+        //expand row to show circuit status history and option to change status
+    var rowDetails = function(row, rowData) {
+        var data = '<div class="col-md-12">';
+
+        data += '<div id="statusTable">';
+
+        if (rowData.history && rowData.history.length > 0) {
+            data += drawStatusTable(rowData); 
+        }
+
+        data += '</div>';
+
+        submitChange = function() {
+            var selected = $("#damn").children("option:selected").val();
+
+            if (selected && selected != "") {
+
+                var formData = {
+                    selected: selected
+                };
+
+                //disable submit button
+                $("#submitButton").prop("disabled",true);
+
+                // JSON call to add form data
+                $.ajax({
+                    url: "/api/changeStatus/" + rowData.circuit_num,
+                    dataType: 'json',
+                    data: formData,
+                    type: "post",
+                    success: function (data) {
+                        // data = jQuery.parseJSON(data);
+                        console.log("** Received after POST: ", data);
+
+                        
+                        // Compose the feedback message
+                        var messageText = data.result;
+
+                        // If we have messageAlert and messageText
+                        if (messageText) {
+                            // inject the alert to the div
+                            showMessage(messageText, "success", "submitStatusError" + rowData.circuit_num );
+                            console.log("** Success message should appear on page");
+                        }
+
+                        // Update Circuits list 
+                        // updateList(service_name);
+                        $("#submitButton").prop("disabled", false);
+
+                        // json.data = data.data;
+
+                        // table.ajax.reload();
+                        // table.draw('full-reset');
+
+                        //redraw the status table
+
+                        rowData.status = selected;
+
+                        $("#statusTable").empty();
+
+                        if (!rowData.history) rowData.history = [];
+
+                        rowData.history.unshift(data.data)
+                        $("#statusTable").append(drawStatusTable(rowData));
+
+                        //change status as well
+                        rowCallback(row, rowData)
+
+
+
+                    },
+                    error: function (jqXHR,  textStatus,  errorThrown) {
+                        console.log("** Error: There's an error on getJSON", jqXHR.responseJSON);
+                        var data = jqXHR.responseJSON;
+
+                        $("#submitButton").prop("disabled",false);
+
+                        var messageText = data.result;
+
+                        showMessage(messageText, "danger", "submitStatusError" + rowData.circuit_num );
+
+                    }
+                }); // end getJSON
+
+
+            }
+            
+        }
+
+
+        data += '<hr/><div class="col-md-12">' +
+            '<select id="damn"><option></option>' +
+            json.enums.map(function(entry) { return "<option value='"+ entry +"'>"+ capitalize(entry) +"</option>"}) +
+            '<input type="submit" id="submitButton" onclick="return submitChange();"/> </select>' +
+        '</div>';
+
+        data += '<div id="submitStatusError'+ rowData.circuit_num +'"></div>'
+
+        data += '</div>'
+        return data;
+    }
+
+
+    table.on('click', 'td i#expandButton', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+ 
+        var symbol = $(this).closest('i');
+
+        if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+            symbol.removeClass("fa-angle-down").addClass('fa-angle-right');
+        }
+        else {
+            // Open this row
+            row.child( rowDetails(tr, row.data()) ).show();
+            tr.addClass('shown');
+            symbol.removeClass("fa-angle-right").addClass('fa-angle-down');
+
+        }
+    } );
+}
 
 $(document).ready(function () {
     console.log("** Loaded main-script.js");
@@ -80,6 +217,12 @@ $(document).ready(function () {
 
         // Load JS of Circuit pages
         $.getScript("/javascripts/circuit-pages.js");
+    }
+    // Load Circuit page javascript
+    else if (document.location.href.indexOf("/finance") > -1) {
+
+        // Load JS of Circuit pages
+        $.getScript("/javascripts/finance-pages.js");
     }
     // Usually this is the main page - too lazy to make an IF statement just for it
     else {
@@ -148,130 +291,8 @@ $(document).ready(function () {
 
             }); //datatables init
 
+            addTableDropdown(table, json);
 
-            //expand row to show circuit status history and option to change status
-            var rowDetails = function(row, rowData) {
-                var data = '<div class="col-md-12">';
-
-                data += '<div id="statusTable">';
-
-                if (rowData.history && rowData.history.length > 0) {
-                    data += drawStatusTable(rowData); 
-                }
-
-                data += '</div>';
-
-                submitChange = function() {
-                    var selected = $("#damn").children("option:selected").val();
-
-                    if (selected && selected != "") {
-
-                        var formData = {
-                            selected: selected
-                        };
-
-                        //disable submit button
-                        $("#submitButton").prop("disabled",true);
-
-                        // JSON call to add form data
-                        $.ajax({
-                            url: "/api/changeStatus/" + rowData.circuit_num,
-                            dataType: 'json',
-                            data: formData,
-                            type: "post",
-                            success: function (data) {
-                                // data = jQuery.parseJSON(data);
-                                console.log("** Received after POST: ", data);
-
-                                
-                                // Compose the feedback message
-                                var messageText = data.result;
-
-                                // If we have messageAlert and messageText
-                                if (messageText) {
-                                    // inject the alert to the div
-                                    showMessage(messageText, "success", "submitStatusError" + rowData.circuit_num );
-                                    console.log("** Success message should appear on page");
-                                }
-
-                                // Update Circuits list 
-                                // updateList(service_name);
-                                $("#submitButton").prop("disabled", false);
-
-                                // json.data = data.data;
-
-                                // table.ajax.reload();
-                                // table.draw('full-reset');
-
-                                //redraw the status table
-
-                                rowData.status = selected;
-
-                                $("#statusTable").empty();
-
-                                if (!rowData.history) rowData.history = [];
-
-                                rowData.history.unshift(data.data)
-                                $("#statusTable").append(drawStatusTable(rowData));
-
-                                //change status as well
-                                rowCallback(row, rowData)
-
-
-
-                            },
-                            error: function (jqXHR,  textStatus,  errorThrown) {
-                                console.log("** Error: There's an error on getJSON", jqXHR.responseJSON);
-                                var data = jqXHR.responseJSON;
-
-                                $("#submitButton").prop("disabled",false);
-
-                                var messageText = data.result;
-
-                                showMessage(messageText, "danger", "submitStatusError" + rowData.circuit_num );
-
-                            }
-                        }); // end getJSON
-
-
-                    }
-                    
-                }
-
-
-                data += '<hr/><div class="col-md-12">' +
-                    '<select id="damn"><option></option>' +
-                    json.enums.map(function(entry) { return "<option value='"+ entry +"'>"+ capitalize(entry) +"</option>"}) +
-                    '<input type="submit" id="submitButton" onclick="return submitChange();"/> </select>' +
-                '</div>';
-
-                data += '<div id="submitStatusError'+ rowData.circuit_num +'"></div>'
-
-                data += '</div>'
-                return data;
-            }
-
-
-            $('#circuitsTable tbody').on('click', 'td i#expandButton', function () {
-                var tr = $(this).closest('tr');
-                var row = table.row( tr );
-         
-                var symbol = $(this).closest('i');
-
-                if ( row.child.isShown() ) {
-                    // This row is already open - close it
-                    row.child.hide();
-                    tr.removeClass('shown');
-                    symbol.removeClass("fa-angle-down").addClass('fa-angle-right');
-                }
-                else {
-                    // Open this row
-                    row.child( rowDetails(tr, row.data()) ).show();
-                    tr.addClass('shown');
-                    symbol.removeClass("fa-angle-right").addClass('fa-angle-down');
-
-                }
-            } );
 
 
         });

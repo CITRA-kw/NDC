@@ -21,7 +21,7 @@ connection.connect();
 // Get the whole list
 // ***************************************************************
 
-function getCircuits(req, res) {
+function getCircuits(callback) {
     console.log('** GET Circuits');
 
     connection.query('SELECT c.*, p.code AS provider_code, i.code AS isp_code FROM circuit c INNER JOIN provider p ON c.provider = p.id INNER JOIN isp i ON c.isp = i.id', function (err, results, fields) {
@@ -39,6 +39,7 @@ function getCircuits(req, res) {
 
         //get all status audit
         connection.query('SELECT * FROM circuit_audit ORDER BY `date`', function (err, audit_rows) {
+            if (err) throw err;
 
             for (var i = audit_rows.length - 1; i >= 0; i--) {
                 let row = audit_rows[i];
@@ -52,33 +53,33 @@ function getCircuits(req, res) {
                 if (circuit.status == "-") circuit.status = row.status;
             }
 
-           
-
             //get types of ENUM
             connection.query('SHOW COLUMNS FROM circuit_audit LIKE "status"', function (err, r) {
-
+                if (err) throw err;
                 // console.log(err, enums);
 
-                let enums = r[0].Type.match(/\'(.*?)\'/g).map(res => res.replace(/\'/g, ""))
+                let enums = r[0].Type.match(/\'(.*?)\'/g).map(result => result.replace(/\'/g, ""))
                 let json = {
                     data: results,
                     enums: enums
                 };
 
-                res.json(json);
-
+                callback(json);
             });
-
-
         });
-
-
     });
-
 }
 
+//export it so we can use it in other functions
+router.getCircuits = getCircuits;
 
-router.get('/api/circuit-service', getCircuits);
+
+router.get('/api/circuit-service', function(req, res) {
+    getCircuits(result => {
+        res.json(result);
+    });
+
+});
 
 router.post('/api/changeStatus/:id', async function (req, res) {
     console.log('** Add status change = ', req.params.id, req.body);
