@@ -88,6 +88,7 @@ app.use(function(err, req, res, next) {
 });
 
 // following this tutorial for passport https://blog.risingstack.com/node-hero-node-js-authentication-passport-js/
+/*
 app.use(session({
   store: new RedisStore({
     url: config.get('redisStoreURL')
@@ -98,6 +99,6 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-
+*/
 
 module.exports = app;
