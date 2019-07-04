@@ -13,11 +13,14 @@ var patch_panel = require('./routes/patch_panel');
 var patch_panel_port = require('./routes/patch_panel_port');
 var provider = require('./routes/provider');
 var finance = require('./routes/finance');
+var authenticate = require('./routes/authenticate');
 
-var passport = require('passport');
+/*var passport = require('passport');
+var bcrypt = require('bcrypt');
+var LocalStrategy = require('passport-local').Strategy;
 var session = require('express-session');
-const RedisStore = require('connect-redis')(session);
-
+var sqlite3 = require('sqlite3');
+*/
 
 var app = express();
 
@@ -57,6 +60,7 @@ app.use(patch_panel);
 app.use(patch_panel_port);
 app.use(provider);
 app.use(finance);
+app.use(authenticate);
 
 
 // API
@@ -87,18 +91,40 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+
 // following this tutorial for passport https://blog.risingstack.com/node-hero-node-js-authentication-passport-js/
-/*
-app.use(session({
-  store: new RedisStore({
-    url: config.get('redisStoreURL')
-  }),
-  secret: config.redisStore.secret,
-  resave: false,
-  saveUninitialized: false
-}));
-app.use(passport.initialize());
-app.use(passport.session());
+/*const user = {
+  username: 'test-user',
+  passwordHash: 'bcrypt-hashed-password',
+  id: 1
+}
+
+passport.use(new LocalStrategy(
+ (username, password, done) => {
+    findUser(username, (err, user) => {
+      if (err) {
+        return done(err)
+      }
+
+      // User not found
+      if (!user) {
+        return done(null, false)
+      }
+
+      // Always use hashed passwords and fixed time comparison
+      bcrypt.compare(password, user.passwordHash, (err, isValid) => {
+        if (err) {
+          return done(err)
+        }
+        if (!isValid) {
+          return done(null, false)
+        }
+        return done(null, user)
+      })
+    })
+  }
+));
 */
+
 
 module.exports = app;

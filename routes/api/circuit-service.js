@@ -27,11 +27,11 @@ function getCircuits(callback) {
     connection.query('SELECT c.*, p.code AS provider_code, i.code AS isp_code FROM circuit c INNER JOIN provider p ON c.provider = p.id INNER JOIN isp i ON c.isp = i.id', function (err, results, fields) {
         if (err) throw err;
 
-        let circuits = {};
+        var circuits = {};
 
 
         for (var i = results.length - 1; i >= 0; i--) {
-            let result = results[i];
+            var result = results[i];
             result.status = "-";
 
             circuits[result.circuit_num] = result;
@@ -42,8 +42,8 @@ function getCircuits(callback) {
             if (err) throw err;
 
             for (var i = audit_rows.length - 1; i >= 0; i--) {
-                let row = audit_rows[i];
-                let circuit = circuits[row.circuit_id];
+                var row = audit_rows[i];
+                var circuit = circuits[row.circuit_id];
 
                 if (!circuit.history) circuit.history = [];
 
@@ -58,8 +58,8 @@ function getCircuits(callback) {
                 if (err) throw err;
                 // console.log(err, enums);
 
-                let enums = r[0].Type.match(/\'(.*?)\'/g).map(result => result.replace(/\'/g, ""))
-                let json = {
+                var enums = r[0].Type.match(/\'(.*?)\'/g).map(result => result.replace(/\'/g, ""))
+                var json = {
                     data: results,
                     enums: enums
                 };
@@ -84,9 +84,9 @@ router.get('/api/circuit-service', function(req, res) {
 router.post('/api/changeStatus/:id', async function (req, res) {
     console.log('** Add status change = ', req.params.id, req.body);
 
-    let status = req.body.selected;
+    var status = req.body.selected;
 
-    let id = req.params.id;
+    var id = req.params.id;
 
 
     //check, is the state the same?
@@ -95,7 +95,7 @@ router.post('/api/changeStatus/:id', async function (req, res) {
 
         console.log(audit_rows);
         if (audit_rows.length > 0) {
-            let row = audit_rows[0];
+            var row = audit_rows[0];
             if (row.status == status) {
                 return res.status(400).json({
                     result: `Duplicate status '${status}'`,
@@ -120,7 +120,7 @@ router.post('/api/changeStatus/:id', async function (req, res) {
 
             connection.query('SELECT * FROM circuit_audit WHERE circuit_id = ? ORDER BY `date` DESC LIMIT 1', [id], function (err, audit_rows) {
 
-                let row = audit_rows[0];
+                var row = audit_rows[0];
                 res.json({
                     result: "success",
                     data: row
@@ -295,10 +295,10 @@ router.put('/api/circuit-service', function (req, res) {
             res.set('Content-Type', 'application/json');
 
             //-----------------------------------------------
-            // Delete all connections related to this circuit before inserting new connections
+            // Devare all connections related to this circuit before inserting new connections
             // ----------------------------------------------
 
-            var query2 = connection.query('DELETE FROM ports_circuit WHERE circuit_num = ?', [update_circuit.circuit_num], function (error, results2, fields) {
+            var query2 = connection.query('DEvarE FROM ports_circuit WHERE circuit_num = ?', [update_circuit.circuit_num], function (error, results2, fields) {
                 if (error) {
                     return connection.rollback(function () {
                         res.send(JSON.stringify({
@@ -365,14 +365,14 @@ router.put('/api/circuit-service', function (req, res) {
 });
 
 // ***************************************************************
-// Delete Circuit
+// Devare Circuit
 // ***************************************************************
-// TODO delete also circuit_port and use Transactions
-router.delete('/api/circuit-service/:id', function (req, res) {
-    var delete_circuit = req.body;
-    console.log("** DELETE - delete circuit_num: " + delete_circuit.id);
+// TODO devare also circuit_port and use Transactions
+router.devare('/api/circuit-service/:id', function (req, res) {
+    var devare_circuit = req.body;
+    console.log("** DEvarE - devare circuit_num: " + devare_circuit.id);
 
-    var query = connection.query('UPDATE circuit SET active = "0" where circuit_num=?', [delete_circuit.id], function (error, results, fields) {
+    var query = connection.query('UPDATE circuit SET active = "0" where circuit_num=?', [devare_circuit.id], function (error, results, fields) {
         if (error) {
             res.send(JSON.stringify({
                 result: "Epic Fail!"
@@ -381,10 +381,10 @@ router.delete('/api/circuit-service/:id', function (req, res) {
             throw error;
         }
 
-        console.log("** DELETE Circuit - query result: " + JSON.stringify(results));
+        console.log("** DEvarE Circuit - query result: " + JSON.stringify(results));
         res.set('Content-Type', 'application/json');
         res.send(JSON.stringify({
-            result: "Delete success for circuit_num " + delete_circuit.id
+            result: "Devare success for circuit_num " + devare_circuit.id
         }));
     });
 });

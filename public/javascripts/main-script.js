@@ -229,7 +229,7 @@ $(document).ready(function () {
         // Do a JSON call and populate the form
         $.getJSON('/api/circuit-service/', function (json) {
             console.log("** Received circuit JSON info to populate form for", json);
-/*
+
             //make an array
             var data = []; 
 
@@ -240,7 +240,7 @@ $(document).ready(function () {
                 data.push(datum);
             }
 
-*/
+
 
 
 
@@ -349,6 +349,7 @@ function printList(list_data) {
 
     // Iterate and add each list_data to the list
     $.each(list_data, function () {
+        console.log("**** Printing a single row to list");
         // no comments for you
         // it was hard to write
         // so it should be hard to read

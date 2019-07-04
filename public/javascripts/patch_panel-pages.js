@@ -88,8 +88,9 @@ $(document).ready(function () {
                     console.log("** Received after PUT: " + data.result);
 
                     // Remove the form
-//                    $('form').parent().empty();
-
+                    //$('form').parent().empty();
+                    $('form').trigger("reset");
+                    
                     // Compose the feedback message
                     var messageText = data.result;
 
