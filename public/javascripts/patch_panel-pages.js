@@ -88,7 +88,7 @@ $(document).ready(function () {
                     console.log("** Received after PUT: " + data.result);
 
                     // Remove the form
-                    $('form').parent().empty();
+//                    $('form').parent().empty();
 
                     // Compose the feedback message
                     var messageText = data.result;
@@ -160,7 +160,7 @@ $(document).ready(function () {
                     console.log("** Received after POST: " + data.result);
 
                     // Remove the form
-                    $('form').parent().empty();
+//                    $('form').parent().empty();
                     
                     // Compose the feedback message
                     var messageText = data.result;
