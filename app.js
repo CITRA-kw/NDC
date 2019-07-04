@@ -14,6 +14,10 @@ var patch_panel_port = require('./routes/patch_panel_port');
 var provider = require('./routes/provider');
 var finance = require('./routes/finance');
 
+var passport = require('passport');
+var session = require('express-session');
+const RedisStore = require('connect-redis')(session);
+
 
 var app = express();
 
@@ -76,14 +80,24 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-  console.error(err.stack)
-
+  console.error(err.stack);
     
   // render the error page
   res.status(err.status || 500);
   res.render('error');
 });
 
+// following this tutorial for passport https://blog.risingstack.com/node-hero-node-js-authentication-passport-js/
+app.use(session({
+  store: new RedisStore({
+    url: config.get('redisStoreURL')
+  }),
+  secret: config.redisStore.secret,
+  resave: false,
+  saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 module.exports = app;
