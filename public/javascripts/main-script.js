@@ -362,6 +362,11 @@ function printList(list_data) {
             this.name = this.moc_id;
             this.id = this.circuit_num;
         }
+        
+        // If has location preppend it to the name, location is available for patch panels
+        if(this.location) {
+            this.name = this.location + " - " + this.name;
+        }
 
         // strike it or not? This is used for Circuit page, if the circuit has been deleted then strike the circuit name
         var strikeIt = "<span>";
