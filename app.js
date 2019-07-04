@@ -13,7 +13,7 @@ var patch_panel = require('./routes/patch_panel');
 var patch_panel_port = require('./routes/patch_panel_port');
 var provider = require('./routes/provider');
 var finance = require('./routes/finance');
-var authenticate = require('./routes/authenticate');
+//var authenticate = require('./routes/authenticate');
 
 /*var passport = require('passport');
 var bcrypt = require('bcrypt');
@@ -60,7 +60,7 @@ app.use(patch_panel);
 app.use(patch_panel_port);
 app.use(provider);
 app.use(finance);
-app.use(authenticate);
+//app.use(authenticate);
 
 
 // API
@@ -93,7 +93,7 @@ app.use(function(err, req, res, next) {
 
 
 // following this tutorial for passport https://blog.risingstack.com/node-hero-node-js-authentication-passport-js/
-/*const user = {
+/*var user = {
   username: 'test-user',
   passwordHash: 'bcrypt-hashed-password',
   id: 1

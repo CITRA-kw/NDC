@@ -58,7 +58,7 @@ function getCircuits(callback) {
                 if (err) throw err;
                 // console.log(err, enums);
 
-                var enums = r[0].Type.match(/\'(.*?)\'/g).map(result => result.replace(/\'/g, ""))
+                var enums = r[0].Type.match(/\'(.*?)\'/g).map(result => result.replace(/\'/g, ""));
                 var json = {
                     data: results,
                     enums: enums
@@ -98,8 +98,8 @@ router.post('/api/changeStatus/:id', async function (req, res) {
             var row = audit_rows[0];
             if (row.status == status) {
                 return res.status(400).json({
-                    result: `Duplicate status '${status}'`,
-                })
+                    result: `Duplicate status '${status}'`
+                });
             }
             
         }
@@ -295,10 +295,10 @@ router.put('/api/circuit-service', function (req, res) {
             res.set('Content-Type', 'application/json');
 
             //-----------------------------------------------
-            // Devare all connections related to this circuit before inserting new connections
+            // Delete all connections related to this circuit before inserting new connections
             // ----------------------------------------------
 
-            var query2 = connection.query('DEvarE FROM ports_circuit WHERE circuit_num = ?', [update_circuit.circuit_num], function (error, results2, fields) {
+            var query2 = connection.query('DELETE FROM ports_circuit WHERE circuit_num = ?', [update_circuit.circuit_num], function (error, results2, fields) {
                 if (error) {
                     return connection.rollback(function () {
                         res.send(JSON.stringify({
@@ -365,14 +365,14 @@ router.put('/api/circuit-service', function (req, res) {
 });
 
 // ***************************************************************
-// Devare Circuit
+// Delete Circuit
 // ***************************************************************
-// TODO devare also circuit_port and use Transactions
-router.devare('/api/circuit-service/:id', function (req, res) {
-    var devare_circuit = req.body;
-    console.log("** DEvarE - devare circuit_num: " + devare_circuit.id);
+// TODO delete also circuit_port and use Transactions
+router.delete('/api/circuit-service/:id', function (req, res) {
+    var delete_circuit = req.body;
+    console.log("** DELETE - delete circuit_num: " + delete_circuit.id);
 
-    var query = connection.query('UPDATE circuit SET active = "0" where circuit_num=?', [devare_circuit.id], function (error, results, fields) {
+    var query = connection.query('UPDATE circuit SET active = "0" where circuit_num=?', [delete_circuit.id], function (error, results, fields) {
         if (error) {
             res.send(JSON.stringify({
                 result: "Epic Fail!"
@@ -381,10 +381,10 @@ router.devare('/api/circuit-service/:id', function (req, res) {
             throw error;
         }
 
-        console.log("** DEvarE Circuit - query result: " + JSON.stringify(results));
+        console.log("** DELETE Circuit - query result: " + JSON.stringify(results));
         res.set('Content-Type', 'application/json');
         res.send(JSON.stringify({
-            result: "Devare success for circuit_num " + devare_circuit.id
+            result: "Delete success for circuit_num " + delete_circuit.id
         }));
     });
 });
