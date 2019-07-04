@@ -179,9 +179,11 @@ router.post('/api/circuit-service', function (req, res) {
             var query2 = connection.query('INSERT INTO ports_circuit VALUES ? ', [rows], function (error, results2, fields) {
                 console.log(query2.sql);
                 if (error) {
+                    console.log(error);
+
                     return connection.rollback(function () {
                         res.send(JSON.stringify({
-                            result: "Epic Fail!",
+                            result: error.sqlMessage,
                             sql: query2.sql
                         }));
                         console.log('MySQL rolling back #2!');
@@ -192,7 +194,7 @@ router.post('/api/circuit-service', function (req, res) {
                     if (err) {
                         return connection.rollback(function () {
                             res.send(JSON.stringify({
-                                result: "Epic Fail!",
+                                result: error.sqlMessage,
                                 sql: query2.sql
                             }));
 
@@ -284,7 +286,7 @@ router.put('/api/circuit-service', function (req, res) {
             if (error) {
                 return connection.rollback(function () {
                     res.send(JSON.stringify({
-                        result: "Epic Fail!",
+                        result: error.sqlMessage,
                         sql: query.sql
                     }));
                     console.log('MySQL rolling back query #1!');
