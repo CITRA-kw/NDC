@@ -13,6 +13,7 @@ var patch_panel = require('./routes/patch_panel');
 var patch_panel_port = require('./routes/patch_panel_port');
 var provider = require('./routes/provider');
 var finance = require('./routes/finance');
+var map = require('./routes/map');
 //var authenticate = require('./routes/authenticate');
 
 /*var passport = require('passport');
@@ -60,6 +61,7 @@ app.use(patch_panel);
 app.use(patch_panel_port);
 app.use(provider);
 app.use(finance);
+app.use(map);
 //app.use(authenticate);
 
 
@@ -70,6 +72,7 @@ app.use(require('./routes/api/circuit-service'));
 app.use(require('./routes/api/patch_panel-service'));
 app.use(require('./routes/api/circuit-service'));
 app.use(require('./routes/api/finance-service'));
+app.use(require('./routes/api/map-service'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

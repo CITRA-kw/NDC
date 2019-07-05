@@ -224,6 +224,12 @@ $(document).ready(function () {
         // Load JS of Circuit pages
         $.getScript("/javascripts/finance-pages.js");
     }
+    // Load Circuit page javascript
+    else if (document.location.href.indexOf("/map") > -1) {
+
+        // Load JS of Circuit pages
+        $.getScript("/javascripts/map-pages.js");
+    }
     // Usually this is the main page - too lazy to make an IF statement just for it
     else {
         // Do a JSON call and populate the form
