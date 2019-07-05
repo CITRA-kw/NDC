@@ -20,7 +20,7 @@ $(document).ready(function () {
     const NODE_R = 4;
     let highlightNodes = [];
     let highlightLink = null;
-
+    let highlightLinks = [];
 
 
 
@@ -34,6 +34,11 @@ $(document).ready(function () {
             nodes: json.nodes,
             links: []
         };
+
+        //source-target number of links 
+        var numOfLinksBetweenNodes = {};
+
+
 
         //ok so each circuit is a link basically.
         for (var i in json.data) {
@@ -49,12 +54,42 @@ $(document).ready(function () {
                 var port = ports[portIndex];
 
                 if (prevPort) {
+
+
                     var link = {
                         source: prevPort.id,
                         target: port.id,
-                        name: prevPort.name + " " + prevPort.label + "  ---  " + port.name + " " + port.label 
+                        name: prevPort.name + " " + prevPort.label + "  ---  " + port.name + " " + port.label,
+                        circuit_num: circuit.circuit_num
                     }
+
+                    var linkKey = link.source +"-"+ link.target;
+
+                    
+
+                    if (!numOfLinksBetweenNodes[linkKey]) {
+                        numOfLinksBetweenNodes[linkKey] = 0;
+                        if (link.source == link.target) link.curvature = 0.1;  //for self links.  they're invisible if there's no curvature
+                    }
+                    else {
+                        var existingLinks = numOfLinksBetweenNodes[linkKey];
+
+                        var sign = 1;
+
+                        if (existingLinks % 2 == 1) {
+                            sign = -1;
+                        }
+
+                        existingLinks = Math.ceil(existingLinks/2);
+                        // console.log(existingLinks);
+                        link.curvature = 0.2 * existingLinks * sign;
+                    }
+
+
+                    numOfLinksBetweenNodes[linkKey]++;
+
                     gData.links.push(link);
+
                 }
 
                 prevPort = port;
@@ -62,7 +97,7 @@ $(document).ready(function () {
         }
 
         const elem = document.getElementById('graph');
-        ForceGraph()(elem)
+        var graph = ForceGraph()(elem)
           .graphData(gData)
           .height(600)
           .width(1000)  //this needs to be dynamic.  Right now it just goes off the screen if I resize.
@@ -70,16 +105,14 @@ $(document).ready(function () {
           .enableZoomPanInteraction(false)
           .nodeRelSize(NODE_R)
           .nodeAutoColorBy("type")
+          .linkCurvature('curvature')
           .zoom(2, 0)
           .onNodeHover(node => {
             highlightNodes = node ? [node] : [];
             elem.style.cursor = node ? '-webkit-grab' : null;
           })
-          .onLinkHover(link => {
-            highlightLink = link;
-            highlightNodes = link ? [link.source, link.target] : [];
-          })
-          .linkWidth(link => link === highlightLink ? 5 : 1)
+
+          .linkWidth(link => highlightLinks.indexOf(link) !== -1 ? 5 : 1)
           .linkDirectionalParticles(4)
           .linkDirectionalParticleWidth(link => link === highlightLink ? 4 : 0)
           .nodeCanvasObjectMode(node => highlightNodes.indexOf(node) !== -1 ? 'before' : undefined)
@@ -90,6 +123,12 @@ $(document).ready(function () {
             ctx.fillStyle = 'red';
             ctx.fill();
           });
+
+          graph.onLinkHover(link => {
+            highlightLink = link;  //this is useless now
+            highlightNodes = link ? [link.source, link.target] : [];
+            highlightLinks = link ? graph.graphData().links.filter(l => l.circuit_num == link.circuit_num) : [];
+          })
 
     });
 
