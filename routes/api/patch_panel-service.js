@@ -17,6 +17,17 @@ connection.connect();
 // TODO Handle wrong ID
 
 
+function getPanels(callback) {
+    connection.query('select * from patch_panel', function (err, results, fields) {
+        if (err) throw err;
+
+        console.log("** Get Patch Panel list - query result: " + JSON.stringify(results));
+        callback(results);
+    });
+
+}
+//export it so we can use it in other functions
+router.getPanels = getPanels;
 
 // ***************************************************************
 // Get the whole list
@@ -24,12 +35,10 @@ connection.connect();
 router.get('/api/patch_panel-service/patch_panel', function (req, res) {
     console.log('** Getting Patch Panel list. ');
 
-    connection.query('select * from patch_panel', function (err, results, fields) {
-        if (err) throw err;
-
+    getPanels((results) => {
         res.json(results);
-        console.log("** Get Patch Panel list - query result: " + JSON.stringify(results));
-    });
+
+    })
 
 });
 
@@ -279,11 +288,5 @@ router.delete('/api/patch_panel-service/patch_panel/:id', function (req, res) {
 
     });
 });
-
-
-
-
-
-
 
 module.exports = router;
