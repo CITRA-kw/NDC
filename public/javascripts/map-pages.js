@@ -4,8 +4,10 @@
 
 $(document).ready(function () {
 
+    //from main-script.js
+    drawMap();
 
-        
+        /*
     // Random tree
     const N = 80;
     const gData = {
@@ -214,7 +216,7 @@ $(document).ready(function () {
           });
 
     });
-
+*/
 
 }); // end jQuery document 
 
