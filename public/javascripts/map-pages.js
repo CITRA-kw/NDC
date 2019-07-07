@@ -17,9 +17,9 @@ $(document).ready(function () {
           target: Math.round(Math.random() * (id-1))
         }))
     };
-    const NODE_R = 4;
+    const NODE_R = 3;
     let highlightNodes = [];
-    let highlightLink = null;
+    // let highlightLink = null;
     let highlightLinks = [];
 
 
@@ -59,8 +59,10 @@ $(document).ready(function () {
                     var link = {
                         source: prevPort.id,
                         target: port.id,
-                        name: prevPort.name + " " + prevPort.label + "  ---  " + port.name + " " + port.label,
-                        circuit_num: circuit.circuit_num
+                        sourceLabel: prevPort.label,
+                        targetLabel: port.label,
+                        label: prevPort.label + " <> " + port.label,
+                        circuit_num: circuit.circuit_num,
                     }
 
                     var linkKey = link.source +"-"+ link.target;
@@ -106,29 +108,110 @@ $(document).ready(function () {
           .nodeRelSize(NODE_R)
           .nodeAutoColorBy("type")
           .linkCurvature('curvature')
-          .zoom(2, 0)
+          .zoom(3, 0)
           .onNodeHover(node => {
             highlightNodes = node ? [node] : [];
             elem.style.cursor = node ? '-webkit-grab' : null;
           })
 
           .linkWidth(link => highlightLinks.indexOf(link) !== -1 ? 5 : 1)
-          .linkDirectionalParticles(4)
-          .linkDirectionalParticleWidth(link => link === highlightLink ? 4 : 0)
-          .nodeCanvasObjectMode(node => highlightNodes.indexOf(node) !== -1 ? 'before' : undefined)
-          .nodeCanvasObject((node, ctx) => {
+          // .linkDirectionalParticles(4)
+          // .linkDirectionalParticleWidth(link => link === highlightLink ? 4 : 0)
+          .nodeCanvasObjectMode(node => 'before')
+          .nodeCanvasObject((node, ctx, globalScale) => {
             // add ring just for highlighted nodes
-            ctx.beginPath();
-            ctx.arc(node.x, node.y, NODE_R * 1.4, 0, 2 * Math.PI, false);
-            ctx.fillStyle = 'red';
-            ctx.fill();
-          });
+            if (highlightNodes.indexOf(node) !== -1) {
+              ctx.beginPath();
+              ctx.arc(node.x, node.y, NODE_R * 1.4, 0, 2 * Math.PI, false);
+              ctx.fillStyle = 'red';
+              ctx.fill();
+            }
 
-          graph.onLinkHover(link => {
-            highlightLink = link;  //this is useless now
-            highlightNodes = link ? [link.source, link.target] : [];
-            highlightLinks = link ? graph.graphData().links.filter(l => l.circuit_num == link.circuit_num) : [];
+            const yPos = node.y - 6
+            //add label on top
+            const label = node.name;
+            const fontSize = 12/globalScale;
+            ctx.font = `${fontSize}px Sans-Serif`;
+            const textWidth = ctx.measureText(label).width;
+            const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.2); // some padding
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.fillRect(node.x - bckgDimensions[0] / 2, yPos - bckgDimensions[1] / 2, ...bckgDimensions);
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = node.color;
+            ctx.fillText(label, node.x, yPos);
           })
+          .onLinkHover(link => {
+            // highlightLink = link;  //this is useless now
+            highlightNodes = link ? graph.graphData().links.map(l => l.circuit_num == link.circuit_num ? l.source : false) : [];
+            highlightNodes
+            highlightLinks = link ? graph.graphData().links.filter(l => l.circuit_num == link.circuit_num) : [];
+
+          })
+          .linkCanvasObjectMode(() => highlightLinks.length > 0 ? "after" : undefined)
+          .linkCanvasObject((link, ctx) => {
+
+            if (highlightLinks.indexOf(link) === -1) return;
+
+            const MAX_FONT_SIZE = 4;
+            const LABEL_NODE_MARGIN = graph.nodeRelSize() * 1.5;
+            const start = link.source;
+            const end = link.target;
+            // ignore unbound links
+            if (typeof start !== 'object' || typeof end !== 'object') return;
+            // calculate label positioning
+            const textPos = Object.assign(...['x', 'y'].map(c => ({
+              [c]: start[c] + (end[c] - start[c]) / 2 // calc middle point
+            })));
+            const relLink = { x: end.x - start.x, y: end.y - start.y };
+
+            // console.log(link);
+                        // const yPos = link.y - 6
+
+            const maxTextLength = Math.sqrt(Math.pow(relLink.x, 2) + Math.pow(relLink.y, 2)) - LABEL_NODE_MARGIN * 2;
+            let textAngle = Math.atan2(relLink.y, relLink.x);
+            // maintain label vertical orientation for legibility
+            if (textAngle > Math.PI / 2) textAngle = -(Math.PI - textAngle);
+            if (textAngle < -Math.PI / 2) textAngle = -(-Math.PI - textAngle);
+            const label = `${link.sourceLabel} - ${link.targetLabel} `;
+            // estimate fontSize to fit in link length
+            ctx.font = '1px Sans-Serif';
+            var fontSize = Math.min(MAX_FONT_SIZE, maxTextLength / ctx.measureText(label).width);
+            // fontSize -= 1;
+            ctx.font = `${fontSize}px Sans-Serif`;
+            const textWidth = ctx.measureText(label).width;
+            const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.2); // some padding
+            // draw text label (with background rect)
+            ctx.save();
+            ctx.translate(textPos.x, textPos.y);
+            ctx.rotate(textAngle);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.fillRect(- bckgDimensions[0] / 2, - bckgDimensions[1] / 2, ...bckgDimensions);
+
+            //source
+            // ctx.translate(link.source.x, link.source.y);
+
+            var sourceOnLeft = false;
+            if (link.source.x < link.target.x) sourceOnLeft = true;
+
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = sourceOnLeft ? link.target.color : link.source.color;
+            ctx.fillText(sourceOnLeft ? link.targetLabel : link.sourceLabel, 2, 0);
+
+            //target
+            // ctx.translate(link.target.x, link.target.y);
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = sourceOnLeft ? link.source.color : link.target.color;
+            ctx.fillText(sourceOnLeft ? link.sourceLabel : link.targetLabel, -2, 0);
+
+
+            ctx.restore();
+
+
+
+          });
 
     });
 

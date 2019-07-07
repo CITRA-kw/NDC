@@ -65,7 +65,10 @@ function rowCallback( tr, data ) {
 function addTableDropdown(table, json) {
         //expand row to show circuit status history and option to change status
     var rowDetails = function(row, rowData) {
-        var data = '<div class="col-md-12">';
+        var data = '<div class="col-md-12"> ';
+
+        data += '<div id="graph"></div>';
+        //draw graph
 
         data += '<div id="statusTable">';
 
