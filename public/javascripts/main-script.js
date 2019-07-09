@@ -236,6 +236,12 @@ $(document).ready(function () {
         // Load JS of Circuit pages
         $.getScript("/javascripts/map-pages.js");
     }
+    // Load login page javascript
+    else if (document.location.href.indexOf("/authenticate") > -1) {
+        //console.log("** LOGIN SECTION OF JS DYNAMIC LOADING");
+        // Load JS of login pages
+        //$.getScript("/javascripts/map-pages.js");
+    }
     // Usually this is the main page - too lazy to make an IF statement just for it
     else {
         // Do a JSON call and populate the form

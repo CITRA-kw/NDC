@@ -1,0 +1,31 @@
+<% include partials/template/head.ejs %>  
+
+    <form class="needs-validation" novalidate action="/login/action" method="post">
+        <div class="row justify-content-md-center">        
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" name="username" aria-describedby="emailHelp" placeholder="Enter username" required>
+            <div class="invalid-feedback">
+                A valid username is required.
+            </div>
+          </div>
+        </div>
+
+        <div class="row justify-content-md-center">            
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" name="password" class="form-control" id="password" placeholder="Password">
+          </div>
+        </div>
+            
+
+        <div class="row justify-content-md-center">
+            <button class="btn btn-primary btn-lg ladda-button" data-dismiss="modal" data-style="expand-right" type="submit">Submit</button>
+        </div>
+    
+</form>
+          
+
+         
+          
+<% include partials/template/foot.ejs %>  

@@ -8,6 +8,7 @@
     "start": "nodemon -e .ejs,.js,.json,.css ./bin/www"
   },
   "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.18.2",
     "config": "^2.0.2",
     "connect-redis": "^3.4.1",
@@ -23,7 +24,8 @@
     "passport-local": "^1.0.0",
     "raven": "^2.6.3",
     "reload": "^2.2.2",
-    "serve-favicon": "~2.4.5"
+    "serve-favicon": "~2.4.5",
+    "sqlite3": "^4.0.9"
   },
   "devDependencies": {
     "grunt-contrib-less": "^1.4.1",
