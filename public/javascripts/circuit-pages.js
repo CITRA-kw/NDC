@@ -396,11 +396,10 @@ function populatePatchPanelDropDown(element, patch_panel_value, patch_panel_name
             port_name: port_name
         }]);
 
-        $(dropdown).change(function () {
-            //make sure its ingress and get the egress one
-            console.log("direction is ", direction);
-            if (direction == "ingress") {
-
+        //this changes the egress selected panel if the ingress is selected
+        //make sure its ingress and get the egress one
+        if (direction == "ingress") {
+            $(dropdown).change(function () {
                 //what is our index?
                 var index = -1;
 
@@ -410,9 +409,8 @@ function populatePatchPanelDropDown(element, patch_panel_value, patch_panel_name
                     var select = $($(li).find("select.custom-select.d-block.ingress-select-panel"));
 
                     if ($(dropdown).is(select)) {
-                        console.log("Found at index", i);
+                        // console.log("Found at index", i);
                         index = i;
-                        ;
                         break;
                     }
                 }
@@ -432,11 +430,9 @@ function populatePatchPanelDropDown(element, patch_panel_value, patch_panel_name
                 $(select).val($(dropdown).val());
                 $(select).trigger("change");
 
-                //get the egress fields
-                // $(".ordered-circuit-conn-egress-fields > ")
 
-            }
-        });
+            });
+        }
 
 
     });
@@ -471,14 +467,9 @@ function populatePortsDropDown(patchPanelField, port_value, port_name, direction
             $(portField).prepend($("<option />").val(port_value).text(port_name).attr('selected', 'selected'));
             console.log("*** Activating a port dropdown select for: " + port_name);
         }
-
-        $(portField).change(function () {
-            //make sure its ingress and get the egress one
-            console.log("direction is ", direction);
-            if (direction == "ingress") {
-                console.log("changed stuff!!");
-                console.log($(portField).val());
-
+        //make sure its ingress and get the egress one
+        if (direction == "ingress") {
+            $(portField).change(function () {
                 //what is our index?
                 var index = -1;
 
@@ -488,9 +479,8 @@ function populatePortsDropDown(patchPanelField, port_value, port_name, direction
                     var select = $($(li).find("select.custom-select.d-block.ingress-select-port"));
 
                     if ($(portField).is(select)) {
-                        console.log("Found at index", i);
+                        // console.log("Found at index", i);
                         index = i;
-                        ;
                         break;
                     }
                 }
@@ -509,12 +499,9 @@ function populatePortsDropDown(patchPanelField, port_value, port_name, direction
                 var select = $(lis[index]).find("select.custom-select.d-block.egress-select-port");
                 $(select).val(parseInt($(portField).val()) + 1);
 
-                console.log(select, $(portField).val(), parseInt($(portField).val()) + 1);
-                //get the egress fields
-                // $(".ordered-circuit-conn-egress-fields > ")
+            });
+        }
 
-            }
-        });
 
 
     });
