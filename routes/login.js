@@ -26,7 +26,7 @@ router.get('/login', function (req, res, next) {
 // ***************************************************************
 router.post('/login', function(req, res, next){
   passport.authenticate('local', {
-    successRedirect:'/success',
+    successRedirect:'/',
     failureRedirect:'/login'
   })(req, res, next);
 });
@@ -45,10 +45,13 @@ router.post('/authenticate',
 // ***************************************************************
 // To logout
 // ***************************************************************
-router.get('/login/logout', function(req, res){
+router.get('/login', function(req, res){
   console.log('logging out');
   req.logout();
   res.redirect('/');
 });
 
+
+
 module.exports = router;
+
