@@ -109,51 +109,28 @@ var sqlite3 = require('sqlite3');
 // Helps me understanding how to structure the passport in the express framework https://andrejgajdos.com/authenticating-users-in-single-page-applications-using-node-passport-react-and-redux/
 // Building a NodeJS Web App Using PassportJS for Authentication https://dev.to/gm456742/building-a-nodejs-web-app-using-passportjs-for-authentication-3ge2
 // A must read article to understand the flow of Passport http://toon.io/understanding-passportjs-authentication-flow/
-var user = {
-  username: 'test-user',
-  passwordHash: bcrypt.hashSync("aa", bcrypt.genSaltSync(10)),
-  id: 1
-} 
 
+// Middleware for Passport and Express Session
 app.use(session({
  secret: 'keyboard cat',
  resave: false,
  saveUninitialized: true,
 }));
 
+// Passport Config
+require('./config/passport')(passport);
+// Passport Middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
 
-passport.use(new LocalStrategy(
- (username, password, done) => {
-    console.log("** Authentication **");     
-    findUser(username, (err, user) => {
-      if (err) {
-        console.log("** Authenticate - Error... "); 
-        return done(err)
-      }
 
-      // User not found
-      if (!user) {
-        console.log("** Authenticate - username not found - user: " + username); 
-        return done(null, false);
-      }
+app.get('*', function(req, res, next){
+  res.locals.user = req.user || null;
+  next();
+});
 
-      // Always use hashed passwords and fixed time comparison
-      bcrypt.compare(password, user.passwordHash, (err, isValid) => {
-        if (err) {
-          return done(err)
-        }
-        if (!isValid) {
-          return done(null, false);
-        }
-        console.log("** Authenticate - Login success for user: " + username);  
-        return done(null, user);
-      })
-    })
-  }
-));
+
 
 
 
