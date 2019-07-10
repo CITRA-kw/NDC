@@ -108,6 +108,7 @@ var sqlite3 = require('sqlite3');
 // Tutorial for Passport.js authentication in a Node.js Express application https://www.jokecamp.com/tutorial-passportjs-authentication-in-nodejs/
 // Helps me understanding how to structure the passport in the express framework https://andrejgajdos.com/authenticating-users-in-single-page-applications-using-node-passport-react-and-redux/
 // Building a NodeJS Web App Using PassportJS for Authentication https://dev.to/gm456742/building-a-nodejs-web-app-using-passportjs-for-authentication-3ge2
+// A must read article to understand the flow of Passport http://toon.io/understanding-passportjs-authentication-flow/
 var user = {
   username: 'test-user',
   passwordHash: bcrypt.hashSync("aa", bcrypt.genSaltSync(10)),
