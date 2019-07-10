@@ -22,13 +22,14 @@ router.get('/login', function (req, res, next) {
 
 
 // ***************************************************************
-// Authenticating the login information
+// Login Process
 // ***************************************************************
-router.post('/login/action', passport.authenticate('local', {
-	successRedirect: '/success',
-	failureRedirect: '/login',
-    //failureFlash: true 
-}));
+router.post('/login', function(req, res, next){
+  passport.authenticate('local', {
+    successRedirect:'/',
+    failureRedirect:'/login'
+  })(req, res, next);
+});
 
 
 /*
@@ -44,10 +45,13 @@ router.post('/authenticate',
 // ***************************************************************
 // To logout
 // ***************************************************************
-router.get('/login/logout', function(req, res){
+router.get('/login', function(req, res){
   console.log('logging out');
   req.logout();
   res.redirect('/');
 });
 
+
+
 module.exports = router;
+
