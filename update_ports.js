@@ -72,7 +72,7 @@ function updatePanelWithRows(patch_panel_id, data) {
     			let insertData = {
     				id: id,
     				patch_panel_id: patch_panel_id,
-    				label: "Row " + row + ", port " + (i+info.starting_number),
+    				label: "Tray " + row + ", port " + (i+info.starting_number),
     				port_type: info.port_type,
     				port_protocol: info.port_protocol,
     			}
@@ -89,62 +89,52 @@ function updatePanelWithRows(patch_panel_id, data) {
 
 //Huawei OTN
 
-
-data = {
-	"4": {
-		num_ports: 20,
-		port_type: "LC",
-		port_protocol: "10G multiservice",
-		starting_number: 1
-	},
-	"5": {
-		num_ports: 30,
-		port_type: "LC",
-		port_protocol: "2.5G multiservice",
-		starting_number: 1
-	},
-
-	"6": {
-		num_ports: 30,
-		port_type: "LC",
-		port_protocol: "2.5G multiservice",
-		starting_number: 1
-	},
-
-	"9": {
-		num_ports: 20,
-		port_type: "LC",
-		port_protocol: "10G multiservice",
-		starting_number: 1
-	},
-
-	"10": {
-		num_ports: 20,
-		port_type: "LC",
-		port_protocol: "10G multiservice",
-		starting_number: 1
-	},
-
-}
-
-
-//FPP1-8FL-TO-1FL-KIG
 /*
 data = {
-	"A": {
-		num_ports: 12,
-		port_type: "FC",
-		port_protocol: "patch",
+	"3": {
+		num_ports: 4,
+		port_type: "LC",
+		port_protocol: "10G multiservice",
 		starting_number: 1
 	},
-	"B": {
-		num_ports: 12,
-		port_type: "FC",
-		port_protocol: "patch",
+	"6": {
+		num_ports: 4,
+		port_type: "LC",
+		port_protocol: "10G multiservice",
 		starting_number: 1
 	}
 }
 */
+
+//FPP1-8FL-TO-1FL-KIG
+
+data = {
+	"1": {
+		num_ports: 12,
+		port_type: "SC",
+		port_protocol: "patch",
+		starting_number: 1
+	},
+	"2": {
+		num_ports: 12,
+		port_type: "SC",
+		port_protocol: "patch",
+		starting_number: 1
+	},
+	"3": {
+		num_ports: 12,
+		port_type: "SC",
+		port_protocol: "patch",
+		starting_number: 1
+	},
+	"4": {
+		num_ports: 12,
+		port_type: "SC",
+		port_protocol: "patch",
+		starting_number: 1
+	}
+}
+
 
 
 //Sandvine
@@ -167,7 +157,7 @@ data = {
 }
 */
 
-updateDevice(25, data);
+updatePanelWithRows(40, data);
 
 
 
