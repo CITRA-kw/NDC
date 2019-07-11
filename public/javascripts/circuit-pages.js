@@ -266,14 +266,14 @@ function formDynamicField() {
     $('form')
         // The click handler of the add button
         .on('click', '.addButtonIngress', function () {
-            addButtonClicked(this);
+            addButtonClicked(this, null, null, null, null, "ingress");
 
             // TODO review this
             //$('form').formValidation('addField', $option);
         })
 
         .on('click', '.addButtonEgress', function () {
-            addButtonClicked(this);
+            addButtonClicked(this, null, null, null, null, "egress");
 
         })
 
@@ -323,7 +323,7 @@ function addButtonClicked(element, patch_panel_id, patch_panel_name, port_id, po
     console.log("**** Patch Panel Name: " + patch_panel_name);
     console.log("**** Port ID: " + port_id);
     console.log("**** Port Name: " + port_name);*/
-    if(direction !== null) {
+    if(direction !== null && port_name !== null) {
         console.log("** Explicitly called addButtonClick() with direction = " + direction);
         if(direction == 'ingress') { console.log("Ingress");
             element = $('.addButtonIngress');
@@ -337,7 +337,10 @@ function addButtonClicked(element, patch_panel_id, patch_panel_name, port_id, po
         .removeClass('d-none')
         .removeAttr('id')
         .insertBefore($template);
-    populatePatchPanelDropDown($dropdown, patch_panel_id, patch_panel_name, port_id, port_name);
+
+        console.log(direction);
+
+    populatePatchPanelDropDown($dropdown, patch_panel_id, patch_panel_name, port_id, port_name, direction);
 
 
 }
@@ -345,7 +348,7 @@ function addButtonClicked(element, patch_panel_id, patch_panel_name, port_id, po
 // ***************************************************************
 // Populate the patch_panel dynamic fields
 // ***************************************************************
-function populatePatchPanelDropDown(element, patch_panel_value, patch_panel_name, port_value, port_name) {
+function populatePatchPanelDropDown(element, patch_panel_value, patch_panel_name, port_value, port_name, direction) {
     console.log("** populatePatchPanelDropDown() called! -- Passed values " + patch_panel_value + " " + patch_panel_name + " " + port_value + " " + port_name);
 
     // How to get array of fields https://stackoverflow.com/questions/7880619/multiple-inputs-with-same-name-through-post-in-php
@@ -373,18 +376,18 @@ function populatePatchPanelDropDown(element, patch_panel_value, patch_panel_name
     }).done(function () {
         console.log("** Adding change() to a patch panel dropdown");
         // Populate initially
-        populatePortsDropDown(dropdown, this.port_value, this.port_name);
+        // populatePortsDropDown(dropdown, this.port_value, this.port_name, direction);
         
         // When a selection is changed on the patch patch dropdown
         $(dropdown).change(function () {
-            if (typeof this.port_value !== 'undefined') {
-                populatePortsDropDown(dropdown, this.port_value, this.port_name);
-            } else {
-                populatePortsDropDown(dropdown);
-            }
+            // if (typeof this.port_value !== 'undefined') {
+            //     populatePortsDropDown(dropdown, this.port_value, this.port_name, direction);
+            // } else {
+            //     populatePortsDropDown(dropdown, null, null, direction);
+            // }
 //            var port_value = $(this).children("option").filter(":selected").val();
 //            var port_name = $(this).children("option").filter(":selected").text();
-            populatePortsDropDown(dropdown, port_value, port_name);
+            populatePortsDropDown(dropdown, port_value, port_name, direction);
         });
         
         // Manually trigger a first change so ports dropdown will be automatically updated and select first value
@@ -392,6 +395,45 @@ function populatePatchPanelDropDown(element, patch_panel_value, patch_panel_name
             port_value: port_value,
             port_name: port_name
         }]);
+
+        //this changes the egress selected panel if the ingress is selected
+        //make sure its ingress and get the egress one
+        if (direction == "ingress") {
+            $(dropdown).change(function () {
+                //what is our index?
+                var index = -1;
+
+                var lis = $(".ordered-circuit-conn-ingress-fields li").toArray();
+                for (var i in lis) {
+                    var li = lis[i];
+                    var select = $($(li).find("select.custom-select.d-block.ingress-select-panel"));
+
+                    if ($(dropdown).is(select)) {
+                        // console.log("Found at index", i);
+                        index = i;
+                        break;
+                    }
+                }
+
+                //just in case it's not found for some weirdass reason
+                if (index < 0 ) return;
+
+                //change egress to match the ingress port + 1
+
+                lis = $(".ordered-circuit-conn-egress-fields li").toArray();
+
+                //index is higher than number of egress dropdowns?
+                if (lis.length <= index) return;
+
+
+                var select = $(lis[index]).find("select.custom-select.d-block.egress-select-panel");
+                $(select).val($(dropdown).val());
+                $(select).trigger("change");
+
+
+            });
+        }
+
 
     });
     
@@ -401,14 +443,17 @@ function populatePatchPanelDropDown(element, patch_panel_value, patch_panel_name
 // ***************************************************************
 // Populate the ports dynamic dropdowns
 // ***************************************************************
-function populatePortsDropDown(portField, port_value, port_name) {
+//shitty 
+function populatePortsDropDown(patchPanelField, port_value, port_name, direction) {
     console.log("** populatePortsDropDown() called! -- Passed values " + port_value + " " + port_name);
 
     // Do a JSON call and populate the dropdown select field
     // TODO: Service name/link should be dynamic
-    $.getJSON('/api/patch_panel-service/ports/' + $(portField).val(), function (list_data) {
+    console.log($(patchPanelField).val())
+
+    $.getJSON('/api/patch_panel-service/ports/' + $(patchPanelField).val(), function (list_data) {
         // Get the specific port HTML DOM element
-        portField = $(portField).parent().parent().next().find("select");
+        var portField = $(patchPanelField).parent().parent().next().find("select");
         $(portField).empty();
         $.each(list_data, function () {
             $(portField).append($("<option />").val(this.id).text(this.label));
@@ -422,6 +467,43 @@ function populatePortsDropDown(portField, port_value, port_name) {
             $(portField).prepend($("<option />").val(port_value).text(port_name).attr('selected', 'selected'));
             console.log("*** Activating a port dropdown select for: " + port_name);
         }
+        //make sure its ingress and get the egress one
+        if (direction == "ingress") {
+            $(portField).change(function () {
+                //what is our index?
+                var index = -1;
+
+                var lis = $(".ordered-circuit-conn-ingress-fields li").toArray();
+                for (var i in lis) {
+                    var li = lis[i];
+                    var select = $($(li).find("select.custom-select.d-block.ingress-select-port"));
+
+                    if ($(portField).is(select)) {
+                        // console.log("Found at index", i);
+                        index = i;
+                        break;
+                    }
+                }
+
+                //just in case it's not found for some weirdass reason
+                if (index < 0 ) return;
+
+                //change egress to match the ingress port + 1
+
+                lis = $(".ordered-circuit-conn-egress-fields li").toArray();
+
+                //index is higher than number of egress dropdowns?
+                if (lis.length <= index) return;
+
+
+                var select = $(lis[index]).find("select.custom-select.d-block.egress-select-port");
+                $(select).val(parseInt($(portField).val()) + 1);
+
+            });
+        }
+
+
+
     });
 }
 

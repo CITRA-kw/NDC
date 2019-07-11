@@ -222,7 +222,7 @@ function addPatchPanelData(direction, rows, newCircuit, circuit_num) {
 
     for (var i = 0; i < patch_panel_ids.length; i++) {
 
-        var row = [circuit_num, port_ids[i], patch_panel_ids[i], i, direction];
+        var row = [circuit_num, port_ids[i], patch_panel_ids[i], i, direction, "{}"];
 
         rows.push(row);
     }
