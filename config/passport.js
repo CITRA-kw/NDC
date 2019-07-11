@@ -8,6 +8,14 @@
 // Building a NodeJS Web App Using PassportJS for Authentication https://dev.to/gm456742/building-a-nodejs-web-app-using-passportjs-for-authentication-3ge2
 // A must read article to understand the flow of Passport http://toon.io/understanding-passportjs-authentication-flow/
 
+
+/*
+TO DO for the services pages,
+if user is not logged in then: 
+if(!req.user.id)
+    res.status(500).send(); // Maybe error number 403 is better?
+*/
+
 const LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcrypt-nodejs'); // npm install --save bcrypt-nodejs && npm uninstall --save bcrypt
 
@@ -61,8 +69,9 @@ module.exports = function (passport) {
             console.log("** Authentication **");
 
             if (username == user.username) {
-
+                
             }
+            
             // User not found
             else if (!username) {
                 console.log("** Authenticate - username not found - user: " + username);
@@ -93,8 +102,9 @@ module.exports = function (passport) {
     });
 
     passport.deserializeUser(function (id, done) {
-        User.findById(id, function (err, user) {
+        done(null, user.username);
+        /*user.findById(id, function (err, user) {
             done(err, user);
-        });
+        });*/
     });
 }

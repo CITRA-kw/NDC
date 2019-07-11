@@ -15,25 +15,12 @@ var sqlite3 = require('sqlite3');
 require('./config/passport')(passport);
 
 
-var index = require('./routes/index');
-var users = require('./routes/users');
-var isp = require('./routes/isp');
-var circuit = require('./routes/circuit');
-var patch_panel = require('./routes/patch_panel');
-var patch_panel_port = require('./routes/patch_panel_port');
-var provider = require('./routes/provider');
-var finance = require('./routes/finance');
-var map = require('./routes/map');
-var login = require('./routes/login');
-
-
-
 
 var app = express();
 
 // Session for Passport
 app.use(session({
-    secret: 'keyboard cat',
+    secret: 'Mr. Robot rocks!',
     resave: false,
     saveUninitialized: true,
 }));
@@ -73,12 +60,40 @@ app.set('appTitle', 'National Data Circuits');
 
 // All pages routing
 // Every page has user information included
+// TO DO: Secure API requests
 app.get('*', function (req, res, next) {
+    // Get username and store it in res.locals.user
+    // Make sure it's not API call otherwise you'll get error
+    if (!req.url.includes("api"))
+        res.locals.username = req.user || null;
+
+    // If I'm going to login then go to next route to proceed to login
+    if (req.url === '/login') return next();
+
+    // If authenticated go to next route
+    if (req.isAuthenticated()) {
+        next();
+    }
     
-    res.locals.user = req.user || null;
-    username =  req.user || null;
-    next();
+    // Redirect to login page if not authenticated from above and it's not an API request, otherwise you'll get an error
+    if (!req.url.includes("api")) {
+        res.redirect('/login');
+    }
 });
+
+
+// Routing
+var index = require('./routes/index');
+var users = require('./routes/users');
+var isp = require('./routes/isp');
+var circuit = require('./routes/circuit');
+var patch_panel = require('./routes/patch_panel');
+var patch_panel_port = require('./routes/patch_panel_port');
+var provider = require('./routes/provider');
+var finance = require('./routes/finance');
+var map = require('./routes/map');
+var login = require('./routes/login');
+
 // Now the actual routing
 app.use(index);
 app.use(users);
@@ -92,7 +107,7 @@ app.use(map);
 app.use(login);
 
 
-// API
+// APIs
 app.use(require('./routes/api/isp-service'));
 app.use(require('./routes/api/provider-service'));
 app.use(require('./routes/api/circuit-service'));
@@ -122,15 +137,6 @@ app.use(function (err, req, res, next) {
     res.status(err.status || 500);
     res.render('error');
 });
-
-
-
-
-
-
-
-
-
 
 
 
