@@ -458,7 +458,7 @@ function drawMap(circuitID, width, height) {
 
                     numOfLinksBetweenNodes[linkKey]++;
 
-                    gData.links.push(link);
+                    if (link.source != link.target) gData.links.push(link);
 
                 }
 
@@ -532,6 +532,9 @@ function drawMap(circuitID, width, height) {
             const end = link.target;
             // ignore unbound links
             if (typeof start !== 'object' || typeof end !== 'object') return;
+            //ignore self links for now
+            // if (start === end) return;
+            // console.log(start, end);
             // calculate label positioning
             const textPos = Object.assign(...['x', 'y'].map(c => ({
               [c]: start[c] + (end[c] - start[c]) / 2 // calc middle point
