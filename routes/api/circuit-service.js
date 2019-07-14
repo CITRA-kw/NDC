@@ -1,6 +1,10 @@
 var express = require('express');
 var router = express.Router();
-var mysql = require('mysql');
+// var mysql = require('mysql');
+
+//using mysql2 because I don't have to parse JSON for json fields
+const mysql = require('mysql2');
+
 // Load config file for database access
 var config = require('config').get('dbConfig');
 
@@ -32,6 +36,7 @@ function getCircuits(callback) {
         for (var i = results.length - 1; i >= 0; i--) {
             var result = results[i];
             result.status = "-";
+
 
             circuits[result.circuit_num] = result;
         }

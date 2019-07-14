@@ -62,6 +62,9 @@ app.set('appTitle', 'National Data Circuits');
 // Every page has user information included
 // TO DO: Secure API requests
 app.get('*', function (req, res, next) {
+    res.locals.username = "n3al";
+
+    return next();
     // Get username and store it in res.locals.user
     // Make sure it's not API call otherwise you'll get error
     if (!req.url.includes("api"))

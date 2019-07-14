@@ -259,8 +259,19 @@ $(document).ready(function () {
             }
 */
 
+            var colors = [
+                'primary',
+                'secondary',
+                'success',
+                'danger',
+                'warning',
+                'info',
+                'dark',
+                'light'
+            ];
 
-
+            var usedColors = {};
+            var cursor = 0;
 
 
             var table = $('#circuitsTable').DataTable({
@@ -276,10 +287,10 @@ $(document).ready(function () {
                         data: "id",
                         title: "ID"
                     },
-                    {
-                        data: "moc_id",
-                        title: "MOC ID"
-                    },
+                    // {
+                    //     data: "moc_id",
+                    //     title: "MOC ID"
+                    // },
                     {
                         data: "isp_code",
                         title: "ISP"
@@ -296,6 +307,40 @@ $(document).ready(function () {
                         data: "status",
                         title: "Status"
                     },
+                    
+                    {
+                        data: "tags",
+                        title: "Tags",
+                        render: function(data, type, row, meta){
+                            if (!data) return;
+                            console.log(data);
+                            str = "";
+
+                            for (var key in data) {
+                                var color = "secondary";
+
+
+                                if (key in usedColors) {
+                                    color = usedColors[key];
+                                    // console.log(key, "reusing", color);
+                                }
+                                else {
+                                    color = colors[cursor];
+                                    // console.log("New color", color, cursor);
+                                    usedColors[key] = color;
+                                    cursor++;
+                                    if (cursor >= colors.length) {
+                                        cursor = 0;  //loop back to first color
+                                        // console.log("rewinding");
+                                    }
+                                    // console.log(cursor);
+                                }
+                                str += '<span class="badge badge-pill badge-'+color+'">'+ key + ": " + data[key] +'</span> ';
+                            }
+                            return str;  
+                        }
+                    },
+                    
                     {
                         data: "comment",
                         title: "Comments"
