@@ -302,6 +302,7 @@ $(document).ready(function () {
                 pageLength: 100,
                 dom: 'B<"clear">lfrtip',
                 buttons: [ 'copy', 'csv', 'excel', 'colvis' ],
+                stateSave: true,
                 columns: [
                     {
                         "orderable":      false,
