@@ -89,43 +89,45 @@ function updatePanelWithRows(patch_panel_id, data) {
 
 //Huawei OTN
 
-/*
+
 data = {
-	"9B 5/1": {
-		num_ports: 5,
+	"1": {
+		num_ports: 10,
 		port_type: "LC",
-		port_protocol: "10G multiservice",
+		port_protocol: "STM1",
 		starting_number: 1
 	},
-	"9B 5/2": {
-		num_ports: 5,
+	"2": {
+		num_ports: 10,
 		port_type: "LC",
-		port_protocol: "10G multiservice",
+		port_protocol: "STM1",
 		starting_number: 1
 	},
-	"9B 5/3": {
-		num_ports: 5,
+	"6": {
+		num_ports: 10,
 		port_type: "LC",
-		port_protocol: "10G multiservice",
+		port_protocol: "STM1",
 		starting_number: 1
 	},
-	"9B 5/4": {
-		num_ports: 5,
+	"7": {
+		num_ports: 1,
 		port_type: "LC",
-		port_protocol: "10G multiservice",
+		port_protocol: "STM16",
 		starting_number: 1
 	},
-	"9B 5/5": {
-		num_ports: 5,
+	"8": {
+		num_ports: 1,
 		port_type: "LC",
-		port_protocol: "10G multiservice",
+		port_protocol: "STM16",
 		starting_number: 1
 	},
+
+
 }
-*/
+
 
 //FPP1-8FL-TO-1FL-KIG
-
+/*
 data = {
 	"A": {
 		num_ports: 12,
@@ -200,7 +202,7 @@ data = {
 		starting_number: 1
 	},
 }
-
+*/
 
 //Sandvine
 /*
@@ -222,8 +224,7 @@ data = {
 }
 */
 
-updatePanelWithRows(58, data);
-updatePanelWithRows(59, data);
+updateDevice(61, data);
 
 
 

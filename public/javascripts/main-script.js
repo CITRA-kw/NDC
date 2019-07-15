@@ -263,7 +263,7 @@ $(document).ready(function () {
             //function to generate columns for each patch panel
             var generatePortData = function(data, type) {
 
-                var str = "";
+                var str = "<span style='font-size: 15px'>";
 
                 for (var i in data.ingress) {
                     var ingressPort = data.ingress[i];
@@ -271,10 +271,20 @@ $(document).ready(function () {
                     // console.log(ingressPort, egressPort);
 
                     if (ingressPort.type == type) {
-                        str += "<span style='color: #2699ab'>" + ingressPort.name + "</span>:  <span style='color: #64991e'>" + ingressPort.label + "</span>/<span style='color: #cf2e2e'>" + egressPort.label + "</span>, ";
+                        if (type != "OTN" && type != "Sandvine") {
+                            str += "<span >" + ingressPort.name + "</span>:  <span style='color: #64991e'>" + ingressPort.label + "</span>";
+                            str += " / <span style='color: #cf2e2e'>" + egressPort.label + "</span>, ";
+                        }
+                        else {
+                            //remove the " in" part of the label, it's pointless here.
+                            var label = ingressPort.label.substring(0, ingressPort.label.length-3);
+                            str += "<span>" + ingressPort.name + "</span>:  <span style='color: #64991e'>" + label + "</span>, ";
+                        }
                     }
                 }
 
+                str = str.substring(0, str.length - 2);
+                str += "</span>"
                 return str;
                 // return "n3al";
             }
