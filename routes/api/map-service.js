@@ -68,8 +68,6 @@ router.get('/api/map-service/links', function (req, res) {
 		    	res.json(json);
 		    })
     	});
-
-
     });
 });
 

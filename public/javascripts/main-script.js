@@ -245,7 +245,8 @@ $(document).ready(function () {
     // Usually this is the main page - too lazy to make an IF statement just for it
     else {
         // Do a JSON call and populate the form
-        $.getJSON('/api/circuit-service/', function (json) {
+        //Note: Changed this to map service because it has all the ports information as well.
+        $.getJSON('/api/map-service/links', function (json) {
             console.log("** Received circuit JSON info to populate form for", json);
 /*
             //make an array
@@ -258,6 +259,28 @@ $(document).ready(function () {
                 data.push(datum);
             }
 */
+
+            //function to generate columns for each patch panel
+            var generatePortData = function(data, type) {
+
+                var str = "";
+
+                for (var i in data.ingress) {
+                    var ingressPort = data.ingress[i];
+                    var egressPort = data.egress[i];
+                    console.log(ingressPort, egressPort);
+
+                    if (ingressPort.type == type) {
+                        str += "<span style='color: #2699ab'>" + ingressPort.name + "</span>:  <span style='color: #64991e'>" + ingressPort.label + "</span>/<span style='color: #cf2e2e'>" + egressPort.label + "</span>, ";
+                    }
+                }
+
+                return str;
+                // return "n3al";
+            }
+            // console.log(json);
+
+
 
             var colors = [
                 'primary',
@@ -277,6 +300,8 @@ $(document).ready(function () {
             var table = $('#circuitsTable').DataTable({
                 data: json.data,
                 pageLength: 100,
+                dom: 'B<"clear">lfrtip',
+                buttons: [ 'copy', 'csv', 'excel', 'colvis' ],
                 columns: [
                     {
                         "orderable":      false,
@@ -315,7 +340,7 @@ $(document).ready(function () {
                         title: "Tags",
                         render: function(data, type, row, meta){
                             if (!data) return;
-                            console.log(data);
+                            // console.log(data);
                             str = "";
 
                             for (var key in data) {
@@ -342,7 +367,41 @@ $(document).ready(function () {
                             return str;  
                         }
                     },
-                    
+                    {
+                        data: "ports",
+                        title: "ISP panel",
+                        render: function(data, type, row, meta) {
+                            return generatePortData(data, "ISP panel");
+                        }
+                    },
+                    {
+                        data: "ports",
+                        title: "LS panel",
+                        render: function(data, type, row, meta) {
+                            return generatePortData(data, "LS panel");
+                        }
+                    },
+                    {
+                        data: "ports",
+                        title: "SV",
+                        render: function(data, type, row, meta) {
+                            return generatePortData(data, "Sandvine");
+                        }
+                    },
+                    {
+                        data: "ports",
+                        title: "KIG panel",
+                        render: function(data, type, row, meta) {
+                            return generatePortData(data, "KIG panel");
+                        }
+                    },
+                    {
+                        data: "ports",
+                        title: "OTN",
+                        render: function(data, type, row, meta) {
+                            return generatePortData(data, "OTN");
+                        }
+                    },
                     {
                         data: "comment",
                         title: "Comments",
