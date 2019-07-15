@@ -5,6 +5,8 @@
 // TODO https://stackoverflow.com/questions/14949210/dynamically-update-a-table-using-javascript 
 
 
+
+
 var statusColors = {
     connecting: '#adddce',
     active: '#70ae98',
@@ -194,8 +196,81 @@ function addTableDropdown(table, json) {
     } );
 }
 
+
+
+
+
+
+
 $(document).ready(function () {
     console.log("** Loaded main-script.js");
+
+
+
+
+
+    // Create a client instance
+    // console.log(Paho, Paho.MQTT);
+    var mqtt = new Paho.Client(location.hostname, Number(9001), "clientId");
+
+    // set callback handlers
+    mqtt.onConnectionLost = function onConnectionLost(responseObject) {
+      if (responseObject.errorCode !== 0) {
+        console.log("onConnectionLost: "+responseObject.errorMessage);
+      }
+    };
+    mqtt.onMessageArrived = function onMessageArrived(message) {
+        msg = JSON.parse(message.payloadString);
+
+        // console.log("onMessageArrived", message.destinationName, msg);
+        if ("in" in msg.fields) {
+            let matches = msg.tags.host.match(/(.+?)\..+/);
+
+            if (matches.length > 1) {
+                var name = matches[1];
+                //TODO: cache this?
+                var element = $("#"+name + "_" + msg.tags.interface);
+
+
+                if (element.length) { //exists?
+                    // console.log(element);
+                    var str = "<span style='color: #64991e'>"
+                    str += (msg.fields["in"] / 1000000000).toFixed(2);
+                    str += " Gb/s</span>, "
+                    str += "<span style='color: #cf2e2e'>"
+                    str += (msg.fields["out"] / 1000000000).toFixed(2);;
+                    str += " Gb/s</span>"
+                    // console.log(str);
+                    element.html(str);
+                }
+
+            }
+        }
+        
+    };
+
+    // connect the client
+    mqtt.connect({onSuccess:function onConnect() {
+      // Once a connection has been made, make a subscription and send a message.
+      console.log("onConnect");
+      mqtt.subscribe("telegraf/tec-pts-1.ts.citra.gov.kw/sandvine");
+      mqtt.subscribe("telegraf/tec-pts-2.ts.citra.gov.kw/sandvine");
+      mqtt.subscribe("telegraf/tec-pts-3.ts.citra.gov.kw/sandvine");
+      mqtt.subscribe("telegraf/tec-pts-4.ts.citra.gov.kw/sandvine");
+      /*
+      mqtt.subscribe("telegraf/rsl-pts-1.ts.citra.gov.kw/sandvine");
+      mqtt.subscribe("telegraf/rsl-pts-2.ts.citra.gov.kw/sandvine");
+      mqtt.subscribe("telegraf/rsl-pts-3.ts.citra.gov.kw/sandvine");
+      mqtt.subscribe("telegraf/rsl-pts-4.ts.citra.gov.kw/sandvine");
+      mqtt.subscribe("telegraf/jhr-pts-1.ts.citra.gov.kw/sandvine");
+      mqtt.subscribe("telegraf/uhn-pts-1.ts.citra.gov.kw/sandvine");
+      */
+      // mqtt.subscribe("#");
+      // message = new Paho.Message("Hello");
+      // message.destinationName = "World";
+      // mqtt.send(message);
+    }});
+
 
     // ***************************************************************
     // Dynamically load table data
@@ -421,6 +496,25 @@ $(document).ready(function () {
                         title: "Comments",
                         width: '20%'
                     },
+                    {
+                        data: null,
+                        title: "Current Bandwidth",
+                        defaultContent: "",
+                        render: function(data, type, row, meta) {
+
+                            // console.log(row);
+                            for (var i in row.ports.ingress) {
+                                var port = row.ports.ingress[i];
+                                if (port.name.includes("pts")) {
+                                    var label = port.label.substring(0, port.label.length - 3);
+                                    // console.log("Found one!", port.name, label);
+
+                                    //set up a listener to update this element I guess?
+                                    return "<div id='"+ port.name +"_"+ label +"'>-</div>"
+                                }
+                            }
+                        }
+                    }
                 ],
 
                 "order": [[1, 'asc']],
