@@ -268,7 +268,7 @@ $(document).ready(function () {
                 for (var i in data.ingress) {
                     var ingressPort = data.ingress[i];
                     var egressPort = data.egress[i];
-                    console.log(ingressPort, egressPort);
+                    // console.log(ingressPort, egressPort);
 
                     if (ingressPort.type == type) {
                         str += "<span style='color: #2699ab'>" + ingressPort.name + "</span>:  <span style='color: #64991e'>" + ingressPort.label + "</span>/<span style='color: #cf2e2e'>" + egressPort.label + "</span>, ";
@@ -335,7 +335,10 @@ $(document).ready(function () {
                         data: "status",
                         title: "Status"
                     },
-                    
+                    {
+                        data: "interface_type",
+                        title: "Interface"
+                    },
                     {
                         data: "tags",
                         title: "Tags",
