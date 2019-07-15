@@ -285,7 +285,9 @@ $(document).ready(function () {
                     },
                     {
                         data: "id",
-                        title: "ID"
+                        title: "ID",
+                        width: '15%'
+
                     },
                     // {
                     //     data: "moc_id",
@@ -343,7 +345,8 @@ $(document).ready(function () {
                     
                     {
                         data: "comment",
-                        title: "Comments"
+                        title: "Comments",
+                        width: '20%'
                     },
                 ],
 

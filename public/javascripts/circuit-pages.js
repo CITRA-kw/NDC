@@ -402,14 +402,15 @@ function populatePatchPanelDropDown(element, patch_panel_value, patch_panel_name
             $(dropdown).change(function () {
                 //what is our index?
                 var index = -1;
+                // console.log("We good baby!");
 
                 var lis = $(".ordered-circuit-conn-ingress-fields li").toArray();
                 for (var i in lis) {
                     var li = lis[i];
                     var select = $($(li).find("select.custom-select.d-block.ingress-select-panel"));
-
+                    console.log(dropdown, select);
                     if ($(dropdown).is(select)) {
-                        // console.log("Found at index", i);
+                        console.log("Found at index", i);
                         index = i;
                         break;
                     }
