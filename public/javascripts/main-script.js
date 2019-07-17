@@ -229,22 +229,49 @@ $(document).ready(function () {
             if (matches.length > 1) {
                 var name = matches[1];
                 //TODO: cache this?
-                var element = $("#"+name + "_" + msg.tags.interface);
+                var element = $("#"+name + "_" + msg.tags.interface + "_bandwidth");
 
 
                 if (element.length) { //exists?
-                    // console.log(element);
+                    // console.log(msg);
+                    var subscriberField = msg.tags.direction == "internet" ? "in" : "out";
+                    var internetField = msg.tags.direction == "internet" ? "out" : "in";
+
                     var str = "<span style='color: #64991e'>"
-                    str += (msg.fields["in"] / 1000000000).toFixed(2);
+                    str += (msg.fields[subscriberField] / 1000000000).toFixed(2);
                     str += " Gb/s</span>, "
                     str += "<span style='color: #cf2e2e'>"
-                    str += (msg.fields["out"] / 1000000000).toFixed(2);;
+                    str += (msg.fields[internetField] / 1000000000).toFixed(2);;
                     str += " Gb/s</span>"
                     // console.log(str);
                     element.html(str);
                 }
 
             }
+        }
+        else if ("dBm" in msg.fields) {
+            //TODO:  I'd rather not repeat this code.  Maybe make a function?
+            let matches = msg.tags.host.match(/(.+?)\..+/);
+
+            if (matches.length > 1) {
+                var name = matches[1];
+                //TODO: cache this?
+                var direction = msg.tags.direction == "subscriber" ? "isp" : "ls";
+                var elementId = "#"+name + "_" + msg.tags.interface + "_" + direction +"_laser";
+
+                var element = $(elementId);
+                if (element.length) { //exists?
+                    // console.log(msg);
+                    var str = "<span style='color: #f0a35e'>"
+                    str += (msg.fields["dBm"]).toFixed(2);
+                    str += " db</span>"
+                    element.html(str);
+                }
+                else {
+                    // console.log("Can't find", elementId)
+                }
+            }
+
         }
         
     };
@@ -514,9 +541,55 @@ $(document).ready(function () {
                                     // console.log("Found one!", port.name, label);
 
                                     //set up a listener to update this element I guess?
-                                    return "<div id='"+ port.name +"_"+ label +"'>-</div>"
+                                    return "<div id='"+ port.name +"_"+ label +"_bandwidth'>-</div>"
                                 }
                             }
+                        }
+                    },
+                    {
+                        data: null,
+                        title: "sv ISP laser",
+                        defaultContent: "",
+                        render: function(data, type, row, meta) {
+
+                            // console.log(row);
+                            var str = "";
+
+                            for (var i in row.ports.ingress) {
+                                var port = row.ports.ingress[i];
+                                if (port.name.includes("pts")) {
+                                    var label = port.label.substring(0, port.label.length - 3);
+                                    // console.log("Found one!", port.name, label);
+
+                                    //set up a listener to update this element I guess?
+                                    str += "<div id='"+ port.name +"_"+ label +"_isp_laser'></div>"
+                                }
+                            }
+
+                            return str;
+                        }
+                    },
+                    {
+                        data: null,
+                        title: "sv LS laser",
+                        defaultContent: "",
+                        render: function(data, type, row, meta) {
+
+                            var str = "";
+                            // console.log(row);
+                            var skippedFirst = false;
+                            for (var i in row.ports.ingress) {
+                                var port = row.ports.ingress[i];
+                                if (port.name.includes("pts")) {
+                                    var label = port.label.substring(0, port.label.length - 3);
+                                    // console.log("Found one!", port.name, label);
+
+                                    //set up a listener to update this element I guess?
+                                    str += "<div id='"+ port.name +"_"+ label +"_ls_laser'></div>"
+                                }
+                            }
+
+                            return str;
                         }
                     }
                 ],
