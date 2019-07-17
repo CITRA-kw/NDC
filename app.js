@@ -66,10 +66,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('appTitle', 'National Data Circuits');
 
 // All pages routing
-// Every page has user information included
+// Include username value on locals variables
+// Generally make sure users are logged in
 // TO DO: Secure API requests
 app.get('*', function (req, res, next) {
     //res.locals.username = "n3al";
+    // Get username values so I can display it on the page later on
     res.locals.currentUser = req.user;
     if (req.user == null) res.locals.currentUser = { username: "Not Logged in" };
 
