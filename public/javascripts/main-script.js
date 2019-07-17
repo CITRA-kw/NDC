@@ -414,7 +414,11 @@ $(document).ready(function () {
                     },
                     {
                         data: "provision_speed",
-                        title: "Speed"
+                        title: "Speed in Gbit",
+                        render: function(data, type, row, meta){
+                            return (parseInt(data)/1000000);
+                        }
+
                     },
                     {
                         data: "status",
@@ -519,7 +523,15 @@ $(document).ready(function () {
 
                 "order": [[1, 'asc']],
 
-                "rowCallback": rowCallback
+                "rowCallback": rowCallback,
+                /*
+                drawCallback: function () {
+                  var api = this.api();
+                  $( api.table().footer() ).html(
+                    api.column(3).data().sum()
+                  );
+                }
+                */
 
 
             }); //datatables init
@@ -552,8 +564,8 @@ $(document).ready(function () {
 
 function drawMap(circuitID, width, height) {
 
-    width = width || 1000;
-    height = height || 600;
+    width = width || 1200;
+    height = height || 900;
 
 
     //if a circuit ID is provided, draw only nodes related to that circuit
