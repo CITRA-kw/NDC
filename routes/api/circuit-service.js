@@ -1,9 +1,8 @@
 var express = require('express');
 var router = express.Router();
-// var mysql = require('mysql');
+var mysql = global.mysql;
 
-//using mysql2 because I don't have to parse JSON for json fields
-const mysql = require('mysql2');
+
 
 // Load config file for database access
 var config = require('config').get('dbConfig');

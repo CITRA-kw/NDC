@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+
+//require('../config/passport')(passport);
 
 
 
@@ -24,11 +27,11 @@ router.get('/login', function (req, res, next) {
 // ***************************************************************
 // Login Process
 // ***************************************************************
-router.post('/login', function(req, res, next){
+router.post('/login', function(req, res, next) {
   passport.authenticate('local', {
     successRedirect:'/',
     failureRedirect:'/login'
-  })(req, res, next);
+  }) (req, res, next);
 });
 
 

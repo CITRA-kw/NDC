@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var mysql = require('mysql');
+var mysql = global.mysql;
 // Load config file for database access
 var config = require('config').get('dbConfig');
 
@@ -38,7 +38,7 @@ router.post('/api/isp-service', function (req, res) {
     var newISP = req.body;
     console.log('** POST Single ISP: ' + newISP.name);
 
-    connection.query('INSERT INTO isp SET name=?, contact_name=?, contact_phone=?, contact_email=?, code=?', [newISP.name, newISP.contact_name, newISP.contact_phone, newISP.contact_email, newISP.code], function (error, results) {
+    connection.query('INSERT INTO isp SET name=?, contact_name=?, contact_phone=?, contact_email=?, code=?', [newISP.name, newISP.contact_name, newISP.contact_phone, newISP.contact_email, newISP.code], function (error, results) { 
         if (error) {
             res.send(JSON.stringify({
                 result: "Epic Fail!"

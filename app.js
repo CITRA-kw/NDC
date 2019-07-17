@@ -1,3 +1,5 @@
+global.mysql = require("mysql2");
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -7,9 +9,10 @@ var bodyParser = require('body-parser');
 
 // Passport and authentication stuff
 var passport = require('passport');
-var bcrypt = require('bcrypt-nodejs'); // npm install --save bcrypt-nodejs && npm uninstall --save bcrypt
+//var bcrypt = require('bcrypt-nodejs'); // npm install --save bcrypt-nodejs && npm uninstall --save bcrypt
 var LocalStrategy = require('passport-local').Strategy;
-var session = require('express-session');
+//var session = require('express-session');
+var session = require('cookie-session');
 var sqlite3 = require('sqlite3');
 // Passport Config
 require('./config/passport')(passport);
@@ -19,10 +22,14 @@ require('./config/passport')(passport);
 var app = express();
 
 // Session for Passport
+app.set('trust proxy', 1) // trust first proxy
+
 app.use(session({
-    secret: 'Mr. Robot rocks!',
-    resave: false,
-    saveUninitialized: true,
+    //secret: 'Mr. Robot rocks!',
+    //resave: false,
+    //saveUninitialized: true
+    name: 'session',
+    keys: ['Mr. Robot rocks!!!']
 }));
 
 // Passport Middleware
@@ -62,13 +69,15 @@ app.set('appTitle', 'National Data Circuits');
 // Every page has user information included
 // TO DO: Secure API requests
 app.get('*', function (req, res, next) {
-    res.locals.username = "n3al";
+    //res.locals.username = "n3al";
+    res.locals.currentUser = req.user;
+    if (req.user == null) res.locals.currentUser = { username: "Not Logged in" };
 
-    return next();
+    //return next();
     // Get username and store it in res.locals.user
     // Make sure it's not API call otherwise you'll get error
-    if (!req.url.includes("api"))
-        res.locals.username = req.user || null;
+    //if (!req.url.includes("api"))
+    //    res.locals.username = req.user || null;
 
     // If I'm going to login then go to next route to proceed to login
     if (req.url === '/login') return next();
@@ -76,8 +85,9 @@ app.get('*', function (req, res, next) {
     // If authenticated go to next route
     if (req.isAuthenticated()) {
         next();
+        return;
     }
-    
+
     // Redirect to login page if not authenticated from above and it's not an API request, otherwise you'll get an error
     if (!req.url.includes("api")) {
         res.redirect('/login');
