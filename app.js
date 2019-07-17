@@ -73,6 +73,7 @@ app.get('*', function (req, res, next) {
     //res.locals.username = "n3al";
     // Get username values so I can display it on the page later on
     res.locals.currentUser = req.user;
+    // console.log(res.locals.currentUser);
     if (req.user == null) res.locals.currentUser = { username: "Not Logged in" };
 
     //return next();
@@ -81,19 +82,35 @@ app.get('*', function (req, res, next) {
     //if (!req.url.includes("api"))
     //    res.locals.username = req.user || null;
 
+    if (req.url.includes("api")) return next();
+
     // If I'm going to login then go to next route to proceed to login
     if (req.url === '/login') return next();
 
+    var url = req.url.match(/^\/(\w+)/) || ["/"] ;
+    url = url[url.length-1];
+
     // If authenticated go to next route
     if (req.isAuthenticated()) {
+
+        console.log(req.url);
+        
+
+
+        
+        //authorized?
+        console.log("authorization data!!", req.user.authorization.pages, url, req.user.authorization.pages[url]);
+        if (url in req.user.authorization.pages && !req.user.authorization.pages[url]) {
+            res.redirect('/login');
+            return;
+        }
+        
         next();
         return;
     }
 
     // Redirect to login page if not authenticated from above and it's not an API request, otherwise you'll get an error
-    if (!req.url.includes("api")) {
-        res.redirect('/login');
-    }
+    res.redirect('/login');
 });
 
 

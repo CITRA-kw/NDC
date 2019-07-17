@@ -51,9 +51,10 @@
                     <a class="p-2 text-muted" href="/isp/">ISPs</a>
                     <a class="p-2 text-muted" href="/provider/">Providers</a>
                     <a class="p-2 text-muted" href="/patch_panel/">Patch Panels</a>
-                    <a class="p-2 text-muted" href="/circuit/">Circuit</a>
+                    <% if (currentUser.authorization && currentUser.authorization.pages.circuit) { %> <a class="p-2 text-muted" href="/circuit/">Circuit</a> <% } %>
                     <a class="p-2 text-muted" href="/finance/">Finance</a>
-                    <a class="p-2 text-muted" href="/map/">Map</a>
+                    <a class="p-2 text-muted" href="/map/">Map</a> 
+
                 </nav>
             </div>
 
