@@ -24,14 +24,15 @@
 
                 <footer class="my-5 pt-5 text-muted text-center text-small">
                     <p class="mb-1">&copy; 2017-2019 CITRA</p>
-                    <p class="mb-1">Logged in as: <%= currentUser.username %>
+                    <p class="mb-1">
                     <% if(currentUser['ID']) {
-                        %>
-                            &nbsp;| <a class="p-2 text-muted" href="/logout/">Logout</a>
+                        %><%= currentUser['username'] %> | <a class="p-2 text-muted" href="/logout/">Logout</a> 
                         <%
+                    } else {
+                        %>Not logged in!<%
                     }
                     %>
-                    </p>
+                   </p>
 
                 </footer>
     </div>

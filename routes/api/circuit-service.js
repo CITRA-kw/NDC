@@ -7,14 +7,14 @@ var mysql = global.mysql;
 // Load config file for database access
 var config = require('config').get('dbConfig');
 
-var connection = mysql.createConnection({
+var connection = mysql.createPool({
+    connectionLimit: 50,
     host: config.get('host'),
     user: config.get('username'),
     password: config.get('password'),
     database: config.get('dbname')
 });
 
-connection.connect();
 
 // TODO Handle wrong ID
 
@@ -30,7 +30,9 @@ function getCircuits(callback) {
         if (err) throw err;
 
         var circuits = {};
-
+        
+        console.log(this.sql);
+        console.log(results);
 
         for (var i = results.length - 1; i >= 0; i--) {
             var result = results[i];

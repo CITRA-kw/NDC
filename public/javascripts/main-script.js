@@ -205,12 +205,13 @@ function addTableDropdown(table, json) {
 $(document).ready(function () {
     console.log("** Loaded main-script.js");
 
-
-
+     
+    /* Commenting MQTT for now because it's causing me issues on testing on local network
 
 
     // Create a client instance
-    // console.log(Paho, Paho.MQTT);
+    //console.log(Paho, Paho.MQTT);
+    //console.log("************************");
     var mqtt = new Paho.Client(location.hostname, Number(9001), "clientId");
 
     // set callback handlers
@@ -284,20 +285,13 @@ $(document).ready(function () {
       mqtt.subscribe("telegraf/tec-pts-2.ts.citra.gov.kw/sandvine");
       mqtt.subscribe("telegraf/tec-pts-3.ts.citra.gov.kw/sandvine");
       mqtt.subscribe("telegraf/tec-pts-4.ts.citra.gov.kw/sandvine");
-      /*
-      mqtt.subscribe("telegraf/rsl-pts-1.ts.citra.gov.kw/sandvine");
-      mqtt.subscribe("telegraf/rsl-pts-2.ts.citra.gov.kw/sandvine");
-      mqtt.subscribe("telegraf/rsl-pts-3.ts.citra.gov.kw/sandvine");
-      mqtt.subscribe("telegraf/rsl-pts-4.ts.citra.gov.kw/sandvine");
-      mqtt.subscribe("telegraf/jhr-pts-1.ts.citra.gov.kw/sandvine");
-      mqtt.subscribe("telegraf/uhn-pts-1.ts.citra.gov.kw/sandvine");
-      */
+
       // mqtt.subscribe("#");
       // message = new Paho.Message("Hello");
       // message.destinationName = "World";
       // mqtt.send(message);
     }});
-
+    */
 
     // ***************************************************************
     // Dynamically load table data

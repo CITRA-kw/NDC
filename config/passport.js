@@ -146,11 +146,11 @@ module.exports = function (passport) {
 
     // used to deserialize the user
     passport.deserializeUser(function(user, done) {
-        console.log("** Deserializing user: " + JSON.stringify(user));
+        //console.log("** Deserializing user: " + JSON.stringify(user));
         connection.connect();
         connection.query("SELECT * FROM users WHERE id = ? ",[user['ID']], function(err, rows){
-            console.log(this.sql);
-            console.log(rows);
+            //console.log(this.sql);
+            //console.log(rows);
             if(err) 
                 done(err, null);
             else 
