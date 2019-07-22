@@ -48,7 +48,7 @@ router.post('/authenticate',
 // ***************************************************************
 // To logout
 // ***************************************************************
-router.get('/login', function(req, res){
+router.get('/logout', function(req, res){
   console.log('logging out');
   req.logout();
   res.redirect('/');

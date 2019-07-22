@@ -48,13 +48,12 @@
                             <a class="dropdown-item" href="#">Network Graph</a>
                         </div>
                     </div>-->
-                    <a class="p-2 text-muted" href="/isp/">ISPs</a>
-                    <a class="p-2 text-muted" href="/provider/">Providers</a>
-                    <a class="p-2 text-muted" href="/patch_panel/">Patch Panels</a>
+                    <% if (currentUser.authorization && currentUser.authorization.pages.isp) { %> <a class="p-2 text-muted" href="/isp/">ISPs</a> <% } %>                          
+                    <% if (currentUser.authorization && currentUser.authorization.pages.provider) { %> <a class="p-2 text-muted" href="/provider/">Providers</a> <% } %>                      
+                    <% if (currentUser.authorization && currentUser.authorization.pages.patch_panel) { %> <a class="p-2 text-muted" href="/patch_panel/">Patch Panel</a> <% } %>                    
                     <% if (currentUser.authorization && currentUser.authorization.pages.circuit) { %> <a class="p-2 text-muted" href="/circuit/">Circuit</a> <% } %>
-                    <a class="p-2 text-muted" href="/finance/">Finance</a>
-                    <a class="p-2 text-muted" href="/map/">Map</a> 
-
+                    <% if (currentUser.authorization && currentUser.authorization.pages.finance) { %> <a class="p-2 text-muted" href="/finance/">Finance</a> <% } %>                    
+                    <% if (currentUser.authorization && currentUser.authorization.pages.map) { %> <a class="p-2 text-muted" href="/map/">Map</a> <% } %>   
                 </nav>
             </div>
 

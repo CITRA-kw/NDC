@@ -51,7 +51,9 @@ router.get('/api/map-service/links', function (req, res) {
     			let circuit = circuitByNum[result.circuit_num];
     			//does it have a ports object?
     			// console.log(circuit);
-    			if (!circuit.ports) circuit.ports = {};
+    			if (!circuit.ports) {
+                    circuit.ports = {};
+                }
 
     			//does it have the direction array?  (ingress, egress)
     			if (!circuit.ports[result.direction]) circuit.ports[result.direction] = [];

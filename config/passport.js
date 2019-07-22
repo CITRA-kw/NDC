@@ -7,6 +7,8 @@
 // Helps me understanding how to structure the passport in the express framework https://andrejgajdos.com/authenticating-users-in-single-page-applications-using-node-passport-react-and-redux/
 // Building a NodeJS Web App Using PassportJS for Authentication https://dev.to/gm456742/building-a-nodejs-web-app-using-passportjs-for-authentication-3ge2
 // A must read article to understand the flow of Passport http://toon.io/understanding-passportjs-authentication-flow/
+// So far my best source: https://github.com/manjeshpv/node-express-passport-mysql/blob/master/config/passport.js
+
 
 
 /*
@@ -147,8 +149,8 @@ module.exports = function (passport) {
         console.log("** Deserializing user: " + JSON.stringify(user));
         connection.connect();
         connection.query("SELECT * FROM users WHERE id = ? ",[user['ID']], function(err, rows){
-            //console.log(this.sql);
-            //console.log(rows);
+            console.log(this.sql);
+            console.log(rows);
             if(err) 
                 done(err, null);
             else 

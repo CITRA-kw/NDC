@@ -25,6 +25,12 @@
                 <footer class="my-5 pt-5 text-muted text-center text-small">
                     <p class="mb-1">&copy; 2017-2019 CITRA</p>
                     <p class="mb-1">Logged in as: <%= currentUser.username %>
+                    <% if(currentUser.username == "Not Logged in") {
+                        %>
+                            | Logout
+                        <%
+                        }
+                    %>
                     </p>
 
                 </footer>

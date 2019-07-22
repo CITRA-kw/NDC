@@ -47,13 +47,20 @@ function getCircuits(callback) {
             for (var i = audit_rows.length - 1; i >= 0; i--) {
                 var row = audit_rows[i];
                 var circuit = circuits[row.circuit_id];
-
+                
+                // Getting circuit undefined error so I'm adding this IF(CIRCUIT) - old code is in next comment
+                if(circuit) {
+                    if (!circuit.history) circuit.history = [];
+                    circuit.history.push(row);
+                
+                /* remove the first IF statement only, ex:
                 if (!circuit.history) circuit.history = [];
+                circuit.history.push(row);                
+                */
 
-                circuit.history.push(row);
-
-                //stupid and inefficient bas shasawy
-                if (circuit.status == "-") circuit.status = row.status;
+                    //stupid and inefficient bas shasawy
+                    if (circuit.status == "-") circuit.status = row.status;
+                }
             }
 
             //get types of ENUM

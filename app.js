@@ -66,7 +66,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('appTitle', 'National Data Circuits');
 
 // All pages routing
-// Include username value on locals variables
+// Include user object on locals variables
 // Generally make sure users are logged in
 // TO DO: Secure API requests
 app.get('*', function (req, res, next) {
@@ -98,9 +98,9 @@ app.get('*', function (req, res, next) {
 
 
         
-        //authorized?
-        console.log("authorization data!!", req.user.authorization.pages, url, req.user.authorization.pages[url]);
-        if (url in req.user.authorization.pages && !req.user.authorization.pages[url]) {
+        // Authorized?
+        //console.log("authorization data!!", req.user.authorization.pages,// url, req.user.authorization.pages[url]);
+        if (req.user.authorization.pages && url in req.user.authorization.pages && !req.user.authorization.pages[url]) {
             res.redirect('/login');
             return;
         }
