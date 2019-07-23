@@ -1,17 +1,8 @@
 var express = require('express');
 var router = express.Router();
-var mysql = global.mysql;
-// Load config file for database access
-var config = require('config').get('dbConfig');
 
-var connection = mysql.createConnection({
-    host: config.get('host'),
-    user: config.get('username'),
-    password: config.get('password'),
-    database: config.get('dbname')
-});
-
-connection.connect();
+// Load database connectivity
+var connection = require('./database.js');
 
 // TODO Handle wrong ID
 

@@ -1,5 +1,3 @@
-global.mysql = require("mysql2");
-
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -147,7 +145,9 @@ app.use(require('./routes/api/patch_panel-service'));
 app.use(require('./routes/api/circuit-service'));
 app.use(require('./routes/api/finance-service'));
 app.use(require('./routes/api/map-service'));
-app.use(require('./routes/api/login-service'));
+
+// Delete this file if not required
+//app.use(require('./routes/api/login-service'));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

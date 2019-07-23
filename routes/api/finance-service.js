@@ -1,21 +1,14 @@
 var express = require('express');
 var router = express.Router();
-var mysql = global.mysql;
-// Load config file for database access
-var config = require('config').get('dbConfig');
+
+// Load database connectivity
+var connection = require('./database.js');
+
 var moment = require("moment");
 
 //reuse code instead of copy-pasta
 var circuitService = require("./circuit-service");
 
-var connection = mysql.createConnection({
-    host: config.get('host'),
-    user: config.get('username'),
-    password: config.get('password'),
-    database: config.get('dbname')
-});
-
-connection.connect();
 
 
 // ***************************************************************
