@@ -37,7 +37,7 @@ router.get('/api/map-service/links', function (req, res) {
     	connection.query(`SELECT * FROM ports_circuit 
     		              JOIN patch_panel_port ON ports_circuit.port_id = patch_panel_port.id AND ports_circuit.patch_panel_id = patch_panel_port.patch_panel_id 
     					  JOIN patch_panel ON patch_panel.id = ports_circuit.patch_panel_id 
-    					  ORDER BY circuit_num, sequence`, function (err, results, fields) {
+    					  ORDER BY circuit_id, sequence`, function (err, results, fields) {
 
 
     		// console.log(err, results);
