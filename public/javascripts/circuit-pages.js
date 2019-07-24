@@ -30,20 +30,19 @@ $(document).ready(function () {
         console.log("** Circuits update form");
 
         // Get ID of the hidden form element
-        var circuit_num = $("input#circuit_num").attr("value");
+        var circuit_id = $("input#id").attr("value");
         var circuitData;
 
         // Do a JSON call and populate the form
-        $.getJSON('/api/' + service_name + '/' + circuit_num, function (json) {
+        $.getJSON('/api/' + service_name + '/' + circuit_id, function (json) {
             $("input#id").attr("value", json[0].id);
-            $("input#moc_id").attr("value", json[0].moc_id);
             $("select#interface_type").val(json[0].interface_type);
             $("input#provision_speed").attr("value", json[0].provision_speed);
-            $("select#service").val(json[0].service);
+            $("select#service_id").val(json[0].service_id);
             $("select#provider").val(json[0].provider);
             $("select#isp").val(json[0].isp);
             $("textarea#comment").val(json[0].comment);
-            console.log("** Received circuit JSON info to populate form for MOC ID " + json[0].moc_id);
+            console.log("** Received circuit JSON info to populate form for Circuit ID " + json[0].id);
             console.log("** The data is: " + JSON.stringify(json));
 
             // Populate the circuit connection dropdowns            
@@ -75,8 +74,7 @@ $(document).ready(function () {
             $(form).addClass('was-validated');
             var formData = {};
             formData.id = $("input#id").val();
-            formData.circuit_num = $("input#circuit_num").val();
-            formData.moc_id = $("input#moc_id").val();
+            formData.service_id = $("input#service_id").val();
             formData.interface_type = $("select#interface_type").val();
             formData.provision_speed = $("input#provision_speed").val();
             formData.service = $("select#service").val();
@@ -154,7 +152,7 @@ $(document).ready(function () {
             // Create circuit form data for the JSON request
             var formData = {};
             formData.id = $("input#id").val();
-            formData.moc_id = $("input#moc_id").val();
+            formData.service_id = $("input#service_id").val();
             formData.interface_type = $("select#interface_type").val();
             formData.provision_speed = $("input#provision_speed").val();
             formData.service = $("select#service").val();
@@ -460,7 +458,7 @@ function populatePortsDropDown(patchPanelField, port_value, port_name, direction
             $(portField).append($("<option />").val(this.id).text(this.label));
             if(!this.used) {                
                 $(portField).children().last().prop("disabled", true);
-                $(portField).children().last().append(" (" + this.moc_id + ")");
+                $(portField).children().last().append(" (" + this.id + ")");
             } 
         });
         // SQL statement won't return the specific port selected so I'll add it and make it SELECTED

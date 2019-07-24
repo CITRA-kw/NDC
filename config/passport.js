@@ -18,6 +18,9 @@ if(!req.user.id)
     res.status(500).send(); // Maybe error number 403 is better?
 */
 
+// Load database connectivity
+var connection = require('../routes/api/database.js');
+
 const LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcrypt'); // npm install --save bcrypt-nodejs && npm uninstall --save bcrypt
 
@@ -147,7 +150,6 @@ module.exports = function (passport) {
     // used to deserialize the user
     passport.deserializeUser(function(user, done) {
         //console.log("** Deserializing user: " + JSON.stringify(user));
-        connection.connect();
         connection.query("SELECT * FROM users WHERE id = ? ",[user['ID']], function(err, rows){
             //console.log(this.sql);
             //console.log(rows);

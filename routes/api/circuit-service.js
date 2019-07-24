@@ -29,8 +29,7 @@ function getCircuits(callback) {
             var result = results[i];
             result.status = "-";
 
-
-            circuits[result.circuit_num] = result;
+            circuits[result.id] = result;
         }
 
         //get all status audit
@@ -142,7 +141,7 @@ router.post('/api/changeStatus/:id', async function (req, res) {
 // TODO check if Circuit already exists
 router.post('/api/circuit-service', function (req, res) {
     var newCircuit = req.body;
-    console.log('** POST Single Circuit for MOC ID: ' + newCircuit.moc_id);
+    console.log('** POST Single Circuit ID: ' + newCircuit.id);
 
     console.log(newCircuit);
 
@@ -151,7 +150,7 @@ router.post('/api/circuit-service', function (req, res) {
         if (err) {
             throw err;
         }
-        var query = connection.query('INSERT INTO circuit SET id=?, moc_id=?, interface_type=?, provision_speed=?, service=?, provider=?, isp=?, comment=?', [newCircuit.id, newCircuit.moc_id, newCircuit.interface_type, newCircuit.provision_speed, newCircuit.service, newCircuit.provider, newCircuit.isp, newCircuit.comment], function (error, results, fields) {
+        var query = connection.query('INSERT INTO circuit SET id=?, interface_type=?, provision_speed=?, service_id=?, provider=?, isp=?, comment=?', [newCircuit.id, newCircuit.interface_type, newCircuit.provision_speed, newCircuit.service, newCircuit.provider, newCircuit.isp, newCircuit.comment], function (error, results, fields) {
             if (error) {
                 return connection.rollback(function () {
                     res.send(JSON.stringify({
@@ -167,15 +166,15 @@ router.post('/api/circuit-service', function (req, res) {
 
             
             // Get the inserted CircuitId from the pr[evious insert
-            var circuit_num = results.insertId; // CHANGE: Get actual ID
+            var id = results.insertId; // CHANGE: Get actual ID
             // var valuesString = "";
 
             var rows = [];
 
 
             // Make sure the following variables are an Array, otherwise turn them into an array of single value
-            addPatchPanelData("ingress", rows, newCircuit, circuit_num);
-            addPatchPanelData("egress", rows, newCircuit, circuit_num);
+            addPatchPanelData("ingress", rows, newCircuit, id);
+            addPatchPanelData("egress", rows, newCircuit, id);
 
             console.log(rows);
 
@@ -207,7 +206,7 @@ router.post('/api/circuit-service', function (req, res) {
                     // console.log("** POST also added " + port_ids.length + " ports");
                     console.log("The ports_circuit SQL is: " + JSON.stringify(results2));
                     res.send(JSON.stringify({
-                        result: "Insert Successful for (MoC ID " + newCircuit.moc_id + ") "
+                        result: "Insert Successful for (Circuit ID " + newCircuit.id + ") "
                     }));
 
                 });
@@ -218,7 +217,7 @@ router.post('/api/circuit-service', function (req, res) {
 });
 
 // Create rows string to be inserted for patch panel ports
-function addPatchPanelData(direction, rows, newCircuit, circuit_num) {
+function addPatchPanelData(direction, rows, newCircuit, id) {
 
     var patch_panel_ids = newCircuit[direction+'_patch_panel[]'] ? (Array.isArray(newCircuit[direction+'_patch_panel[]']) ? newCircuit[direction+'_patch_panel[]'] : [newCircuit[direction+'_patch_panel[]']]) : [];
     var port_ids = newCircuit[direction+'_port[]'] ? (Array.isArray(newCircuit[direction+'_port[]']) ? newCircuit[direction+'_port[]'] : [newCircuit[direction+'_port[]']]) : [];
@@ -226,7 +225,7 @@ function addPatchPanelData(direction, rows, newCircuit, circuit_num) {
 
     for (var i = 0; i < patch_panel_ids.length; i++) {
 
-        var row = [circuit_num, port_ids[i], patch_panel_ids[i], i, direction, "{}"];
+        var row = [id, port_ids[i], patch_panel_ids[i], i, direction, "{}"];
 
         rows.push(row);
     }
@@ -241,7 +240,7 @@ router.get('/api/circuit-service/:id', function (req, res) {
     var toSend;
 
     // First, get a specific circuit data
-    connection.query('SELECT * FROM circuit WHERE circuit_num = "' + req.params.id + '"', function (err, results, fields) {
+    connection.query('SELECT * FROM circuit WHERE id = "' + req.params.id + '"', function (err, results, fields) {
         if (err) throw err;
 
         console.log(this.sql);
@@ -252,7 +251,7 @@ router.get('/api/circuit-service/:id', function (req, res) {
     });
 
     // Second, get the connection of that specific circuit
-    connection.query('SELECT *  FROM ports_circuit INNER JOIN patch_panel_port ON ports_circuit.port_id = patch_panel_port.id AND ports_circuit.patch_panel_id = patch_panel_port.patch_panel_id INNER JOIN patch_panel ON patch_panel.id = ports_circuit.patch_panel_id WHERE ports_circuit.circuit_num = ? ORDER BY ports_circuit.sequence ASC', [req.params.id], function (err, results, fields) {
+    connection.query('SELECT *  FROM ports_circuit INNER JOIN patch_panel_port ON ports_circuit.port_id = patch_panel_port.id AND ports_circuit.patch_panel_id = patch_panel_port.patch_panel_id INNER JOIN patch_panel ON patch_panel.id = ports_circuit.patch_panel_id WHERE ports_circuit.circuit_id = ? ORDER BY ports_circuit.sequence ASC', [req.params.id], function (err, results, fields) {
         if (err) throw err;
 
         console.log(this.sql);
@@ -275,7 +274,7 @@ router.get('/api/circuit-service/:id', function (req, res) {
 
 router.put('/api/circuit-service', function (req, res) {
     var update_circuit = req.body;
-    console.log("** PUT - update single Circuit circuit_num: " + update_circuit.circuit_num);
+    console.log("** PUT - update single Circuit circuit ID: " + update_circuit.id);
 
     // ----------------- USING MYSQL TRANSACTIONS  ---------------
     // Using Transactions so we can rollback if failed in any step
@@ -284,7 +283,7 @@ router.put('/api/circuit-service', function (req, res) {
             throw err;
         }
 
-        var query = connection.query('UPDATE circuit SET id=?, moc_id=?, interface_type=?, provision_speed=?, service=?, provider=?, isp=?, comment=? where circuit_num=?', [update_circuit.id, update_circuit.moc_id, update_circuit.interface_type, update_circuit.provision_speed, update_circuit.service, update_circuit.provider, update_circuit.isp, update_circuit.comment, update_circuit.circuit_num], function (error, results, fields) {
+        var query = connection.query('UPDATE circuit SET id=?, interface_type=?, provision_speed=?, service_id=?, provider=?, isp=?, comment=? where id=?', [update_circuit.id, update_circuit.interface_type, update_circuit.provision_speed, update_circuit.service, update_circuit.provider, update_circuit.isp, update_circuit.comment, update_circuit.id], function (error, results, fields) {
             console.log("** First SQL Transaction query: " + query.sql);
             if (error) {
                 return connection.rollback(function () {
@@ -303,7 +302,7 @@ router.put('/api/circuit-service', function (req, res) {
             // Delete all connections related to this circuit before inserting new connections
             // ----------------------------------------------
 
-            var query2 = connection.query('DELETE FROM ports_circuit WHERE circuit_num = ?', [update_circuit.circuit_num], function (error, results2, fields) {
+            var query2 = connection.query('DELETE FROM ports_circuit WHERE circuit_id = ?', [update_circuit.id], function (error, results2, fields) {
                 if (error) {
                     return connection.rollback(function () {
                         res.send(JSON.stringify({
@@ -317,14 +316,14 @@ router.put('/api/circuit-service', function (req, res) {
                 //-----------------------------------------------
                 // Insert the circuit connections
                 // ----------------------------------------------   
-                // Get the inserted circuit_num
-                var circuit_num = update_circuit.circuit_num;
+                // Get the inserted circuit ID
+                var id = update_circuit.id;
                 var rows = [];
 
 
                 // Make sure the following variables are an Array, otherwise turn them into an array of single value
-                addPatchPanelData("ingress", rows, update_circuit, circuit_num);
-                addPatchPanelData("egress", rows, update_circuit, circuit_num);
+                addPatchPanelData("ingress", rows, update_circuit, id);
+                addPatchPanelData("egress", rows, update_circuit, id);
 
                 console.log(rows);
 
@@ -357,7 +356,7 @@ router.put('/api/circuit-service', function (req, res) {
                         // console.log("** PUT also added " + port_ids.length + " ports");
                         console.log("The ports_circuit SQL is: " + JSON.stringify(query3.sql));
                         res.send(JSON.stringify({
-                            result: "Insert Successful for (MoC ID " + update_circuit.moc_id + ") "
+                            result: "Insert Successful for (Circuit ID " + update_circuit.id + ") "
                         }));
 
                     });
@@ -375,9 +374,9 @@ router.put('/api/circuit-service', function (req, res) {
 // TODO delete also circuit_port and use Transactions
 router.delete('/api/circuit-service/:id', function (req, res) {
     var delete_circuit = req.body;
-    console.log("** DELETE - delete circuit_num: " + delete_circuit.id);
+    console.log("** DELETE - delete circuit ID: " + delete_circuit.id);
 
-    var query = connection.query('UPDATE circuit SET active = "0" where circuit_num=?', [delete_circuit.id], function (error, results, fields) {
+    var query = connection.query('UPDATE circuit SET active = "0" where id=?', [delete_circuit.id], function (error, results, fields) {
         if (error) {
             res.send(JSON.stringify({
                 result: "Epic Fail!"
@@ -389,7 +388,7 @@ router.delete('/api/circuit-service/:id', function (req, res) {
         console.log("** DELETE Circuit - query result: " + JSON.stringify(results));
         res.set('Content-Type', 'application/json');
         res.send(JSON.stringify({
-            result: "Delete success for circuit_num " + delete_circuit.id
+            result: "Delete success for circuit ID " + delete_circuit.id
         }));
     });
 });

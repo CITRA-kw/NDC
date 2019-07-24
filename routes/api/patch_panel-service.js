@@ -100,23 +100,26 @@ router.get('/api/patch_panel-service/ports/:id', function (req, res) {
     /*
 SELECT ppp.*, cc.id, cc.active, IF(EXISTS(SELECT null FROM ports_circuit AS pc2 WHERE pc2.port_id = ppp.id AND pc2.patch_panel_id = ppp.patch_panel_id), TRUE, FALSE) as used 
 FROM patch_panel_port AS ppp LEFT JOIN 
-	(SELECT c.active, pc.patch_panel_id, pc.port_id, c.id FROM ports_circuit AS pc INNER JOIN circuit AS c ON c.circuit_num = pc.circuit_num) AS cc 
+	(SELECT c.active, pc.patch_panel_id, pc.port_id, c.id FROM ports_circuit AS pc INNER JOIN circuit AS c ON c.circuit_id = pc.circuit_id) AS cc 
     ON cc.port_id = ppp.id AND cc.patch_panel_id = ppp.patch_panel_id
 WHERE ppp.patch_panel_id=1 AND cc.active=1 ORDER BY ppp.id
     */
 
     //connection.query('SELECT * FROM patch_panel_port WHERE patch_panel_id=? && CONCAT_WS(" ", patch_panel_id, id) NOT IN (SELECT CONCAT_WS(" ", patch_panel_id, port_id) FROM ports_circuit)', [patch_panel_id], function (error, results, fields) {
-    connection.query('SELECT ppp.*, IF(EXISTS(SELECT null FROM ports_circuit AS pc2 WHERE pc2.port_id = ppp.id AND pc2.patch_panel_id = ppp.patch_panel_id), FALSE, TRUE) as used FROM patch_panel_port AS ppp LEFT JOIN (SELECT c.active, pc.patch_panel_id, pc.port_id, c.id, c.moc_id FROM ports_circuit AS pc LEFT JOIN circuit AS c ON c.circuit_num = pc.circuit_num) AS cc ON cc.port_id = ppp.id AND cc.patch_panel_id = ppp.patch_panel_id WHERE ppp.patch_panel_id=? ORDER BY ppp.id', [patch_panel_id], function (error, results, fields) {
+    connection.query('SELECT ppp.*, IF(EXISTS(SELECT null FROM ports_circuit AS pc2 WHERE pc2.port_id = ppp.id AND pc2.patch_panel_id = ppp.patch_panel_id), FALSE, TRUE) as used FROM patch_panel_port AS ppp LEFT JOIN (SELECT c.active, pc.patch_panel_id, pc.port_id, c.service_id, c.id FROM ports_circuit AS pc LEFT JOIN circuit AS c ON c.id = pc.circuit_id) AS cc ON cc.port_id = ppp.id AND cc.patch_panel_id = ppp.patch_panel_id WHERE ppp.patch_panel_id=? ORDER BY ppp.id', [patch_panel_id], function (error, results, fields) {
+        //console.log("** Query: " + this.sql);
+        
         if (error) {
             res.send(JSON.stringify({
                 result: "Epic Fail!"
             }));
             throw error;
         }
-
+    
+        //console.log("** Get Patch Panel Ports - query result: " + JSON.stringify(results));
+        
         res.json(results);
-        console.log("** Query: " + this.sql);
-        console.log("** Get Patch Panel Ports - query result: " + JSON.stringify(results));
+
 
     });
 });

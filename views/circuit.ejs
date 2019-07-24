@@ -25,23 +25,13 @@
             <div class="col-md-8 order-md-1" id="pageContent">
                 <h4 class="mb-3">Add New Circuit</h4>
                 <form class="needs-validation" novalidate>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="id">Service ID</label>
-                            <input type="text" class="form-control" id="id" required>
-                            <div class="invalid-feedback">
-                                A valid Service ID is required.
-                            </div>
-                        </div>
-                    </div>
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="moc_id">MoC ID</label>
-                            <input type="text" class="form-control" id="moc_id" required>
+                            <label for="service_id">Service ID</label>
+                            <input type="text" class="form-control" id="service_id" required>
                             <div class="invalid-feedback">
-                                A valid MoC ID is required.
+                                A valid Service ID is required.
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -185,26 +175,15 @@
 
                         <div class="col-md-8 order-md-1" id="pageContent">
                             <h4 class="mb-3">Update Circuit</h4>
-                            <form class="needs-validation" novalidate>
-
+                            <form class="needs-validation" novalidate>    
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label for="id">Service ID</label>
-                                        <input type="text" class="form-control" id="id" required>
+                                        <label for="service_id">Service ID</label>
+                                        <input type="text" class="form-control" id="service_id" required disabled="disabled">
                                         <div class="invalid-feedback">
                                             A valid Service ID is required.
                                         </div>
-                                    </div>
-                                </div>                                
-
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <input type="hidden" name="circuit_num" id="circuit_num" value="<%= circuit_num %>">
-                                        <label for="moc_id">MoC ID</label>
-                                        <input type="text" class="form-control" id="moc_id" required>
-                                        <div class="invalid-feedback">
-                                            A valid MoC ID is required.
-                                        </div>
+                                        <input type="hidden" name="id" id="id" value="<%= circuit_id %>" >
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="interface_type">Interface Type</label>

@@ -867,7 +867,7 @@ function showMessage(msg, type, elementID) {
 // ***************************************************************
 // Print a list of delete/update 
 // ***************************************************************
-function printList(list_data) {
+function printList(list_data) { 
     console.log("** Printing the list");
 
     // Clear the  list on the UI
@@ -885,8 +885,8 @@ function printList(list_data) {
 
         // Circuit has no names so I'm using its MOC ID and circuit_num instead
         if (!this.name) {
-            this.name = this.moc_id;
-            this.id = this.circuit_num;
+            this.name = this.service_id;
+            //this.id = this.circuit_num;
         }
         
         // If has location preppend it to the name, location is available for patch panels
