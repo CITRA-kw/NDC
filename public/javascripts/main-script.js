@@ -206,7 +206,7 @@ $(document).ready(function () {
     console.log("** Loaded main-script.js");
 
      
-    /* Commenting MQTT for now because it's causing me issues on testing on local network
+     //Commenting MQTT for now because it's causing me issues on testing on local network
 
 
     // Create a client instance
@@ -291,7 +291,7 @@ $(document).ready(function () {
       // message.destinationName = "World";
       // mqtt.send(message);
     }});
-    */
+    
 
     // ***************************************************************
     // Dynamically load table data
