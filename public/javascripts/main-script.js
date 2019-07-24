@@ -206,7 +206,7 @@ $(document).ready(function () {
     console.log("** Loaded main-script.js");
 
      
-     //Commenting MQTT for now because it's causing me issues on testing on local network
+    /* //Commenting MQTT for now because it's causing me issues on testing on local network
 
 
     // Create a client instance
@@ -291,7 +291,7 @@ $(document).ready(function () {
       // message.destinationName = "World";
       // mqtt.send(message);
     }});
-    
+    */
 
     // ***************************************************************
     // Dynamically load table data
@@ -344,17 +344,17 @@ $(document).ready(function () {
         //Note: Changed this to map service because it has all the ports information as well.
         $.getJSON('/api/map-service/links', function (json) {
             console.log("** Received circuit JSON info to populate form for", json);
-/*
+
             //make an array
             var data = []; 
 
             for (var i in json) {
                 var row = json[i];
 
-                var datum = [row["id"], row["moc_id"], row["isp_code"], row["provider_code"], row["provision_speed"], row["comment"]];
+                var datum = [row["id"], row["service_id"], row["isp_code"], row["provider_code"], row["provision_speed"], row["comment"]];
                 data.push(datum);
             }
-*/
+
 
             //function to generate columns for each patch panel
             var generatePortData = function(data, type) {

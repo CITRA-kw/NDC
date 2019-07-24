@@ -243,9 +243,9 @@ router.get('/api/circuit-service/:id', function (req, res) {
     connection.query('SELECT * FROM circuit WHERE id = "' + req.params.id + '"', function (err, results, fields) {
         if (err) throw err;
 
-        console.log(this.sql);
-        console.log('** Result from first query: ');
-        console.log(results);
+        //console.log(this.sql);
+        //console.log('** Result from first query: ');
+        //console.log(results);
         toSend = results;
 
     });
@@ -254,14 +254,14 @@ router.get('/api/circuit-service/:id', function (req, res) {
     connection.query('SELECT *  FROM ports_circuit INNER JOIN patch_panel_port ON ports_circuit.port_id = patch_panel_port.id AND ports_circuit.patch_panel_id = patch_panel_port.patch_panel_id INNER JOIN patch_panel ON patch_panel.id = ports_circuit.patch_panel_id WHERE ports_circuit.circuit_id = ? ORDER BY ports_circuit.sequence ASC', [req.params.id], function (err, results, fields) {
         if (err) throw err;
 
-        console.log(this.sql);
+        //console.log(this.sql);
 
-        console.log('** Result from second query: ');
-        console.log(results);
+        //console.log('** Result from second query: ');
+        //console.log(results);
 
         toSend[1] = results;
-        console.log('** Send back the following info: ');
-        console.log(toSend);
+        //console.log('** Send back the following info: ');
+        //console.log(toSend);
 
         res.json(toSend);
     });

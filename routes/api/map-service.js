@@ -17,17 +17,20 @@ var panelService = require("./patch_panel-service");
 // Get days the circuit is in service for that date
 // ***************************************************************
 router.get('/api/map-service/links', function (req, res) {
+    
+    console.log("** Get map-service/links");
 
 	let ports = {};
 
 
 
     circuitService.getCircuits(json => {
+        console.log("**** Received JSON for map service: " + json.data);
 
     	//I need this to look up circuits by its number.
     	circuitByNum = {};
     	for (let circuit of json.data) {
-    		circuitByNum[circuit.circuit_num] = circuit;
+    		circuitByNum[circuit.id] = circuit;
     	}
 
     	console.log(circuitByNum);
@@ -39,10 +42,11 @@ router.get('/api/map-service/links', function (req, res) {
     					  JOIN patch_panel ON patch_panel.id = ports_circuit.patch_panel_id 
     					  ORDER BY circuit_id, sequence`, function (err, results, fields) {
 
-
+             // console.log(this.sql);
+             // console.log(results);
     		// console.log(err, results);
     		for (let result of results) {
-    			let circuit = circuitByNum[result.circuit_num];
+    			let circuit = circuitByNum[result.circuit_id];
     			//does it have a ports object?
     			// console.log(circuit);
     			if (!circuit.ports) {
