@@ -74,7 +74,7 @@ router.post('/api/patch_panel-service/patch_panel', function (req, res) {
                 valuesString += ', ';
             }
             var portId = parseInt(i) + 1;
-            valuesString += '(' + portId + ', ' + forID + ', "# ' + portId + '", "' + ports_type + '")';
+            valuesString += '(' + portId + ' , ' + forID + ' , ' + portId + ' , "' + ports_type + '" )';
         }
         console.log("** Ports to insert " + valuesString);
         // Now insert the ports for this patch panel
