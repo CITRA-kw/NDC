@@ -415,7 +415,7 @@ $(document).ready(function () {
                         "defaultContent": '<i class="fas fa-angle-right" id="expandButton"></i>'
                     },
                     {
-                        data: "id",
+                        data: "service_id",
                         title: "ID",
                         width: '15%'
 
