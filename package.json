@@ -8,7 +8,7 @@
     "start": "nodemon -e .ejs,.js,.json,.css ./bin/www"
   },
   "dependencies": {
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^5.0.0",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.18.2",
     "config": "^2.0.2",
